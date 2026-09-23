@@ -17,3 +17,11 @@ Run `npm run format` to format supported files in `src/`, `server/` (when presen
 Run `npm run format:check` to verify formatting without modifying files.
 
 Prettier uses single quotes and semicolons for JavaScript. ESLint disables formatting rules that conflict with Prettier.
+
+## Local Mock API
+
+The mock API is for local development and runs separately from the SPA. It is not deployed with the frontend.
+
+Run `npm run server:start` to start the JSON Server mock at `http://localhost:3000`.
+
+See [server/README.md](server/README.md) for fixture structure, database generation, and reset commands.

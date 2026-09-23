@@ -10,7 +10,9 @@
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix --max-warnings 0",
     "format": "prettier \"{src,server}/**/*\" index.html --write --ignore-unknown",
-    "format:check": "prettier \"{src,server}/**/*\" index.html --check --ignore-unknown"
+    "format:check": "prettier \"{src,server}/**/*\" index.html --check --ignore-unknown",
+    "server:build": "node server/build-db.js",
+    "server:start": "sh server/start.sh"
   },
   "dependencies": {
     "@primeuix/themes": "^3.0.1",
