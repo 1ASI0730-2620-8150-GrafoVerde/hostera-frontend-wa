@@ -1,4 +1,5 @@
 import { InventoryError } from './inventory.error.js';
+import { StockAdjustment } from './stock-adjustment.entity.js';
 
 /**
  * Inventory item entity within the Inventory bounded context.
@@ -158,4 +159,101 @@ export class InventoryItem {
     });
   }
 
+  /**
+   * Applies a request and appends one adjustment, or two linked transfer adjustments.
+   * @param {Object} adjustmentData - Stock change and its audit information.
+   * @param {'in'|'out'|'transfer'} adjustmentData.operation - Requested stock operation.
+   * @param {number} adjustmentData.quantity - Quantity to adjust.
+   * @param {number} adjustmentData.locationId - Adjusted or origin storage location.
+   * @param {?number} [adjustmentData.destinationLocationId] - Destination storage location for transfers.
+   * @param {string} adjustmentData.reason - Adjustment reason.
+   * @param {string} [adjustmentData.note] - Optional explanation.
+   * @param {string} adjustmentData.id - Adjustment identifier.
+   * @param {string} adjustmentData.recordedAt - ISO date of the adjustment.
+   * @param {string} adjustmentData.operator - Operator who records the adjustment.
+   * @param {string} adjustmentData.locationName - Adjusted or origin storage location name.
+   * @param {?string} [adjustmentData.destinationLocationName] - Destination storage location name.
+   * @returns {InventoryItem} Updated item with its quantities and history.
+   * @throws {InventoryError} When a business rule is violated.
+   */
+  applyStockAdjustment(adjustmentData) {
+    const {
+      operation,
+      quantity,
+      locationId,
+      destinationLocationId = null,
+      reason,
+      note = '',
+      id,
+      recordedAt,
+      operator,
+      locationName,
+      destinationLocationName = null,
+    } = adjustmentData;
+    InventoryItem.validateQuantity(quantity, this.unit);
+    if (!StockAdjustment.reasons[operation]?.includes(reason))
+      throw new InventoryError('invalid-reason');
+    if (reason === 'other' && !note.trim())
+      throw new InventoryError('note-required');
+    if (!locationId) throw new InventoryError('location-required');
+    if (
+      operation === 'transfer' &&
+      (!destinationLocationId || destinationLocationId === locationId)
+    )
+      throw new InventoryError('invalid-destination');
+    if (operation !== 'in' && quantity > this.quantityAt(locationId))
+      throw new InventoryError('insufficient-stock');
+
+    const updatedStocks = this.stocks.map((stock) => ({ ...stock }));
+    const newAdjustments = [];
+    const recordQuantityChange = (
+      targetId,
+      targetName,
+      direction,
+      recordId,
+    ) => {
+      let stock = updatedStocks.find((entry) => entry.locationId === targetId);
+      if (!stock) {
+        stock = { locationId: targetId, quantity: 0 };
+        updatedStocks.push(stock);
+      }
+      stock.quantity = Number(
+        (stock.quantity + (direction === 'in' ? quantity : -quantity)).toFixed(
+          6,
+        ),
+      );
+      newAdjustments.push(
+        new StockAdjustment({
+          id: recordId,
+          operation: direction,
+          quantity,
+          locationId: targetId,
+          locationName: targetName,
+          reason,
+          note,
+          recordedAt,
+          operator,
+          transferId: operation === 'transfer' ? id : null,
+        }),
+      );
+    };
+    recordQuantityChange(
+      locationId,
+      locationName,
+      operation === 'in' ? 'in' : 'out',
+      id,
+    );
+    if (operation === 'transfer')
+      recordQuantityChange(
+        destinationLocationId,
+        destinationLocationName,
+        'in',
+        `${id}-in`,
+      );
+    return new InventoryItem({
+      ...this,
+      stocks: updatedStocks,
+      adjustments: [...this.adjustments, ...newAdjustments],
+    });
+  }
 }
