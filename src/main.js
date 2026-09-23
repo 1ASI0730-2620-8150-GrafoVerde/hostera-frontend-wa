@@ -1,12 +1,12 @@
-import { createApp } from 'vue'
-import './style.css'
-import App from './app.vue'
-import i18n from './i18n.js'
-import PrimeVue from 'primevue/config'
-import Material from '@primeuix/themes/material'
-import 'primeflex/primeflex.css'
-import 'primeicons/primeicons.css'
-import Tooltip from 'primevue/tooltip'
+import { createApp } from 'vue';
+import './style.css';
+import App from './app.vue';
+import i18n from './i18n.js';
+import PrimeVue from 'primevue/config';
+import Material from '@primeuix/themes/material';
+import 'primeflex/primeflex.css';
+import 'primeicons/primeicons.css';
+import Tooltip from 'primevue/tooltip';
 import {
   Button,
   Card,
@@ -34,11 +34,11 @@ import {
   Textarea,
   ToastService,
   Toolbar,
-} from 'primevue'
-import router from './router.js'
-import pinia from './pinia.js'
+} from 'primevue';
+import router from './router.js';
+import pinia from './pinia.js';
 
-const primeVueLicenseKey = import.meta.env.VITE_PRIMEVUE_LICENSE_KEY
+const primeVueLicenseKey = import.meta.env.VITE_PRIMEVUE_LICENSE_KEY;
 
 createApp(App)
   .use(i18n)
@@ -76,4 +76,4 @@ createApp(App)
   .directive('tooltip', Tooltip)
   .use(pinia)
   .use(router)
-  .mount('#app')
+  .mount('#app');

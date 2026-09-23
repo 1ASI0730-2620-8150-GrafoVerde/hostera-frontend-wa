@@ -1,5 +1,6 @@
 import js from '@eslint/js'
 import { defineConfig, globalIgnores } from 'eslint/config'
+import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import pluginVue from 'eslint-plugin-vue'
 import globals from 'globals'
 
@@ -34,4 +35,5 @@ export default defineConfig([
       'vue/multi-word-component-names': 'off',
     },
   },
+  eslintConfigPrettier,
 ])

@@ -9,3 +9,11 @@ Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://
 Run `npm run lint` to validate JavaScript and Vue files. The command fails on errors or warnings.
 
 Run `npm run lint:fix` to apply automatic fixes, then review the changes.
+
+## Formatting
+
+Run `npm run format` to format supported files in `src/`, `server/` (when present), and `index.html` with Prettier.
+
+Run `npm run format:check` to verify formatting without modifying files.
+
+Prettier uses single quotes and semicolons for JavaScript. ESLint disables formatting rules that conflict with Prettier.
