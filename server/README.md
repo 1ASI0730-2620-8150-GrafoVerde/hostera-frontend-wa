@@ -37,3 +37,15 @@ Place JSON files directly in `data/`. Each filename uses a plural kebab-case res
 Use unique, stable IDs and camelCase fields. Mock data values may be in Spanish. `.gitkeep` keeps the initially empty directory in Git and can be removed after adding the first fixture; the generator reads only `.json` files.
 
 JSON Server provides native CRUD routes for each collection. Send write bodies as JSON with `Content-Type: application/json`. The mock does not implement authentication or business validation.
+
+## Inventory resources
+
+- `GET /properties`: demonstration establishments in one organization.
+- `GET /storage-locations?propertyId=1` and `GET /inventory-items?propertyId=1`: property-scoped collections.
+- `POST /storage-locations` and `POST /inventory-items`: create records with their `propertyId`.
+- `PUT /storage-locations/:id` and `PUT /inventory-items/:id`: save an existing record.
+- `DELETE /storage-locations/:id`: remove an unused location.
+
+Each inventory item contains `stocks` (quantities by location) and an `adjustments` history. An adjustment updates both in one item write; a transfer appends linked outgoing and incoming records in the same write. A positive initial quantity also records an opening adjustment. There is no separate adjustment endpoint in this mock.
+
+The frontend enforces unique codes, sufficient stock, fixed units after history exists, and location-removal restrictions. Audit entries use a demonstration operator until account access is implemented. Direct API requests can bypass these rules, and simultaneous clients can overwrite each other's changes; the production API must enforce authorization, validation, history preservation, and concurrency controls.

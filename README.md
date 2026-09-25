@@ -25,3 +25,13 @@ The mock API is for local development and runs separately from the SPA. It is no
 Run `npm run server:start` to start the JSON Server mock at `http://localhost:3000`.
 
 See [server/README.md](server/README.md) for fixture structure, database generation, and reset commands.
+
+## Inventory workspace
+
+Start the mock API with `npm run server:start`, then start the SPA with `npm run dev`. Open `/inventory` to manage property-scoped storage locations, supplies, stock adjustments, and internal transfers. English and Spanish are available in the workspace language selector.
+
+The SPA connects directly to the API configured by `VITE_HOSTERA_API_URL`. `.env.development` and `.env.production` currently use the local mock at `http://localhost:3000`, with `VITE_PROPERTIES_ENDPOINT_PATH`, `VITE_INVENTORY_ITEMS_ENDPOINT_PATH`, and `VITE_STORAGE_LOCATIONS_ENDPOINT_PATH` defining its resource paths. `vite-env.d.ts` declares these variables for editor type information and autocompletion; it does not assign or validate their runtime values.
+
+Vite loads `.env.development` for `npm run dev` and `.env.production` for `npm run build`. Use the ignored `.env.development.local` or `.env.production.local` files to override API settings for a specific mode. Restart Vite after changing environment files. Before deployment, set `VITE_HOSTERA_API_URL` to the deployed backend URL; the mock API is not deployed with the SPA. See [Vite environment variables and modes](https://vite.dev/guide/env-and-mode).
+
+PrimeVue 5 requires a valid PrimeUI license. Set `VITE_PRIMEVUE_LICENSE_KEY` in the ignored `.env.local` file and restart Vite. For deployed builds, configure the variable in the build environment.

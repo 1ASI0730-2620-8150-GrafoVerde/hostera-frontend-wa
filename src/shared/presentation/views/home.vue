@@ -5,5 +5,5 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <h1>{{ t('home.title') }}</h1>
+  <h1>{{ t('shared.home.title') }}</h1>
 </template>
