@@ -1,20 +1,37 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import Home from './shared/presentation/views/home.vue';
+import inventoryRoutes from './inventory/presentation/inventory-routes.js';
+
+const routes = [
+  { path: '/home', name: 'home', component: Home, meta: { title: 'Home' } },
+  {
+    path: '/inventory',
+    name: 'inventory',
+    redirect: { name: 'inventory-items' },
+    children: inventoryRoutes,
+  },
+  { path: '/', redirect: '/inventory/items' },
+  { path: '/:pathMatch(.*)*', redirect: '/inventory/items' },
+];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/home',
-      name: 'home',
-      component: () => import('./shared/presentation/views/home.vue'),
-      meta: { title: 'Home' },
-    },
-    { path: '/', redirect: '/home' },
-  ],
+  routes: routes,
 });
 
+/**
+ * Global navigation guard that updates the document title.
+ *
+ * @param {import('vue-router').RouteLocationNormalized} to - Target route.
+ * @returns {boolean} - Returns true to allow navigation.
+ */
 router.beforeEach((to) => {
-  document.title = to.meta.title ? `Hostera - ${to.meta.title}` : 'Hostera';
+  // Set the page title
+  let baseTitle = 'Hostera';
+  document.title = to.meta['title']
+    ? `${baseTitle} - ${to.meta['title']}`
+    : baseTitle;
+  return true;
 });
 
 export default router;
