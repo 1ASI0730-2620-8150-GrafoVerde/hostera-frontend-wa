@@ -18,6 +18,7 @@ import {
   ConfirmationService,
   ConfirmDialog,
   DataTable,
+  DatePicker,
   Dialog,
   DialogService,
   Divider,
@@ -32,6 +33,7 @@ import {
   InputText,
   Menu,
   Message,
+  Popover,
   ProgressSpinner,
   Rating,
   Row,
@@ -60,6 +62,7 @@ import {
   Toast,
   Textarea,
   ToastService,
+  ToggleSwitch,
   Toolbar,
 } from 'primevue';
 import router from './router.js';
@@ -134,9 +137,11 @@ const hosteraTheme = definePreset(Material, {
         padding: '0.25rem 0.625rem',
         borderRadius: '{border.radius.lg}',
       },
+      primary: { background: '{primary.100}', color: '{primary.800}' },
       success: { background: '#dcf5e3', color: '#1b6e37' },
       warn: { background: '#fdebd3', color: '#a8430d' },
       danger: { background: '#fbe1e1', color: '#b0261c' },
+      info: { background: '#e1eefa', color: '#1d5a91' },
     },
     tabs: {
       tablist: { background: 'transparent' },
@@ -183,6 +188,7 @@ createApp(App)
   .component('pv-column', Column)
   .component('pv-confirm-dialog', ConfirmDialog)
   .component('pv-data-table', DataTable)
+  .component('pv-date-picker', DatePicker)
   .component('pv-dialog', Dialog)
   .component('pv-divider', Divider)
   .component('pv-drawer', Drawer)
@@ -196,6 +202,7 @@ createApp(App)
   .component('pv-input-text', InputText)
   .component('pv-menu', Menu)
   .component('pv-message', Message)
+  .component('pv-popover', Popover)
   .component('pv-progress-spinner', ProgressSpinner)
   .component('pv-rating', Rating)
   .component('pv-row', Row)
@@ -223,6 +230,7 @@ createApp(App)
   .component('pv-tag', Tag)
   .component('pv-textarea', Textarea)
   .component('pv-toast', Toast)
+  .component('pv-toggle-switch', ToggleSwitch)
   .component('pv-toolbar', Toolbar)
   .directive('tooltip', Tooltip)
   .use(pinia)
