@@ -1,0 +1,513 @@
+/**
+ * Application service store for the Rooms bounded context.
+ * It coordinates room type, room, and availability use cases and keeps UI-facing state.
+ *
+ * @module useRoomsStore
+ */
+import { defineStore } from 'pinia';
+import { computed, ref } from 'vue';
+import { RoomsApi } from '../infrastructure/rooms-api.js';
+import { PropertyAssembler } from '../infrastructure/property.assembler.js';
+import { RoomTypeAssembler } from '../infrastructure/room-type.assembler.js';
+import { RoomAssembler } from '../infrastructure/room.assembler.js';
+import { StatusPeriodAssembler } from '../infrastructure/status-period.assembler.js';
+import { RoomAssignmentAssembler } from '../infrastructure/room-assignment.assembler.js';
+import { RoomsError } from '../domain/model/rooms.error.js';
+
+const roomsApi = new RoomsApi();
+
+/**
+ * Reactive store that exposes Rooms commands and queries.
+ *
+ * @returns {Object} Store state and actions.
+ */
+const useRoomsStore = defineStore('rooms', () => {
+  /**
+   * List of property references whose rooms can be managed.
+   * @type {import('vue').Ref<Property[]>}
+   */
+  const properties = ref([]);
+  /**
+   * List of room type entities of the current property.
+   * @type {import('vue').Ref<RoomType[]>}
+   */
+  const roomTypes = ref([]);
+  /**
+   * List of room entities of the current property.
+   * @type {import('vue').Ref<Room[]>}
+   */
+  const rooms = ref([]);
+  /**
+   * List of status period entities of the current property's rooms.
+   * @type {import('vue').Ref<StatusPeriod[]>}
+   */
+  const statusPeriods = ref([]);
+  /**
+   * List of room assignment entities of the current property's rooms.
+   * @type {import('vue').Ref<RoomAssignment[]>}
+   */
+  const roomAssignments = ref([]);
+  /**
+   * List of errors encountered during API operations.
+   * @type {import('vue').Ref<Error[]>}
+   */
+  const errors = ref([]);
+  /**
+   * Whether properties have been loaded from the API.
+   * @type {import('vue').Ref<boolean>}
+   */
+  const propertiesLoaded = ref(false);
+  /**
+   * Whether room types have been loaded from the API.
+   * @type {import('vue').Ref<boolean>}
+   */
+  const roomTypesLoaded = ref(false);
+  /**
+   * Whether rooms have been loaded from the API.
+   * @type {import('vue').Ref<boolean>}
+   */
+  const roomsLoaded = ref(false);
+  /**
+   * Whether status periods have been loaded from the API.
+   * @type {import('vue').Ref<boolean>}
+   */
+  const statusPeriodsLoaded = ref(false);
+  /**
+   * Whether room assignments have been loaded from the API.
+   * @type {import('vue').Ref<boolean>}
+   */
+  const roomAssignmentsLoaded = ref(false);
+  /**
+   * Whether a create, update, or delete operation is in progress.
+   * @type {import('vue').Ref<boolean>}
+   */
+  const saving = ref(false);
+  /**
+   * Identifier of the property whose rooms are being managed.
+   * @type {import('vue').Ref<?number>}
+   */
+  const currentPropertyId = ref(null);
+  /**
+   * Property whose rooms are being managed.
+   * @type {import('vue').ComputedRef<Property|undefined>}
+   */
+  const currentProperty = computed(() =>
+    properties.value.find(
+      (property) => property['id'] === currentPropertyId.value,
+    ),
+  );
+  /**
+   * Number of loaded room types.
+   * @type {import('vue').ComputedRef<number>}
+   */
+  const roomTypesCount = computed(() => {
+    return roomTypesLoaded.value ? roomTypes.value.length : 0;
+  });
+  /**
+   * Number of loaded rooms.
+   * @type {import('vue').ComputedRef<number>}
+   */
+  const roomsCount = computed(() => {
+    return roomsLoaded.value ? rooms.value.length : 0;
+  });
+
+  /**
+   * Loads properties and selects the current or first available property.
+   * @returns {void}
+   */
+  function fetchProperties() {
+    errors.value = [];
+    roomsApi
+      .getProperties()
+      .then((response) => {
+        properties.value = PropertyAssembler.toEntitiesFromResponse(response);
+        propertiesLoaded.value = true;
+        const propertyId = currentPropertyId.value ?? properties.value[0]?.id;
+        if (propertyId) selectProperty(propertyId);
+      })
+      .catch((error) => {
+        errors.value.push(error);
+      });
+  }
+
+  /**
+   * Selects the property whose rooms are managed and loads its rooms and availability.
+   * @param {number} propertyId - Property identifier.
+   * @returns {void}
+   */
+  function selectProperty(propertyId) {
+    currentPropertyId.value = propertyId;
+    errors.value = [];
+    fetchRoomTypes();
+    fetchRooms();
+    fetchStatusPeriods();
+    fetchRoomAssignments();
+  }
+
+  /**
+   * Loads one property-scoped collection and ignores responses for a previously selected property.
+   * @param {(propertyId: ?number) => Promise<import('axios').AxiosResponse>} request - Infrastructure request.
+   * @param {{toEntitiesFromResponse: Function}} assembler - Assembler for the collection.
+   * @param {import('vue').Ref<Array>} collection - Collection state.
+   * @param {import('vue').Ref<boolean>} loaded - Loaded flag of the collection.
+   * @returns {Promise<void>}
+   */
+  function fetchCollection(request, assembler, collection, loaded) {
+    const propertyId = currentPropertyId.value;
+    collection.value = [];
+    loaded.value = false;
+    return request(propertyId)
+      .then((response) => {
+        if (propertyId !== currentPropertyId.value) return;
+        collection.value = assembler.toEntitiesFromResponse(response);
+        loaded.value = true;
+      })
+      .catch((error) => {
+        if (propertyId === currentPropertyId.value) errors.value.push(error);
+      });
+  }
+
+  /**
+   * Loads the current property's room types and updates the application state.
+   * @returns {Promise<void>}
+   */
+  function fetchRoomTypes() {
+    return fetchCollection(
+      (propertyId) => roomsApi.getRoomTypes(propertyId),
+      RoomTypeAssembler,
+      roomTypes,
+      roomTypesLoaded,
+    );
+  }
+
+  /**
+   * Loads the current property's rooms and updates the application state.
+   * @returns {Promise<void>}
+   */
+  function fetchRooms() {
+    return fetchCollection(
+      (propertyId) => roomsApi.getRooms(propertyId),
+      RoomAssembler,
+      rooms,
+      roomsLoaded,
+    );
+  }
+
+  /**
+   * Loads the status periods of the current property's rooms and updates the application state.
+   * @returns {Promise<void>}
+   */
+  function fetchStatusPeriods() {
+    return fetchCollection(
+      (propertyId) => roomsApi.getStatusPeriods(propertyId),
+      StatusPeriodAssembler,
+      statusPeriods,
+      statusPeriodsLoaded,
+    );
+  }
+
+  /**
+   * Loads the room assignments of the current property's rooms and updates the application state.
+   * @returns {Promise<void>}
+   */
+  function fetchRoomAssignments() {
+    return fetchCollection(
+      (propertyId) => roomsApi.getRoomAssignments(propertyId),
+      RoomAssignmentAssembler,
+      roomAssignments,
+      roomAssignmentsLoaded,
+    );
+  }
+
+  /**
+   * Finds a room type entity by identifier.
+   * @param {number|string} id - Room type identifier.
+   * @returns {RoomType|undefined} Matching room type, if available.
+   */
+  function getRoomTypeById(id) {
+    let idNum = parseInt(id);
+    return roomTypes.value.find((roomType) => roomType['id'] === idNum);
+  }
+
+  /**
+   * Finds a room entity by identifier.
+   * @param {number|string} id - Room identifier.
+   * @returns {Room|undefined} Matching room, if available.
+   */
+  function getRoomById(id) {
+    let idNum = parseInt(id);
+    return rooms.value.find((room) => room['id'] === idNum);
+  }
+
+  /**
+   * Finds the room assignment that controls a room on a day.
+   * @param {number} roomId - Room identifier.
+   * @param {string} date - ISO calendar day.
+   * @returns {RoomAssignment|undefined} Matching room assignment, if any.
+   */
+  function getRoomAssignmentOn(roomId, date) {
+    return roomAssignments.value.find(
+      (roomAssignment) =>
+        roomAssignment.roomId === roomId && roomAssignment.covers(date),
+    );
+  }
+
+  /**
+   * Finds the status period that covers a room on a day.
+   * @param {number} roomId - Room identifier.
+   * @param {string} date - ISO calendar day.
+   * @returns {StatusPeriod|undefined} Matching status period, if any.
+   */
+  function getStatusPeriodOn(roomId, date) {
+    return statusPeriods.value.find(
+      (statusPeriod) =>
+        statusPeriod.roomId === roomId && statusPeriod.covers(date),
+    );
+  }
+
+  /**
+   * Derives a room's day status from its room assignments and status periods.
+   * @param {number} roomId - Room identifier.
+   * @param {string} date - ISO calendar day.
+   * @returns {string} Day status, or Available when the room is unknown.
+   */
+  function getDayStatus(roomId, date) {
+    return (
+      getRoomById(roomId)?.dayStatusOn(
+        date,
+        roomAssignments.value,
+        statusPeriods.value,
+      ) ?? 'available'
+    );
+  }
+
+  /**
+   * Lists the rooms classified by a room type.
+   * @param {number} roomTypeId - Room type identifier.
+   * @returns {Room[]} Rooms of the room type.
+   */
+  function getRoomsByRoomType(roomTypeId) {
+    return rooms.value.filter((room) => room.roomTypeId === roomTypeId);
+  }
+
+  /**
+   * Rejects a room type whose name is already used in the property.
+   * @param {RoomType} roomType - Room type to check.
+   * @throws {RoomsError} When the name is duplicated.
+   */
+  function ensureUniqueRoomTypeName(roomType) {
+    const name = roomType.name.toLowerCase();
+    if (
+      roomTypes.value.some(
+        (entry) =>
+          entry['id'] !== roomType.id && entry.name.toLowerCase() === name,
+      )
+    )
+      throw new RoomsError('duplicate-room-type-name');
+  }
+
+  /**
+   * Rejects a room whose number is already used in the property.
+   * @param {Room} room - Room to check.
+   * @throws {RoomsError} When the room number is duplicated.
+   */
+  function ensureUniqueRoomNumber(room) {
+    const number = room.number.toLowerCase();
+    if (
+      rooms.value.some(
+        (entry) =>
+          entry['id'] !== room.id && entry.number.toLowerCase() === number,
+      )
+    )
+      throw new RoomsError('duplicate-room-number');
+  }
+
+  /**
+   * Tracks a create, update, or delete request and records its errors.
+   * @template T
+   * @param {Promise<T>} request - Pending infrastructure request.
+   * @returns {Promise<T>} The same request result.
+   */
+  function trackSaving(request) {
+    saving.value = true;
+    return request
+      .catch((error) => {
+        errors.value.push(error);
+        throw error;
+      })
+      .finally(() => {
+        saving.value = false;
+      });
+  }
+
+  /**
+   * Replaces an entity in a collection with its persisted version.
+   * @param {import('vue').Ref<Array>} collection - Collection state.
+   * @param {Object} entity - Persisted entity.
+   * @returns {Object} The persisted entity.
+   */
+  function replaceEntity(collection, entity) {
+    const index = collection.value.findIndex(
+      (entry) => entry['id'] === entity.id,
+    );
+    if (index !== -1) collection.value[index] = entity;
+    return entity;
+  }
+
+  /**
+   * Creates a room type through infrastructure and appends it to local state.
+   * @param {RoomType} roomType - Room type entity to persist.
+   * @returns {Promise<RoomType>} Created room type.
+   * @throws {RoomsError} When a business rule is violated.
+   */
+  function addRoomType(roomType) {
+    roomType.validate();
+    ensureUniqueRoomTypeName(roomType);
+    return trackSaving(
+      roomsApi.createRoomType(roomType).then((response) => {
+        const newRoomType = RoomTypeAssembler.toEntityFromResource(
+          response.data,
+        );
+        roomTypes.value.push(newRoomType);
+        return newRoomType;
+      }),
+    );
+  }
+
+  /**
+   * Updates an existing room type, including its activation, and synchronizes local state.
+   * @param {RoomType} roomType - Room type entity with updated data.
+   * @returns {Promise<RoomType>} Updated room type.
+   * @throws {RoomsError} When a business rule is violated.
+   */
+  function updateRoomType(roomType) {
+    if (!getRoomTypeById(roomType.id)) throw new RoomsError('not-found');
+    roomType.validate();
+    ensureUniqueRoomTypeName(roomType);
+    return trackSaving(
+      roomsApi
+        .updateRoomType(roomType)
+        .then((response) =>
+          replaceEntity(
+            roomTypes,
+            RoomTypeAssembler.toEntityFromResource(response.data),
+          ),
+        ),
+    );
+  }
+
+  /**
+   * Deletes a room type that no room uses and removes it from local state.
+   * @param {RoomType} roomType - Room type entity to remove.
+   * @returns {Promise<void>}
+   * @throws {RoomsError} When the room type is in use.
+   */
+  function deleteRoomType(roomType) {
+    if (!getRoomTypeById(roomType.id)) throw new RoomsError('not-found');
+    if (getRoomsByRoomType(roomType.id).length)
+      throw new RoomsError('room-type-in-use');
+    return trackSaving(
+      roomsApi.deleteRoomType(roomType.id).then(() => {
+        const index = roomTypes.value.findIndex(
+          (entry) => entry['id'] === roomType.id,
+        );
+        if (index !== -1) roomTypes.value.splice(index, 1);
+      }),
+    );
+  }
+
+  /**
+   * Rejects a room type that is missing or cannot be newly assigned to a room.
+   * @param {Room} room - Room whose room type is checked.
+   * @param {?Room} [currentRoom=null] - Persisted room, when updating.
+   * @throws {RoomsError} When the room type is not available.
+   */
+  function ensureAssignableRoomType(room, currentRoom = null) {
+    const roomType = getRoomTypeById(room.roomTypeId);
+    if (!roomType) throw new RoomsError('room-type-required');
+    if (!roomType.isActive && currentRoom?.roomTypeId !== roomType.id)
+      throw new RoomsError('inactive-room-type');
+  }
+
+  /**
+   * Creates a room through infrastructure and appends it to local state.
+   * @param {Room} room - Room entity to persist.
+   * @returns {Promise<Room>} Created room.
+   * @throws {RoomsError} When a business rule is violated.
+   */
+  function addRoom(room) {
+    room.validate();
+    ensureAssignableRoomType(room);
+    ensureUniqueRoomNumber(room);
+    return trackSaving(
+      roomsApi.createRoom(room).then((response) => {
+        const newRoom = RoomAssembler.toEntityFromResource(response.data);
+        rooms.value.push(newRoom);
+        return newRoom;
+      }),
+    );
+  }
+
+  /**
+   * Updates an existing room and synchronizes local state.
+   * @param {Room} room - Room entity with updated data.
+   * @returns {Promise<Room>} Updated room.
+   * @throws {RoomsError} When a business rule is violated.
+   */
+  function updateRoom(room) {
+    const currentRoom = getRoomById(room.id);
+    if (!currentRoom) throw new RoomsError('not-found');
+    room.validate();
+    ensureAssignableRoomType(room, currentRoom);
+    ensureUniqueRoomNumber(room);
+    return trackSaving(
+      roomsApi
+        .updateRoom(room)
+        .then((response) =>
+          replaceEntity(
+            rooms,
+            RoomAssembler.toEntityFromResource(response.data),
+          ),
+        ),
+    );
+  }
+
+
+  return {
+    properties,
+    roomTypes,
+    rooms,
+    statusPeriods,
+    roomAssignments,
+    errors,
+    propertiesLoaded,
+    roomTypesLoaded,
+    roomsLoaded,
+    statusPeriodsLoaded,
+    roomAssignmentsLoaded,
+    saving,
+    currentPropertyId,
+    currentProperty,
+    roomTypesCount,
+    roomsCount,
+    fetchProperties,
+    selectProperty,
+    fetchRoomTypes,
+    fetchRooms,
+    fetchStatusPeriods,
+    fetchRoomAssignments,
+    getRoomTypeById,
+    getRoomById,
+    getRoomAssignmentOn,
+    getStatusPeriodOn,
+    getDayStatus,
+    getRoomsByRoomType,
+    addRoomType,
+    updateRoomType,
+    deleteRoomType,
+    addRoom,
+    updateRoom,
+  };
+});
+
+export default useRoomsStore;
