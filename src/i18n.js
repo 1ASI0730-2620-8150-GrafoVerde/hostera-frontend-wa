@@ -14,6 +14,14 @@ import enInventoryStorageLocationForm from './locales/en/inventory/storage-locat
 import enInventoryStockAdjustmentForm from './locales/en/inventory/stock-adjustment-form.json';
 import enRoomsRoomsTerms from './locales/en/rooms/rooms-terms.json';
 import enRoomsRoomsLayout from './locales/en/rooms/rooms-layout.json';
+import enRoomsRoomAvailability from './locales/en/rooms/room-availability.json';
+import enRoomsRoomTypeList from './locales/en/rooms/room-type-list.json';
+import enRoomsRoomTypeForm from './locales/en/rooms/room-type-form.json';
+import enRoomsRoomForm from './locales/en/rooms/room-form.json';
+import enRoomsRoomStatusForm from './locales/en/rooms/room-status-form.json';
+import enRoomsReservationControlledDialog from './locales/en/rooms/reservation-controlled-dialog.json';
+import enRoomsRoomMonthCalendar from './locales/en/rooms/room-month-calendar.json';
+import enRoomsRoomDetail from './locales/en/rooms/room-detail.json';
 import esSharedHome from './locales/es/shared/home.json';
 import esSharedAppLayout from './locales/es/shared/app-layout.json';
 import esSharedLanguageSwitcher from './locales/es/shared/language-switcher.json';
@@ -29,6 +37,14 @@ import esInventoryStorageLocationForm from './locales/es/inventory/storage-locat
 import esInventoryStockAdjustmentForm from './locales/es/inventory/stock-adjustment-form.json';
 import esRoomsRoomsTerms from './locales/es/rooms/rooms-terms.json';
 import esRoomsRoomsLayout from './locales/es/rooms/rooms-layout.json';
+import esRoomsRoomAvailability from './locales/es/rooms/room-availability.json';
+import esRoomsRoomTypeList from './locales/es/rooms/room-type-list.json';
+import esRoomsRoomTypeForm from './locales/es/rooms/room-type-form.json';
+import esRoomsRoomForm from './locales/es/rooms/room-form.json';
+import esRoomsRoomStatusForm from './locales/es/rooms/room-status-form.json';
+import esRoomsReservationControlledDialog from './locales/es/rooms/reservation-controlled-dialog.json';
+import esRoomsRoomMonthCalendar from './locales/es/rooms/room-month-calendar.json';
+import esRoomsRoomDetail from './locales/es/rooms/room-detail.json';
 
 const i18n = createI18n({
   legacy: false,
@@ -56,6 +72,14 @@ const i18n = createI18n({
       rooms: {
         'rooms-terms': enRoomsRoomsTerms,
         'rooms-layout': enRoomsRoomsLayout,
+        'room-availability': enRoomsRoomAvailability,
+        'room-type-list': enRoomsRoomTypeList,
+        'room-type-form': enRoomsRoomTypeForm,
+        'room-form': enRoomsRoomForm,
+        'room-status-form': enRoomsRoomStatusForm,
+        'reservation-controlled-dialog': enRoomsReservationControlledDialog,
+        'room-month-calendar': enRoomsRoomMonthCalendar,
+        'room-detail': enRoomsRoomDetail,
       },
     },
     es: {
@@ -79,6 +103,14 @@ const i18n = createI18n({
       rooms: {
         'rooms-terms': esRoomsRoomsTerms,
         'rooms-layout': esRoomsRoomsLayout,
+        'room-availability': esRoomsRoomAvailability,
+        'room-type-list': esRoomsRoomTypeList,
+        'room-type-form': esRoomsRoomTypeForm,
+        'room-form': esRoomsRoomForm,
+        'room-status-form': esRoomsRoomStatusForm,
+        'reservation-controlled-dialog': esRoomsReservationControlledDialog,
+        'room-month-calendar': esRoomsRoomMonthCalendar,
+        'room-detail': esRoomsRoomDetail,
       },
     },
   },
