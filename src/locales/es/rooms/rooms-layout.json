@@ -1,0 +1,8 @@
+{
+  "title": "Habitaciones",
+  "property": "Establecimiento activo",
+  "availability": "Disponibilidad",
+  "room-types": "Tipos de habitación",
+  "loading": "Cargando habitaciones…",
+  "retry": "Reintentar"
+}
