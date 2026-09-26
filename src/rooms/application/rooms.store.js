@@ -13,6 +13,8 @@ import { RoomAssembler } from '../infrastructure/room.assembler.js';
 import { StatusPeriodAssembler } from '../infrastructure/status-period.assembler.js';
 import { RoomAssignmentAssembler } from '../infrastructure/room-assignment.assembler.js';
 import { RoomsError } from '../domain/model/rooms.error.js';
+import { StatusPeriod } from '../domain/model/status-period.entity.js';
+import { SetRoomStatusCommand } from '../domain/set-room-status.command.js';
 
 const roomsApi = new RoomsApi();
 
@@ -472,6 +474,94 @@ const useRoomsStore = defineStore('rooms', () => {
     );
   }
 
+  /**
+   * Sets or releases a room's operational status over a date range.
+   * Existing periods inside the range are removed, trimmed, or split so that periods never overlap.
+   * @param {SetRoomStatusCommand} setRoomStatusCommand - Set-room-status command.
+   * @returns {Promise<void>}
+   * @throws {RoomsError} When a business rule is violated.
+   */
+  function setRoomStatus(setRoomStatusCommand) {
+    const { roomId, status, startDate, endDate, reason } = setRoomStatusCommand;
+    if (!getRoomById(roomId)) throw new RoomsError('not-found');
+    if (!SetRoomStatusCommand.statuses.includes(status))
+      throw new RoomsError('invalid-status');
+    const newStatusPeriod =
+      status === 'available'
+        ? null
+        : new StatusPeriod({
+            propertyId: currentPropertyId.value,
+            roomId,
+            status,
+            startDate,
+            endDate,
+            reason,
+          });
+    if (newStatusPeriod) newStatusPeriod.validate();
+    else StatusPeriod.validateDateRange(startDate, endDate);
+    if (
+      newStatusPeriod &&
+      roomAssignments.value.some(
+        (roomAssignment) =>
+          roomAssignment.roomId === roomId &&
+          roomAssignment.overlaps(startDate, endDate),
+      )
+    )
+      throw new RoomsError('reservation-controlled');
+
+    const created = [];
+    const updated = [];
+    const deleted = [];
+    for (const statusPeriod of statusPeriods.value) {
+      if (
+        statusPeriod.roomId !== roomId ||
+        !statusPeriod.overlaps(startDate, endDate)
+      )
+        continue;
+      const remaining = statusPeriod.withoutDays(startDate, endDate);
+      const kept = remaining.find((entry) => entry.id === statusPeriod.id);
+      if (kept) updated.push(kept);
+      else deleted.push(statusPeriod);
+      created.push(...remaining.filter((entry) => entry.id === null));
+    }
+    if (newStatusPeriod) created.push(newStatusPeriod);
+    const request = Promise.all([
+      ...deleted.map((statusPeriod) =>
+        roomsApi.deleteStatusPeriod(statusPeriod.id),
+      ),
+      ...updated.map((statusPeriod) =>
+        roomsApi.updateStatusPeriod(statusPeriod),
+      ),
+    ])
+      .then(() =>
+        Promise.all(
+          created.map((statusPeriod) =>
+            roomsApi.createStatusPeriod(statusPeriod),
+          ),
+        ),
+      )
+      .then((responses) => {
+        const deletedIds = deleted.map((statusPeriod) => statusPeriod.id);
+        statusPeriods.value = [
+          ...statusPeriods.value
+            .filter((statusPeriod) => !deletedIds.includes(statusPeriod.id))
+            .map(
+              (statusPeriod) =>
+                updated.find((entry) => entry.id === statusPeriod.id) ??
+                statusPeriod,
+            ),
+          ...responses.map((response) =>
+            StatusPeriodAssembler.toEntityFromResource(response.data),
+          ),
+        ];
+      })
+      .catch((error) => {
+        // Partial writes may have succeeded; reload the persisted periods.
+        fetchStatusPeriods();
+        throw error;
+      });
+    return trackSaving(request);
+  }
 
   return {
     properties,
@@ -507,6 +597,7 @@ const useRoomsStore = defineStore('rooms', () => {
     deleteRoomType,
     addRoom,
     updateRoom,
+    setRoomStatus,
   };
 });
 
