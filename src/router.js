@@ -1,9 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from './shared/presentation/views/home.vue';
 import inventoryRoutes from './inventory/presentation/inventory-routes.js';
+import roomsRoutes from './rooms/presentation/rooms-routes.js';
 
 const routes = [
   { path: '/home', name: 'home', component: Home, meta: { title: 'Home' } },
+  {
+    path: '/rooms',
+    name: 'rooms',
+    redirect: { name: 'rooms-availability' },
+    children: roomsRoutes,
+  },
   {
     path: '/inventory',
     name: 'inventory',
