@@ -33,6 +33,7 @@ import {
   InputText,
   Menu,
   Message,
+  MultiSelect,
   Popover,
   ProgressSpinner,
   Rating,
@@ -202,6 +203,7 @@ createApp(App)
   .component('pv-input-text', InputText)
   .component('pv-menu', Menu)
   .component('pv-message', Message)
+  .component('pv-multi-select', MultiSelect)
   .component('pv-popover', Popover)
   .component('pv-progress-spinner', ProgressSpinner)
   .component('pv-rating', Rating)
