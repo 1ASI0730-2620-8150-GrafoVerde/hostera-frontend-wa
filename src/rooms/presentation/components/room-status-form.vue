@@ -155,7 +155,6 @@ const saveStatus = async () => {
           input-id="room-status-dates"
           selection-mode="range"
           :manual-input="false"
-          date-format="M d, yy"
           show-icon
           icon-display="input"
           fluid

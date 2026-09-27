@@ -3,6 +3,7 @@ import enSharedHome from './locales/en/shared/home.json';
 import enSharedAppLayout from './locales/en/shared/app-layout.json';
 import enSharedLanguageSwitcher from './locales/en/shared/language-switcher.json';
 import enSharedSidebarToggle from './locales/en/shared/sidebar-toggle.json';
+import enSharedPrimevueLocale from './locales/en/shared/primevue-locale.json';
 import enInventoryInventoryTerms from './locales/en/inventory/inventory-terms.json';
 import enInventoryInventoryLayout from './locales/en/inventory/inventory-layout.json';
 import enInventoryInventoryItemList from './locales/en/inventory/inventory-item-list.json';
@@ -26,6 +27,7 @@ import esSharedHome from './locales/es/shared/home.json';
 import esSharedAppLayout from './locales/es/shared/app-layout.json';
 import esSharedLanguageSwitcher from './locales/es/shared/language-switcher.json';
 import esSharedSidebarToggle from './locales/es/shared/sidebar-toggle.json';
+import esSharedPrimevueLocale from './locales/es/shared/primevue-locale.json';
 import esInventoryInventoryTerms from './locales/es/inventory/inventory-terms.json';
 import esInventoryInventoryLayout from './locales/es/inventory/inventory-layout.json';
 import esInventoryInventoryItemList from './locales/es/inventory/inventory-item-list.json';
@@ -57,6 +59,7 @@ const i18n = createI18n({
         'app-layout': enSharedAppLayout,
         'language-switcher': enSharedLanguageSwitcher,
         'sidebar-toggle': enSharedSidebarToggle,
+        'primevue-locale': enSharedPrimevueLocale,
       },
       inventory: {
         'inventory-terms': enInventoryInventoryTerms,
@@ -88,6 +91,7 @@ const i18n = createI18n({
         'app-layout': esSharedAppLayout,
         'language-switcher': esSharedLanguageSwitcher,
         'sidebar-toggle': esSharedSidebarToggle,
+        'primevue-locale': esSharedPrimevueLocale,
       },
       inventory: {
         'inventory-terms': esInventoryInventoryTerms,
