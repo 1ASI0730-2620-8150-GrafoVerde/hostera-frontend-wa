@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import useRoomsStore from '../../application/rooms.store.js';
 import { RoomType } from '../../domain/model/room-type.entity.js';
 import { RoomsError } from '../../domain/model/rooms.error.js';
+import { moneyLocale } from '../calendar-format.js';
 
 const props = defineProps({
   roomType: { type: Object, default: null },
@@ -141,7 +142,7 @@ const saveRoomType = async () => {
           input-id="room-type-rate"
           mode="currency"
           :currency="currentProperty?.currency ?? 'PEN'"
-          :locale="locale"
+          :locale="moneyLocale(currentProperty?.currency ?? 'PEN', locale)"
           :min="0"
           input-class="font-mono"
           required

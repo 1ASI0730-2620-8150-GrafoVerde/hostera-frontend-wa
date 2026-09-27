@@ -125,16 +125,34 @@ export function formatDayRange(startDate, endDate, locale) {
 }
 
 /**
- * Formats an amount in the property's currency for the active locale.
+ * Regional formats that show a currency with its local symbol, such as S/ for the Peruvian sol.
+ * Currencies without an entry keep the active locale, which may show their ISO code instead.
+ * @type {Object<string, string>}
+ */
+const currencyLocales = { PEN: 'es-PE' };
+
+/**
+ * Chooses the locale that formats amounts of a currency.
+ * @param {string} currency - ISO 4217 currency code.
+ * @param {string} locale - Active locale.
+ * @returns {string} Locale for amounts in the currency.
+ */
+export function moneyLocale(currency, locale) {
+  return currencyLocales[currency] ?? locale;
+}
+
+/**
+ * Formats an amount in the property's currency, without decimals for whole amounts.
  * @param {number} amount - Amount to format.
  * @param {string} currency - ISO 4217 currency code.
  * @param {string} locale - Active locale.
- * @returns {string} Localized amount.
+ * @returns {string} Localized amount, such as "S/ 180".
  */
 export function formatMoney(amount, currency, locale) {
-  return new Intl.NumberFormat(locale, {
+  return new Intl.NumberFormat(moneyLocale(currency, locale), {
     style: 'currency',
     currency,
     currencyDisplay: 'narrowSymbol',
+    trailingZeroDisplay: 'stripIfInteger',
   }).format(amount);
 }
