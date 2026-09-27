@@ -56,6 +56,21 @@ export class RoomType {
   }
 
   /**
+   * Derives the price of one night under a rate plan: its daily rate when set, otherwise the base nightly rate.
+   * @param {string} date - ISO calendar day.
+   * @param {number} ratePlanId - Rate plan identifier.
+   * @param {import('./daily-rate.entity.js').DailyRate[]} dailyRates - Daily rates of the property.
+   * @returns {number} Nightly rate in the property's currency.
+   */
+  nightlyRateOn(date, ratePlanId, dailyRates) {
+    return (
+      dailyRates.find((dailyRate) =>
+        dailyRate.prices(this.id, ratePlanId, date),
+      )?.amount ?? this.baseNightlyRate
+    );
+  }
+
+  /**
    * Validates the room type's required attributes.
    * @throws {RoomsError} When a business rule is violated.
    */
