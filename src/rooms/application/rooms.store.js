@@ -1,6 +1,6 @@
 /**
  * Application service store for the Rooms bounded context.
- * It coordinates room type, room, and availability use cases and keeps UI-facing state.
+ * It coordinates room type, room, availability, and rate use cases and keeps UI-facing state.
  *
  * @module useRoomsStore
  */
@@ -12,6 +12,8 @@ import { RoomTypeAssembler } from '../infrastructure/room-type.assembler.js';
 import { RoomAssembler } from '../infrastructure/room.assembler.js';
 import { StatusPeriodAssembler } from '../infrastructure/status-period.assembler.js';
 import { RoomAssignmentAssembler } from '../infrastructure/room-assignment.assembler.js';
+import { RatePlanAssembler } from '../infrastructure/rate-plan.assembler.js';
+import { DailyRateAssembler } from '../infrastructure/daily-rate.assembler.js';
 import { RoomsError } from '../domain/model/rooms.error.js';
 import { StatusPeriod } from '../domain/model/status-period.entity.js';
 import { SetRoomStatusCommand } from '../domain/set-room-status.command.js';
@@ -50,6 +52,16 @@ const useRoomsStore = defineStore('rooms', () => {
    */
   const roomAssignments = ref([]);
   /**
+   * List of rate plan entities of the current property.
+   * @type {import('vue').Ref<RatePlan[]>}
+   */
+  const ratePlans = ref([]);
+  /**
+   * List of daily rate entities of the current property's rate plans.
+   * @type {import('vue').Ref<DailyRate[]>}
+   */
+  const dailyRates = ref([]);
+  /**
    * List of errors encountered during API operations.
    * @type {import('vue').Ref<Error[]>}
    */
@@ -79,6 +91,16 @@ const useRoomsStore = defineStore('rooms', () => {
    * @type {import('vue').Ref<boolean>}
    */
   const roomAssignmentsLoaded = ref(false);
+  /**
+   * Whether rate plans have been loaded from the API.
+   * @type {import('vue').Ref<boolean>}
+   */
+  const ratePlansLoaded = ref(false);
+  /**
+   * Whether daily rates have been loaded from the API.
+   * @type {import('vue').Ref<boolean>}
+   */
+  const dailyRatesLoaded = ref(false);
   /**
    * Whether a create, update, or delete operation is in progress.
    * @type {import('vue').Ref<boolean>}
@@ -133,7 +155,7 @@ const useRoomsStore = defineStore('rooms', () => {
   }
 
   /**
-   * Selects the property whose rooms are managed and loads its rooms and availability.
+   * Selects the property whose rooms are managed and loads its rooms, availability, and rates.
    * @param {number} propertyId - Property identifier.
    * @returns {void}
    */
@@ -144,6 +166,8 @@ const useRoomsStore = defineStore('rooms', () => {
     fetchRooms();
     fetchStatusPeriods();
     fetchRoomAssignments();
+    fetchRatePlans();
+    fetchDailyRates();
   }
 
   /**
@@ -222,6 +246,32 @@ const useRoomsStore = defineStore('rooms', () => {
   }
 
   /**
+   * Loads the current property's rate plans and updates the application state.
+   * @returns {Promise<void>}
+   */
+  function fetchRatePlans() {
+    return fetchCollection(
+      (propertyId) => roomsApi.getRatePlans(propertyId),
+      RatePlanAssembler,
+      ratePlans,
+      ratePlansLoaded,
+    );
+  }
+
+  /**
+   * Loads the daily rates of the current property's rate plans and updates the application state.
+   * @returns {Promise<void>}
+   */
+  function fetchDailyRates() {
+    return fetchCollection(
+      (propertyId) => roomsApi.getDailyRates(propertyId),
+      DailyRateAssembler,
+      dailyRates,
+      dailyRatesLoaded,
+    );
+  }
+
+  /**
    * Finds a room type entity by identifier.
    * @param {number|string} id - Room type identifier.
    * @returns {RoomType|undefined} Matching room type, if available.
@@ -290,6 +340,44 @@ const useRoomsStore = defineStore('rooms', () => {
    */
   function getRoomsByRoomType(roomTypeId) {
     return rooms.value.filter((room) => room.roomTypeId === roomTypeId);
+  }
+
+  /**
+   * Finds a rate plan entity by identifier.
+   * @param {number|string} id - Rate plan identifier.
+   * @returns {RatePlan|undefined} Matching rate plan, if available.
+   */
+  function getRatePlanById(id) {
+    let idNum = parseInt(id);
+    return ratePlans.value.find((ratePlan) => ratePlan['id'] === idNum);
+  }
+
+  /**
+   * Finds the daily rate that prices a room type's night under a rate plan.
+   * @param {number} roomTypeId - Room type identifier.
+   * @param {number} ratePlanId - Rate plan identifier.
+   * @param {string} date - ISO calendar day.
+   * @returns {DailyRate|undefined} Matching daily rate, if any.
+   */
+  function getDailyRate(roomTypeId, ratePlanId, date) {
+    return dailyRates.value.find((dailyRate) =>
+      dailyRate.prices(roomTypeId, ratePlanId, date),
+    );
+  }
+
+  /**
+   * Derives a room type's nightly rate under a rate plan from its daily rates.
+   * @param {number} roomTypeId - Room type identifier.
+   * @param {number} ratePlanId - Rate plan identifier.
+   * @param {string} date - ISO calendar day.
+   * @returns {number|undefined} Nightly rate, or undefined when the room type is unknown.
+   */
+  function getNightlyRate(roomTypeId, ratePlanId, date) {
+    return getRoomTypeById(roomTypeId)?.nightlyRateOn(
+      date,
+      ratePlanId,
+      dailyRates.value,
+    );
   }
 
   /**
@@ -569,12 +657,16 @@ const useRoomsStore = defineStore('rooms', () => {
     rooms,
     statusPeriods,
     roomAssignments,
+    ratePlans,
+    dailyRates,
     errors,
     propertiesLoaded,
     roomTypesLoaded,
     roomsLoaded,
     statusPeriodsLoaded,
     roomAssignmentsLoaded,
+    ratePlansLoaded,
+    dailyRatesLoaded,
     saving,
     currentPropertyId,
     currentProperty,
@@ -586,12 +678,17 @@ const useRoomsStore = defineStore('rooms', () => {
     fetchRooms,
     fetchStatusPeriods,
     fetchRoomAssignments,
+    fetchRatePlans,
+    fetchDailyRates,
     getRoomTypeById,
     getRoomById,
     getRoomAssignmentOn,
     getStatusPeriodOn,
     getDayStatus,
     getRoomsByRoomType,
+    getRatePlanById,
+    getDailyRate,
+    getNightlyRate,
     addRoomType,
     updateRoomType,
     deleteRoomType,
