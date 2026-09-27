@@ -413,6 +413,34 @@ const useRoomsStore = defineStore('rooms', () => {
   }
 
   /**
+   * Rejects a rate plan whose name is already used in the property.
+   * @param {RatePlan} ratePlan - Rate plan to check.
+   * @throws {RoomsError} When the name is duplicated.
+   */
+  function ensureUniqueRatePlanName(ratePlan) {
+    const name = ratePlan.name.toLowerCase();
+    if (
+      ratePlans.value.some(
+        (entry) =>
+          entry['id'] !== ratePlan.id && entry.name.toLowerCase() === name,
+      )
+    )
+      throw new RoomsError('duplicate-rate-plan-name');
+  }
+
+  /**
+   * Rejects a rate plan that refers to room types outside the property.
+   * @param {RatePlan} ratePlan - Rate plan to check.
+   * @throws {RoomsError} When a room type is unknown.
+   */
+  function ensureKnownRoomTypes(ratePlan) {
+    if (
+      !ratePlan.roomTypeIds.every((roomTypeId) => getRoomTypeById(roomTypeId))
+    )
+      throw new RoomsError('room-type-required');
+  }
+
+  /**
    * Tracks a create, update, or delete request and records its errors.
    * @template T
    * @param {Promise<T>} request - Pending infrastructure request.
@@ -563,6 +591,50 @@ const useRoomsStore = defineStore('rooms', () => {
   }
 
   /**
+   * Creates a rate plan through infrastructure and appends it to local state.
+   * @param {RatePlan} ratePlan - Rate plan entity to persist.
+   * @returns {Promise<RatePlan>} Created rate plan.
+   * @throws {RoomsError} When a business rule is violated.
+   */
+  function addRatePlan(ratePlan) {
+    ratePlan.validate();
+    ensureKnownRoomTypes(ratePlan);
+    ensureUniqueRatePlanName(ratePlan);
+    return trackSaving(
+      roomsApi.createRatePlan(ratePlan).then((response) => {
+        const newRatePlan = RatePlanAssembler.toEntityFromResource(
+          response.data,
+        );
+        ratePlans.value.push(newRatePlan);
+        return newRatePlan;
+      }),
+    );
+  }
+
+  /**
+   * Updates an existing rate plan, including its activation, and synchronizes local state.
+   * @param {RatePlan} ratePlan - Rate plan entity with updated data.
+   * @returns {Promise<RatePlan>} Updated rate plan.
+   * @throws {RoomsError} When a business rule is violated.
+   */
+  function updateRatePlan(ratePlan) {
+    if (!getRatePlanById(ratePlan.id)) throw new RoomsError('not-found');
+    ratePlan.validate();
+    ensureKnownRoomTypes(ratePlan);
+    ensureUniqueRatePlanName(ratePlan);
+    return trackSaving(
+      roomsApi
+        .updateRatePlan(ratePlan)
+        .then((response) =>
+          replaceEntity(
+            ratePlans,
+            RatePlanAssembler.toEntityFromResource(response.data),
+          ),
+        ),
+    );
+  }
+
+  /**
    * Sets or releases a room's operational status over a date range.
    * Existing periods inside the range are removed, trimmed, or split so that periods never overlap.
    * @param {SetRoomStatusCommand} setRoomStatusCommand - Set-room-status command.
@@ -695,6 +767,8 @@ const useRoomsStore = defineStore('rooms', () => {
     addRoom,
     updateRoom,
     setRoomStatus,
+    addRatePlan,
+    updateRatePlan,
   };
 });
 
