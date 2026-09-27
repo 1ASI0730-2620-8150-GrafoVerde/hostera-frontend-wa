@@ -9,6 +9,7 @@ const statusPeriodsEndpointPath = import.meta.env
 const roomAssignmentsEndpointPath = import.meta.env
   .VITE_ROOM_ASSIGNMENTS_ENDPOINT_PATH;
 const ratePlansEndpointPath = import.meta.env.VITE_RATE_PLANS_ENDPOINT_PATH;
+const dailyRatesEndpointPath = import.meta.env.VITE_DAILY_RATES_ENDPOINT_PATH;
 
 /**
  * Infrastructure gateway for Rooms bounded-context endpoints.
@@ -47,6 +48,11 @@ export class RoomsApi extends BaseApi {
    * @private
    */
   #ratePlansEndpoint;
+  /**
+   * @type {BaseEndpoint}
+   * @private
+   */
+  #dailyRatesEndpoint;
 
   /** Creates endpoint clients for properties, room types, rooms, availability, and rates. */
   constructor() {
@@ -63,6 +69,7 @@ export class RoomsApi extends BaseApi {
       roomAssignmentsEndpointPath,
     );
     this.#ratePlansEndpoint = new BaseEndpoint(this, ratePlansEndpointPath);
+    this.#dailyRatesEndpoint = new BaseEndpoint(this, dailyRatesEndpointPath);
   }
 
   /**
@@ -208,4 +215,39 @@ export class RoomsApi extends BaseApi {
     return this.#ratePlansEndpoint.update(resource.id, resource);
   }
 
+  /**
+   * Fetches the daily rates of a property's rate plans.
+   * @param {number|string} propertyId - The ID of the property.
+   * @returns {Promise<import('axios').AxiosResponse>} Promise resolving to the daily rates' response.
+   */
+  getDailyRates(propertyId) {
+    return this.#dailyRatesEndpoint.getAll({ propertyId });
+  }
+
+  /**
+   * Creates a daily rate resource.
+   * @param {Object} resource - Daily rate resource payload.
+   * @returns {Promise<import('axios').AxiosResponse>} Promise resolving to the created daily rate response.
+   */
+  createDailyRate(resource) {
+    return this.#dailyRatesEndpoint.create(resource);
+  }
+
+  /**
+   * Updates a daily rate resource.
+   * @param {Object} resource - Daily rate resource payload (must include id).
+   * @returns {Promise<import('axios').AxiosResponse>} Promise resolving to the updated daily rate response.
+   */
+  updateDailyRate(resource) {
+    return this.#dailyRatesEndpoint.update(resource.id, resource);
+  }
+
+  /**
+   * Deletes a daily rate by its ID.
+   * @param {number|string} id - The ID of the daily rate to delete.
+   * @returns {Promise<import('axios').AxiosResponse>} Promise resolving to the delete response.
+   */
+  deleteDailyRate(id) {
+    return this.#dailyRatesEndpoint.delete(id);
+  }
 }
