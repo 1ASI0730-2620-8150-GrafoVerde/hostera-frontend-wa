@@ -1,33 +1,6 @@
 import { RoomsError } from './rooms.error.js';
 
 /**
- * Checks whether a value is an existing calendar day in ISO `YYYY-MM-DD` format.
- * ISO days compare chronologically as text, so periods keep them as strings.
- * @param {*} value - Value to check.
- * @returns {boolean}
- */
-function isCalendarDay(value) {
-  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value))
-    return false;
-  const date = new Date(`${value}T00:00:00Z`);
-  return (
-    !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value
-  );
-}
-
-/**
- * Moves an ISO calendar day by a number of days.
- * @param {string} value - ISO calendar day.
- * @param {number} days - Days to add; negative values move backwards.
- * @returns {string} ISO calendar day.
- */
-function addDays(value, days) {
-  const date = new Date(`${value}T00:00:00Z`);
-  date.setUTCDate(date.getUTCDate() + days);
-  return date.toISOString().slice(0, 10);
-}
-
-/**
  * Status period entity within the Rooms bounded context.
  * It records the days on which property staff set one operational status for a room.
  *
@@ -39,6 +12,35 @@ export class StatusPeriod {
    * @type {string[]}
    */
   static statuses = ['blocked', 'out-of-service', 'needs-cleaning'];
+
+  /**
+   * Checks whether a value is an existing calendar day in ISO `YYYY-MM-DD` format.
+   * ISO days compare chronologically as text, so periods keep them as strings.
+   * @param {*} value - Value to check.
+   * @private
+   * @returns {boolean}
+   */
+  static #isCalendarDay(value) {
+    if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value))
+      return false;
+    const date = new Date(`${value}T00:00:00Z`);
+    return (
+      !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value
+    );
+  }
+
+  /**
+   * Moves an ISO calendar day by a number of days.
+   * @param {string} value - ISO calendar day.
+   * @param {number} days - Days to add; negative values move backwards.
+   * @private
+   * @returns {string} ISO calendar day.
+   */
+  static #addDays(value, days) {
+    const date = new Date(`${value}T00:00:00Z`);
+    date.setUTCDate(date.getUTCDate() + days);
+    return date.toISOString().slice(0, 10);
+  }
 
   /**
    * @param {Object} params - Entity attributes.
@@ -95,8 +97,8 @@ export class StatusPeriod {
    */
   static validateDateRange(startDate, endDate) {
     if (
-      !isCalendarDay(startDate) ||
-      !isCalendarDay(endDate) ||
+      !StatusPeriod.#isCalendarDay(startDate) ||
+      !StatusPeriod.#isCalendarDay(endDate) ||
       startDate > endDate
     )
       throw new RoomsError('invalid-date-range');
@@ -114,14 +116,17 @@ export class StatusPeriod {
     const remaining = [];
     if (this.startDate < startDate)
       remaining.push(
-        new StatusPeriod({ ...this, endDate: addDays(startDate, -1) }),
+        new StatusPeriod({
+          ...this,
+          endDate: StatusPeriod.#addDays(startDate, -1),
+        }),
       );
     if (this.endDate > endDate)
       remaining.push(
         new StatusPeriod({
           ...this,
           id: remaining.length ? null : this.id,
-          startDate: addDays(endDate, 1),
+          startDate: StatusPeriod.#addDays(endDate, 1),
         }),
       );
     return remaining;
