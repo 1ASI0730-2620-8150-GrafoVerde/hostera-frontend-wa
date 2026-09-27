@@ -16,6 +16,7 @@ import { RatePlanAssembler } from '../infrastructure/rate-plan.assembler.js';
 import { DailyRateAssembler } from '../infrastructure/daily-rate.assembler.js';
 import { RoomsError } from '../domain/model/rooms.error.js';
 import { StatusPeriod } from '../domain/model/status-period.entity.js';
+import { DailyRate } from '../domain/model/daily-rate.entity.js';
 import { SetRoomStatusCommand } from '../domain/set-room-status.command.js';
 
 const roomsApi = new RoomsApi();
@@ -635,6 +636,73 @@ const useRoomsStore = defineStore('rooms', () => {
   }
 
   /**
+   * Sets the nightly rate of a room type under a rate plan over a date range, or returns those nights to the base nightly rate.
+   * Each night keeps at most one daily rate per room type and rate plan.
+   * @param {import('../domain/set-daily-rates.command.js').SetDailyRatesCommand} setDailyRatesCommand - Set-daily-rates command.
+   * @returns {Promise<void>}
+   * @throws {RoomsError} When a business rule is violated.
+   */
+  function setDailyRates(setDailyRatesCommand) {
+    const { ratePlanId, roomTypeId, startDate, endDate, useBaseRate, amount } =
+      setDailyRatesCommand;
+    const ratePlan = getRatePlanById(ratePlanId);
+    if (!ratePlan || !getRoomTypeById(roomTypeId))
+      throw new RoomsError('not-found');
+    if (!ratePlan.appliesTo(roomTypeId))
+      throw new RoomsError('room-type-not-in-plan');
+    const nights = DailyRate.nightsBetween(startDate, endDate);
+
+    const created = [];
+    const updated = [];
+    const deleted = [];
+    for (const date of nights) {
+      const dailyRate = getDailyRate(roomTypeId, ratePlanId, date);
+      if (useBaseRate) {
+        if (dailyRate) deleted.push(dailyRate);
+        continue;
+      }
+      const newDailyRate = new DailyRate({
+        id: dailyRate?.id ?? null,
+        propertyId: currentPropertyId.value,
+        ratePlanId,
+        roomTypeId,
+        date,
+        amount,
+      });
+      newDailyRate.validate();
+      if (dailyRate) updated.push(newDailyRate);
+      else created.push(newDailyRate);
+    }
+    const request = Promise.all([
+      ...deleted.map((dailyRate) => roomsApi.deleteDailyRate(dailyRate.id)),
+      ...updated.map((dailyRate) => roomsApi.updateDailyRate(dailyRate)),
+      ...created.map((dailyRate) => roomsApi.createDailyRate(dailyRate)),
+    ])
+      .then((responses) => {
+        const deletedIds = deleted.map((dailyRate) => dailyRate.id);
+        dailyRates.value = [
+          ...dailyRates.value
+            .filter((dailyRate) => !deletedIds.includes(dailyRate.id))
+            .map(
+              (dailyRate) =>
+                updated.find((entry) => entry.id === dailyRate.id) ?? dailyRate,
+            ),
+          ...responses
+            .slice(deleted.length + updated.length)
+            .map((response) =>
+              DailyRateAssembler.toEntityFromResource(response.data),
+            ),
+        ];
+      })
+      .catch((error) => {
+        // Partial writes may have succeeded; reload the persisted daily rates.
+        fetchDailyRates();
+        throw error;
+      });
+    return trackSaving(request);
+  }
+
+  /**
    * Sets or releases a room's operational status over a date range.
    * Existing periods inside the range are removed, trimmed, or split so that periods never overlap.
    * @param {SetRoomStatusCommand} setRoomStatusCommand - Set-room-status command.
@@ -769,6 +837,7 @@ const useRoomsStore = defineStore('rooms', () => {
     setRoomStatus,
     addRatePlan,
     updateRatePlan,
+    setDailyRates,
   };
 });
 
