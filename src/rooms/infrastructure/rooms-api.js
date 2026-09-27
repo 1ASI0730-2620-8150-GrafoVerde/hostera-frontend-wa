@@ -8,6 +8,7 @@ const statusPeriodsEndpointPath = import.meta.env
   .VITE_STATUS_PERIODS_ENDPOINT_PATH;
 const roomAssignmentsEndpointPath = import.meta.env
   .VITE_ROOM_ASSIGNMENTS_ENDPOINT_PATH;
+const ratePlansEndpointPath = import.meta.env.VITE_RATE_PLANS_ENDPOINT_PATH;
 
 /**
  * Infrastructure gateway for Rooms bounded-context endpoints.
@@ -41,8 +42,13 @@ export class RoomsApi extends BaseApi {
    * @private
    */
   #roomAssignmentsEndpoint;
+  /**
+   * @type {BaseEndpoint}
+   * @private
+   */
+  #ratePlansEndpoint;
 
-  /** Creates endpoint clients for properties, room types, rooms, status periods, and room assignments. */
+  /** Creates endpoint clients for properties, room types, rooms, availability, and rates. */
   constructor() {
     super();
     this.#propertiesEndpoint = new BaseEndpoint(this, propertiesEndpointPath);
@@ -56,6 +62,7 @@ export class RoomsApi extends BaseApi {
       this,
       roomAssignmentsEndpointPath,
     );
+    this.#ratePlansEndpoint = new BaseEndpoint(this, ratePlansEndpointPath);
   }
 
   /**
@@ -173,4 +180,32 @@ export class RoomsApi extends BaseApi {
   getRoomAssignments(propertyId) {
     return this.#roomAssignmentsEndpoint.getAll({ propertyId });
   }
+
+  /**
+   * Fetches the rate plans of a property.
+   * @param {number|string} propertyId - The ID of the property.
+   * @returns {Promise<import('axios').AxiosResponse>} Promise resolving to the rate plans' response.
+   */
+  getRatePlans(propertyId) {
+    return this.#ratePlansEndpoint.getAll({ propertyId });
+  }
+
+  /**
+   * Creates a rate plan resource.
+   * @param {Object} resource - Rate plan resource payload.
+   * @returns {Promise<import('axios').AxiosResponse>} Promise resolving to the created rate plan response.
+   */
+  createRatePlan(resource) {
+    return this.#ratePlansEndpoint.create(resource);
+  }
+
+  /**
+   * Updates a rate plan resource.
+   * @param {Object} resource - Rate plan resource payload (must include id).
+   * @returns {Promise<import('axios').AxiosResponse>} Promise resolving to the updated rate plan response.
+   */
+  updateRatePlan(resource) {
+    return this.#ratePlansEndpoint.update(resource.id, resource);
+  }
+
 }
