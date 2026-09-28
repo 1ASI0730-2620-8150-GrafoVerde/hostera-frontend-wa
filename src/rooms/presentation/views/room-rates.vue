@@ -8,7 +8,7 @@ import {
   formatDay,
   formatDayRange,
   formatMoney,
-} from '../calendar-format.js';
+} from '../../../shared/presentation/calendar-format.js';
 import RoomsLayout from '../components/rooms-layout.vue';
 import RatePlanForm from '../components/rate-plan-form.vue';
 import DailyRateForm from '../components/daily-rate-form.vue';

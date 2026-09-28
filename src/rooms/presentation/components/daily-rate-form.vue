@@ -4,7 +4,11 @@ import { useI18n } from 'vue-i18n';
 import useRoomsStore from '../../application/rooms.store.js';
 import { RoomsError } from '../../domain/model/rooms.error.js';
 import { SetDailyRatesCommand } from '../../domain/set-daily-rates.command.js';
-import { CalendarDate, formatMoney, moneyLocale } from '../calendar-format.js';
+import {
+  CalendarDate,
+  formatMoney,
+  moneyLocale,
+} from '../../../shared/presentation/calendar-format.js';
 
 const props = defineProps({
   ratePlanId: { type: Number, required: true },

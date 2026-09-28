@@ -4,7 +4,10 @@ import { useI18n } from 'vue-i18n';
 import useRoomsStore from '../../application/rooms.store.js';
 import { RoomsError } from '../../domain/model/rooms.error.js';
 import { SetRoomStatusCommand } from '../../domain/set-room-status.command.js';
-import { CalendarDate, formatDayRange } from '../calendar-format.js';
+import {
+  CalendarDate,
+  formatDayRange,
+} from '../../../shared/presentation/calendar-format.js';
 import DayStatusTag from './day-status-tag.vue';
 
 const props = defineProps({

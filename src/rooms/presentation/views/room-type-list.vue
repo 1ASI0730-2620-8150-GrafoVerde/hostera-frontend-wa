@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { useConfirm, useToast } from 'primevue';
 import useRoomsStore from '../../application/rooms.store.js';
 import { RoomsError } from '../../domain/model/rooms.error.js';
-import { formatMoney } from '../calendar-format.js';
+import { formatMoney } from '../../../shared/presentation/calendar-format.js';
 import RoomsLayout from '../components/rooms-layout.vue';
 import RoomAvatar from '../components/room-avatar.vue';
 import RoomTypeForm from '../components/room-type-form.vue';

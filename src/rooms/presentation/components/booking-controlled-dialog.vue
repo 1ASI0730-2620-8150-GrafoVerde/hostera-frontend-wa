@@ -1,6 +1,6 @@
 <script setup>
 import { useI18n } from 'vue-i18n';
-import { formatDayRange } from '../calendar-format.js';
+import { formatDayRange } from '../../../shared/presentation/calendar-format.js';
 
 defineProps({
   room: { type: Object, required: true },

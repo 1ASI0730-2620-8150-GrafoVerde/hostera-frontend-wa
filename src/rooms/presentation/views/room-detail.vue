@@ -8,7 +8,7 @@ import {
   CalendarDate,
   formatDayRange,
   formatMoney,
-} from '../calendar-format.js';
+} from '../../../shared/presentation/calendar-format.js';
 import RoomsLayout from '../components/rooms-layout.vue';
 import RoomAvatar from '../components/room-avatar.vue';
 import DayStatusTag from '../components/day-status-tag.vue';

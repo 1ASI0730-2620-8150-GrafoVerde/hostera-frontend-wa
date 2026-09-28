@@ -2,7 +2,10 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import useRoomsStore from '../../application/rooms.store.js';
-import { CalendarDate, formatDay } from '../calendar-format.js';
+import {
+  CalendarDate,
+  formatDay,
+} from '../../../shared/presentation/calendar-format.js';
 import DayStatusTag from './day-status-tag.vue';
 
 const props = defineProps({

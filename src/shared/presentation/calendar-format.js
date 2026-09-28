@@ -1,5 +1,5 @@
 /**
- * Calendar navigation helpers for Rooms views.
+ * Calendar navigation helpers for views.
  * Days are ISO `YYYY-MM-DD` strings, as in the domain; these helpers convert them
  * to and from local dates and move between days and months.
  *

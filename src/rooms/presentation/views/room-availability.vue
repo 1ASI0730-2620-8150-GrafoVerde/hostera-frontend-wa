@@ -4,7 +4,11 @@ import { useI18n } from 'vue-i18n';
 import { useToast } from 'primevue';
 import useRoomsStore from '../../application/rooms.store.js';
 import { Room } from '../../domain/model/room.entity.js';
-import { CalendarDate, formatDay, formatDayRange } from '../calendar-format.js';
+import {
+  CalendarDate,
+  formatDay,
+  formatDayRange,
+} from '../../../shared/presentation/calendar-format.js';
 import RoomsLayout from '../components/rooms-layout.vue';
 import RoomAvatar from '../components/room-avatar.vue';
 import DayStatusTag from '../components/day-status-tag.vue';
