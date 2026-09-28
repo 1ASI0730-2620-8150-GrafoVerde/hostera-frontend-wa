@@ -67,6 +67,26 @@ export class Booking {
   }
 
   /**
+   * Builds the code that follows a property's latest booking code.
+   * Each property numbers its bookings in its own thousand, such as BKG-1001 for the first property.
+   * @param {number} propertyId - Identifier of the property.
+   * @param {?string} latestCode - Highest booking code of the property, if any.
+   * @returns {string} Next booking code.
+   */
+  static nextCode(propertyId, latestCode) {
+    return `BKG-${Math.max(Booking.numberOf(latestCode), propertyId * 1000) + 1}`;
+  }
+
+  /**
+   * Reads the sequential number of a booking code.
+   * @param {string} code - Booking code.
+   * @returns {number} Booking number, or 0 when the code has none.
+   */
+  static numberOf(code) {
+    return Number(/^BKG-(\d+)$/.exec(code ?? '')?.[1] ?? 0);
+  }
+
+  /**
    * @param {Object} params - Entity attributes.
    * @param {?number} [params.id=null] - Booking identifier.
    * @param {?number} [params.propertyId=null] - Identifier of the property.
