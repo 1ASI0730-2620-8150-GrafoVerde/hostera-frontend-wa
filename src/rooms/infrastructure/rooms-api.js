@@ -6,8 +6,7 @@ const roomTypesEndpointPath = import.meta.env.VITE_ROOM_TYPES_ENDPOINT_PATH;
 const roomsEndpointPath = import.meta.env.VITE_ROOMS_ENDPOINT_PATH;
 const statusPeriodsEndpointPath = import.meta.env
   .VITE_STATUS_PERIODS_ENDPOINT_PATH;
-const roomAssignmentsEndpointPath = import.meta.env
-  .VITE_ROOM_ASSIGNMENTS_ENDPOINT_PATH;
+const bookingsEndpointPath = import.meta.env.VITE_BOOKINGS_ENDPOINT_PATH;
 const ratePlansEndpointPath = import.meta.env.VITE_RATE_PLANS_ENDPOINT_PATH;
 const dailyRatesEndpointPath = import.meta.env.VITE_DAILY_RATES_ENDPOINT_PATH;
 
@@ -66,7 +65,7 @@ export class RoomsApi extends BaseApi {
     );
     this.#roomAssignmentsEndpoint = new BaseEndpoint(
       this,
-      roomAssignmentsEndpointPath,
+      bookingsEndpointPath,
     );
     this.#ratePlansEndpoint = new BaseEndpoint(this, ratePlansEndpointPath);
     this.#dailyRatesEndpoint = new BaseEndpoint(this, dailyRatesEndpointPath);
@@ -180,9 +179,9 @@ export class RoomsApi extends BaseApi {
   }
 
   /**
-   * Fetches the room assignments of a property's rooms.
+   * Fetches the bookings of a property, from which its room assignments are derived.
    * @param {number|string} propertyId - The ID of the property.
-   * @returns {Promise<import('axios').AxiosResponse>} Promise resolving to the room assignments' response.
+   * @returns {Promise<import('axios').AxiosResponse>} Promise resolving to the bookings' response.
    */
   getRoomAssignments(propertyId) {
     return this.#roomAssignmentsEndpoint.getAll({ propertyId });
