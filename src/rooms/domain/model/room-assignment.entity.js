@@ -1,6 +1,6 @@
 /**
  * Room assignment entity within the Rooms bounded context.
- * It is a read-only reference to the booking or stay that controls a room's days.
+ * It is a read-only reference to the booking or stay that controls a room's days, derived from the booking.
  *
  * @class RoomAssignment
  */
@@ -16,6 +16,7 @@ export class RoomAssignment {
    * @param {?number} [params.id=null] - Room assignment identifier.
    * @param {?number} [params.propertyId=null] - Identifier of the property that owns the room.
    * @param {?number} [params.roomId=null] - Identifier of the assigned room.
+   * @param {?number} [params.bookingId=null] - Identifier of the controlling booking.
    * @param {string} [params.bookingCode=''] - Code of the controlling booking.
    * @param {'booked'|'occupied'} [params.status='booked'] - Whether the guest is expected or staying.
    * @param {string} [params.startDate=''] - First ISO night covered by the assignment.
@@ -25,6 +26,7 @@ export class RoomAssignment {
     id = null,
     propertyId = null,
     roomId = null,
+    bookingId = null,
     bookingCode = '',
     status = 'booked',
     startDate = '',
@@ -33,6 +35,7 @@ export class RoomAssignment {
     this.id = id;
     this.propertyId = propertyId;
     this.roomId = roomId;
+    this.bookingId = bookingId;
     this.bookingCode = bookingCode;
     this.status = status;
     this.startDate = startDate;
