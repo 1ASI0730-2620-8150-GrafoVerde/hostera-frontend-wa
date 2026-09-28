@@ -32,7 +32,7 @@ Start the mock API with `npm run server:start`, then start the SPA with `npm run
 
 ## Rooms workspace
 
-Open `/rooms` to review each room's day status across a week, manage room types and rooms, and set or release operational statuses (Blocked, Out of service, Needs cleaning) from the weekly grid or a room's monthly calendar. On small screens the weekly grid becomes a one-day room list. Reserved and Occupied days come from read-only room assignments until the Reservations context exists.
+Open `/rooms` to review each room's day status across a week, manage room types and rooms, and set or release operational statuses (Blocked, Out of service, Needs cleaning) from the weekly grid or a room's monthly calendar. On small screens the weekly grid becomes a one-day room list. Booked and Occupied days come from read-only room assignments until the Bookings context exists.
 
 The Rates tab shows a rate plan's nightly rates for its active room types across a week. Create or edit rate plans (room types, included services, refundability, and cancellation policy), and set daily rates for a room type over a date range or return those nights to the room type's base nightly rate. Rate plans use the property's currency and are made inactive instead of deleted.
 
