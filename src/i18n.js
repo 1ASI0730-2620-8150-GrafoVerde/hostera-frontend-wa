@@ -23,6 +23,7 @@ import enRoomsRoomStatusForm from './locales/en/rooms/room-status-form.json';
 import enRoomsReservationControlledDialog from './locales/en/rooms/reservation-controlled-dialog.json';
 import enRoomsRoomMonthCalendar from './locales/en/rooms/room-month-calendar.json';
 import enRoomsRoomDetail from './locales/en/rooms/room-detail.json';
+import enRoomsRoomRates from './locales/en/rooms/room-rates.json';
 import enRoomsRatePlanForm from './locales/en/rooms/rate-plan-form.json';
 import enRoomsDailyRateForm from './locales/en/rooms/daily-rate-form.json';
 import esSharedHome from './locales/es/shared/home.json';
@@ -49,6 +50,7 @@ import esRoomsRoomStatusForm from './locales/es/rooms/room-status-form.json';
 import esRoomsReservationControlledDialog from './locales/es/rooms/reservation-controlled-dialog.json';
 import esRoomsRoomMonthCalendar from './locales/es/rooms/room-month-calendar.json';
 import esRoomsRoomDetail from './locales/es/rooms/room-detail.json';
+import esRoomsRoomRates from './locales/es/rooms/room-rates.json';
 import esRoomsRatePlanForm from './locales/es/rooms/rate-plan-form.json';
 import esRoomsDailyRateForm from './locales/es/rooms/daily-rate-form.json';
 
@@ -87,6 +89,7 @@ const i18n = createI18n({
         'reservation-controlled-dialog': enRoomsReservationControlledDialog,
         'room-month-calendar': enRoomsRoomMonthCalendar,
         'room-detail': enRoomsRoomDetail,
+        'room-rates': enRoomsRoomRates,
         'rate-plan-form': enRoomsRatePlanForm,
         'daily-rate-form': enRoomsDailyRateForm,
       },
@@ -121,6 +124,7 @@ const i18n = createI18n({
         'reservation-controlled-dialog': esRoomsReservationControlledDialog,
         'room-month-calendar': esRoomsRoomMonthCalendar,
         'room-detail': esRoomsRoomDetail,
+        'room-rates': esRoomsRoomRates,
         'rate-plan-form': esRoomsRatePlanForm,
         'daily-rate-form': esRoomsDailyRateForm,
       },
