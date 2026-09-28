@@ -17,6 +17,8 @@ const {
   roomsLoaded,
   statusPeriodsLoaded,
   roomAssignmentsLoaded,
+  ratePlansLoaded,
+  dailyRatesLoaded,
   errors,
   saving,
 } = toRefs(store);
@@ -33,9 +35,16 @@ const tabs = [
     label: 'rooms.rooms-layout.room-types',
     icon: 'pi pi-th-large',
   },
+  {
+    value: 'rooms-rates',
+    label: 'rooms.rooms-layout.rates',
+    icon: 'pi pi-tag',
+  },
 ];
-const activeTab = computed(() =>
-  route.name === 'rooms-room-types' ? 'rooms-room-types' : 'rooms-availability',
+// Room details have no tab of their own and belong to Availability.
+const activeTab = computed(
+  () =>
+    tabs.find((tab) => tab.value === route.name)?.value ?? 'rooms-availability',
 );
 const noProperties = computed(
   () => propertiesLoaded.value && !properties.value.length,
@@ -45,7 +54,9 @@ const roomsDataLoaded = computed(
     roomTypesLoaded.value &&
     roomsLoaded.value &&
     statusPeriodsLoaded.value &&
-    roomAssignmentsLoaded.value,
+    roomAssignmentsLoaded.value &&
+    ratePlansLoaded.value &&
+    dailyRatesLoaded.value,
 );
 
 onMounted(() => {

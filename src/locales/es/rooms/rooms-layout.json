@@ -3,6 +3,7 @@
   "property": "Establecimiento activo",
   "availability": "Disponibilidad",
   "room-types": "Tipos de habitación",
+  "rates": "Tarifas",
   "loading": "Cargando habitaciones…",
   "retry": "Reintentar"
 }
