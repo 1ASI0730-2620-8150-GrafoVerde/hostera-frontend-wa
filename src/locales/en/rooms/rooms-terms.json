@@ -3,7 +3,7 @@
   "guests": "{count} guests | {count} guest | {count} guests",
   "day-statuses": {
     "available": "Available",
-    "reserved": "Reserved",
+    "booked": "Booked",
     "occupied": "Occupied",
     "needs-cleaning": "Needs cleaning",
     "blocked": "Blocked",
@@ -34,7 +34,7 @@
     "invalid-status": "Choose a supported status.",
     "invalid-date-range": "Choose a valid date range.",
     "reason-required": "Add the reason for this status.",
-    "reservation-controlled": "The selected dates include days controlled by a reservation. Choose dates without reservations or stays.",
+    "booking-controlled": "The selected dates include days controlled by a booking. Choose dates without bookings or stays.",
     "duplicate-room-type-name": "This room type name already exists in the property.",
     "duplicate-room-number": "This room number already exists in the property.",
     "room-type-in-use": "Rooms still use this room type. Make it inactive instead.",

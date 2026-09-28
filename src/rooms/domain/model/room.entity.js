@@ -13,7 +13,7 @@ export class Room {
    */
   static dayStatuses = [
     'available',
-    'reserved',
+    'booked',
     'occupied',
     'needs-cleaning',
     'blocked',
@@ -47,7 +47,7 @@ export class Room {
    * @param {string} date - ISO calendar day.
    * @param {import('./room-assignment.entity.js').RoomAssignment[]} roomAssignments - Room assignments of the property.
    * @param {import('./status-period.entity.js').StatusPeriod[]} statusPeriods - Status periods of the property.
-   * @returns {'available'|'reserved'|'occupied'|'needs-cleaning'|'blocked'|'out-of-service'}
+   * @returns {'available'|'booked'|'occupied'|'needs-cleaning'|'blocked'|'out-of-service'}
    */
   dayStatusOn(date, roomAssignments, statusPeriods) {
     const coversRoomDay = (entry) =>

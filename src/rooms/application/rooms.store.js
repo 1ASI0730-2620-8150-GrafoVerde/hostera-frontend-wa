@@ -735,7 +735,7 @@ const useRoomsStore = defineStore('rooms', () => {
           roomAssignment.overlaps(startDate, endDate),
       )
     )
-      throw new RoomsError('reservation-controlled');
+      throw new RoomsError('booking-controlled');
 
     const created = [];
     const updated = [];

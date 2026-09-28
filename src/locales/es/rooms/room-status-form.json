@@ -12,7 +12,7 @@
   "dates-help": "Elige un día o un rango. Los estados existentes en el rango se reemplazan.",
   "reason": "Motivo",
   "reason-placeholder": "p. ej. Reparación del aire acondicionado",
-  "reservation-note": "Los días con reserva o estadía los controla esa reserva.",
+  "booking-note": "Los días con reserva o estadía los controla esa reserva.",
   "cancel": "Cancelar",
   "save": "Aplicar estado"
 }

@@ -4,8 +4,8 @@
       "id": 1,
       "propertyId": 1,
       "roomId": 12,
-      "reservationCode": "RSV-1048",
-      "status": "reserved",
+      "bookingCode": "BKG-1048",
+      "status": "booked",
       "startDate": "2026-10-07",
       "endDate": "2026-10-08"
     },
@@ -13,8 +13,8 @@
       "id": 2,
       "propertyId": 1,
       "roomId": 12,
-      "reservationCode": "RSV-1061",
-      "status": "reserved",
+      "bookingCode": "BKG-1061",
+      "status": "booked",
       "startDate": "2026-10-15",
       "endDate": "2026-10-18"
     },
@@ -22,7 +22,7 @@
       "id": 3,
       "propertyId": 1,
       "roomId": 6,
-      "reservationCode": "RSV-1032",
+      "bookingCode": "BKG-1032",
       "status": "occupied",
       "startDate": "2026-10-03",
       "endDate": "2026-10-06"
@@ -31,8 +31,8 @@
       "id": 4,
       "propertyId": 1,
       "roomId": 6,
-      "reservationCode": "RSV-1057",
-      "status": "reserved",
+      "bookingCode": "BKG-1057",
+      "status": "booked",
       "startDate": "2026-10-12",
       "endDate": "2026-10-14"
     },
@@ -40,7 +40,7 @@
       "id": 5,
       "propertyId": 1,
       "roomId": 4,
-      "reservationCode": "RSV-1039",
+      "bookingCode": "BKG-1039",
       "status": "occupied",
       "startDate": "2026-10-04",
       "endDate": "2026-10-05"
@@ -49,8 +49,8 @@
       "id": 6,
       "propertyId": 1,
       "roomId": 14,
-      "reservationCode": "RSV-1050",
-      "status": "reserved",
+      "bookingCode": "BKG-1050",
+      "status": "booked",
       "startDate": "2026-10-07",
       "endDate": "2026-10-09"
     },
@@ -58,8 +58,8 @@
       "id": 7,
       "propertyId": 1,
       "roomId": 17,
-      "reservationCode": "RSV-1051",
-      "status": "reserved",
+      "bookingCode": "BKG-1051",
+      "status": "booked",
       "startDate": "2026-10-07",
       "endDate": "2026-10-08"
     },
@@ -67,7 +67,7 @@
       "id": 8,
       "propertyId": 1,
       "roomId": 1,
-      "reservationCode": "RSV-1025",
+      "bookingCode": "BKG-1025",
       "status": "occupied",
       "startDate": "2026-10-02",
       "endDate": "2026-10-07"
@@ -76,8 +76,8 @@
       "id": 9,
       "propertyId": 1,
       "roomId": 5,
-      "reservationCode": "RSV-1044",
-      "status": "reserved",
+      "bookingCode": "BKG-1044",
+      "status": "booked",
       "startDate": "2026-10-06",
       "endDate": "2026-10-10"
     },
@@ -85,7 +85,7 @@
       "id": 10,
       "propertyId": 1,
       "roomId": 9,
-      "reservationCode": "RSV-1041",
+      "bookingCode": "BKG-1041",
       "status": "occupied",
       "startDate": "2026-10-05",
       "endDate": "2026-10-06"
@@ -94,8 +94,8 @@
       "id": 11,
       "propertyId": 1,
       "roomId": 11,
-      "reservationCode": "RSV-1053",
-      "status": "reserved",
+      "bookingCode": "BKG-1053",
+      "status": "booked",
       "startDate": "2026-10-09",
       "endDate": "2026-10-12"
     },
@@ -103,7 +103,7 @@
       "id": 12,
       "propertyId": 1,
       "roomId": 16,
-      "reservationCode": "RSV-1018",
+      "bookingCode": "BKG-1018",
       "status": "occupied",
       "startDate": "2026-10-01",
       "endDate": "2026-10-08"
@@ -112,8 +112,8 @@
       "id": 13,
       "propertyId": 1,
       "roomId": 8,
-      "reservationCode": "RSV-1066",
-      "status": "reserved",
+      "bookingCode": "BKG-1066",
+      "status": "booked",
       "startDate": "2026-10-20",
       "endDate": "2026-10-23"
     },
@@ -121,8 +121,8 @@
       "id": 14,
       "propertyId": 1,
       "roomId": 3,
-      "reservationCode": "RSV-1055",
-      "status": "reserved",
+      "bookingCode": "BKG-1055",
+      "status": "booked",
       "startDate": "2026-10-10",
       "endDate": "2026-10-11"
     },
@@ -130,7 +130,7 @@
       "id": 15,
       "propertyId": 1,
       "roomId": 10,
-      "reservationCode": "RSV-1043",
+      "bookingCode": "BKG-1043",
       "status": "occupied",
       "startDate": "2026-10-05",
       "endDate": "2026-10-05"
@@ -139,8 +139,8 @@
       "id": 16,
       "propertyId": 1,
       "roomId": 13,
-      "reservationCode": "RSV-1070",
-      "status": "reserved",
+      "bookingCode": "BKG-1070",
+      "status": "booked",
       "startDate": "2026-10-25",
       "endDate": "2026-10-28"
     },
@@ -148,7 +148,7 @@
       "id": 17,
       "propertyId": 2,
       "roomId": 18,
-      "reservationCode": "RSV-2011",
+      "bookingCode": "BKG-2011",
       "status": "occupied",
       "startDate": "2026-10-04",
       "endDate": "2026-10-06"
@@ -157,8 +157,8 @@
       "id": 18,
       "propertyId": 2,
       "roomId": 20,
-      "reservationCode": "RSV-2014",
-      "status": "reserved",
+      "bookingCode": "BKG-2014",
+      "status": "booked",
       "startDate": "2026-10-08",
       "endDate": "2026-10-10"
     }

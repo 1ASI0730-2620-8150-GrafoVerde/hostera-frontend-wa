@@ -3,7 +3,7 @@
   "guests": "{count} huéspedes | {count} huésped | {count} huéspedes",
   "day-statuses": {
     "available": "Disponible",
-    "reserved": "Reservada",
+    "booked": "Reservada",
     "occupied": "Ocupada",
     "needs-cleaning": "Requiere limpieza",
     "blocked": "Bloqueada",
@@ -34,7 +34,7 @@
     "invalid-status": "Elige un estado válido.",
     "invalid-date-range": "Elige un rango de fechas válido.",
     "reason-required": "Agrega el motivo de este estado.",
-    "reservation-controlled": "Las fechas elegidas incluyen días controlados por una reserva. Elige fechas sin reservas ni estadías.",
+    "booking-controlled": "Las fechas elegidas incluyen días controlados por una reserva. Elige fechas sin reservas ni estadías.",
     "duplicate-room-type-name": "Este nombre de tipo de habitación ya existe en el establecimiento.",
     "duplicate-room-number": "Este número de habitación ya existe en el establecimiento.",
     "room-type-in-use": "Hay habitaciones que usan este tipo. Desactívalo en su lugar.",

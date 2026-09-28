@@ -20,7 +20,7 @@ import enRoomsRoomTypeList from './locales/en/rooms/room-type-list.json';
 import enRoomsRoomTypeForm from './locales/en/rooms/room-type-form.json';
 import enRoomsRoomForm from './locales/en/rooms/room-form.json';
 import enRoomsRoomStatusForm from './locales/en/rooms/room-status-form.json';
-import enRoomsReservationControlledDialog from './locales/en/rooms/reservation-controlled-dialog.json';
+import enRoomsBookingControlledDialog from './locales/en/rooms/booking-controlled-dialog.json';
 import enRoomsRoomMonthCalendar from './locales/en/rooms/room-month-calendar.json';
 import enRoomsRoomDetail from './locales/en/rooms/room-detail.json';
 import enRoomsRoomRates from './locales/en/rooms/room-rates.json';
@@ -47,7 +47,7 @@ import esRoomsRoomTypeList from './locales/es/rooms/room-type-list.json';
 import esRoomsRoomTypeForm from './locales/es/rooms/room-type-form.json';
 import esRoomsRoomForm from './locales/es/rooms/room-form.json';
 import esRoomsRoomStatusForm from './locales/es/rooms/room-status-form.json';
-import esRoomsReservationControlledDialog from './locales/es/rooms/reservation-controlled-dialog.json';
+import esRoomsBookingControlledDialog from './locales/es/rooms/booking-controlled-dialog.json';
 import esRoomsRoomMonthCalendar from './locales/es/rooms/room-month-calendar.json';
 import esRoomsRoomDetail from './locales/es/rooms/room-detail.json';
 import esRoomsRoomRates from './locales/es/rooms/room-rates.json';
@@ -86,7 +86,7 @@ const i18n = createI18n({
         'room-type-form': enRoomsRoomTypeForm,
         'room-form': enRoomsRoomForm,
         'room-status-form': enRoomsRoomStatusForm,
-        'reservation-controlled-dialog': enRoomsReservationControlledDialog,
+        'booking-controlled-dialog': enRoomsBookingControlledDialog,
         'room-month-calendar': enRoomsRoomMonthCalendar,
         'room-detail': enRoomsRoomDetail,
         'room-rates': enRoomsRoomRates,
@@ -121,7 +121,7 @@ const i18n = createI18n({
         'room-type-form': esRoomsRoomTypeForm,
         'room-form': esRoomsRoomForm,
         'room-status-form': esRoomsRoomStatusForm,
-        'reservation-controlled-dialog': esRoomsReservationControlledDialog,
+        'booking-controlled-dialog': esRoomsBookingControlledDialog,
         'room-month-calendar': esRoomsRoomMonthCalendar,
         'room-detail': esRoomsRoomDetail,
         'room-rates': esRoomsRoomRates,

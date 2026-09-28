@@ -184,7 +184,7 @@ const saveStatus = async () => {
         variant="simple"
         icon="pi pi-lock"
       >
-        {{ t('rooms.room-status-form.reservation-note') }}
+        {{ t('rooms.room-status-form.booking-note') }}
       </pv-message>
       <pv-message v-if="errorCode" severity="error" icon="pi pi-times-circle">
         {{ t(`rooms.rooms-terms.errors.${errorCode}`) }}
