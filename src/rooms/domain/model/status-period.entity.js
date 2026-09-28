@@ -71,6 +71,14 @@ export class StatusPeriod {
   }
 
   /**
+   * Whether the status keeps the room from being booked; a room that needs cleaning can still be booked.
+   * @returns {boolean}
+   */
+  get preventsBooking() {
+    return this.status !== 'needs-cleaning';
+  }
+
+  /**
    * Whether the period covers a calendar day.
    * @param {string} date - ISO calendar day.
    * @returns {boolean}
