@@ -54,6 +54,19 @@ export class Booking {
   }
 
   /**
+   * Moves an ISO calendar day by a number of days.
+   * @param {string} value - ISO calendar day.
+   * @param {number} days - Days to add; negative values move backwards.
+   * @private
+   * @returns {string} ISO calendar day.
+   */
+  static #addDays(value, days) {
+    const date = new Date(`${value}T00:00:00Z`);
+    date.setUTCDate(date.getUTCDate() + days);
+    return date.toISOString().slice(0, 10);
+  }
+
+  /**
    * @param {Object} params - Entity attributes.
    * @param {?number} [params.id=null] - Booking identifier.
    * @param {?number} [params.propertyId=null] - Identifier of the property.
@@ -125,6 +138,53 @@ export class Booking {
    */
   get isEditable() {
     return Booking.editableStatuses.includes(this.status);
+  }
+
+  /**
+   * Lists the nights of the stay, from the check-in day to the day before check-out.
+   * @returns {string[]} ISO days of each night.
+   */
+  get nights() {
+    const nights = [];
+    for (
+      let date = this.checkInDate;
+      date < this.checkOutDate;
+      date = Booking.#addDays(date, 1)
+    )
+      nights.push(date);
+    return nights;
+  }
+
+  /**
+   * The ISO day of the last night of the stay.
+   * @returns {string}
+   */
+  get lastNight() {
+    return Booking.#addDays(this.checkOutDate, -1);
+  }
+
+  /**
+   * Whether the stay shares at least one night with another stay.
+   * @param {string} checkInDate - ISO check-in day of the other stay.
+   * @param {string} checkOutDate - ISO check-out day of the other stay.
+   * @returns {boolean}
+   */
+  overlaps(checkInDate, checkOutDate) {
+    return this.checkInDate < checkOutDate && checkInDate < this.checkOutDate;
+  }
+
+  /**
+   * Whether another booking uses the same room, nights, and rate plan, so its saved price still applies.
+   * @param {Booking} booking - Booking to compare.
+   * @returns {boolean}
+   */
+  hasSamePricingAs(booking) {
+    return (
+      this.roomTypeId === booking.roomTypeId &&
+      this.ratePlanId === booking.ratePlanId &&
+      this.checkInDate === booking.checkInDate &&
+      this.checkOutDate === booking.checkOutDate
+    );
   }
 
   /**
