@@ -36,9 +36,9 @@ interface ImportMetaEnv {
    */
   readonly VITE_STATUS_PERIODS_ENDPOINT_PATH: string;
   /**
-   * # VITE_ROOM_ASSIGNMENTS_ENDPOINT_PATH is the path to the room assignments' endpoint.
+   * # VITE_BOOKINGS_ENDPOINT_PATH is the path to the bookings' endpoint.
    */
-  readonly VITE_ROOM_ASSIGNMENTS_ENDPOINT_PATH: string;
+  readonly VITE_BOOKINGS_ENDPOINT_PATH: string;
   /**
    * # VITE_RATE_PLANS_ENDPOINT_PATH is the path to the rate plans' endpoint.
    */
