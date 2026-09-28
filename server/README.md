@@ -57,4 +57,8 @@ The frontend enforces unique codes, sufficient stock, fixed units after history 
 - `POST` and `PUT /:id` on `/rooms`: create and edit rooms. A room takes its capacity and beds from its room type.
 - `POST`, `PUT /:id`, and `DELETE /:id` on `/status-periods`: setting or releasing a status may delete, trim, or split existing periods and create a new one, sent as separate requests.
 
-Status periods and room assignments cover inclusive ISO date ranges (`startDate` to `endDate`). Room assignments are read-only demonstration data standing in for the future Reservations API; their seed dates fall in October 2026. The frontend keeps a room's status periods from overlapping each other or its assignments; direct API requests can bypass these rules, and a failed request in a multi-request status change can leave partial updates, which the SPA reloads.
+- `GET /rate-plans?propertyId=1` and `GET /daily-rates?propertyId=1`: property-scoped rate plans and their daily rates. An empty `roomTypeIds` list means the plan sells every room type.
+- `POST` and `PUT /:id` on `/rate-plans`: create and edit rate plans; plans are made inactive instead of deleted.
+- `POST`, `PUT /:id`, and `DELETE /:id` on `/daily-rates`: setting rates sends one request per night; returning nights to the base nightly rate deletes their daily rates.
+
+Status periods and room assignments cover inclusive ISO date ranges (`startDate` to `endDate`). Room assignments are read-only demonstration data standing in for the future Reservations API; their seed dates, like the daily rates, fall in October 2026. The frontend keeps a room's status periods from overlapping each other or its assignments; direct API requests can bypass these rules, and a failed request in a multi-request status change can leave partial updates, which the SPA reloads. The same applies to the daily rates of a multi-night rate change.
