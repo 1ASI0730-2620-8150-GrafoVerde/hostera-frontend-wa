@@ -49,3 +49,16 @@ JSON Server provides native CRUD routes for each collection. Send write bodies a
 Each inventory item contains `stocks` (quantities by location) and an `adjustments` history. An adjustment updates both in one item write; a transfer appends linked outgoing and incoming records in the same write. A positive initial quantity also records an opening adjustment. There is no separate adjustment endpoint in this mock.
 
 The frontend enforces unique codes, sufficient stock, fixed units after history exists, and location-removal restrictions. Audit entries use a demonstration operator until account access is implemented. Direct API requests can bypass these rules, and simultaneous clients can overwrite each other's changes; the production API must enforce authorization, validation, history preservation, and concurrency controls.
+
+## Rooms resources
+
+- `GET /room-types?propertyId=1`, `GET /rooms?propertyId=1`, `GET /status-periods?propertyId=1`, and `GET /room-assignments?propertyId=1`: property-scoped collections. Properties include the `currency` used for room rates.
+- `POST`, `PUT /:id`, and `DELETE /:id` on `/room-types`: manage room types; the frontend removes only types that no room uses.
+- `POST` and `PUT /:id` on `/rooms`: create and edit rooms. A room takes its capacity and beds from its room type.
+- `POST`, `PUT /:id`, and `DELETE /:id` on `/status-periods`: setting or releasing a status may delete, trim, or split existing periods and create a new one, sent as separate requests.
+
+- `GET /rate-plans?propertyId=1` and `GET /daily-rates?propertyId=1`: property-scoped rate plans and their daily rates. An empty `roomTypeIds` list means the plan sells every room type.
+- `POST` and `PUT /:id` on `/rate-plans`: create and edit rate plans; plans are made inactive instead of deleted.
+- `POST`, `PUT /:id`, and `DELETE /:id` on `/daily-rates`: setting rates sends one request per night; returning nights to the base nightly rate deletes their daily rates.
+
+Status periods and room assignments cover inclusive ISO date ranges (`startDate` to `endDate`). Room assignments are read-only demonstration data standing in for the future Reservations API; their seed dates, like the daily rates, fall in October 2026. The frontend keeps a room's status periods from overlapping each other or its assignments; direct API requests can bypass these rules, and a failed request in a multi-request status change can leave partial updates, which the SPA reloads. The same applies to the daily rates of a multi-night rate change.

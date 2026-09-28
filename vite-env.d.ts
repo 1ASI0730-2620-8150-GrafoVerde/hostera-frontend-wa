@@ -24,6 +24,30 @@ interface ImportMetaEnv {
    */
   readonly VITE_STORAGE_LOCATIONS_ENDPOINT_PATH: string;
   /**
+   * # VITE_ROOM_TYPES_ENDPOINT_PATH is the path to the room types' endpoint.
+   */
+  readonly VITE_ROOM_TYPES_ENDPOINT_PATH: string;
+  /**
+   * # VITE_ROOMS_ENDPOINT_PATH is the path to the rooms' endpoint.
+   */
+  readonly VITE_ROOMS_ENDPOINT_PATH: string;
+  /**
+   * # VITE_STATUS_PERIODS_ENDPOINT_PATH is the path to the status periods' endpoint.
+   */
+  readonly VITE_STATUS_PERIODS_ENDPOINT_PATH: string;
+  /**
+   * # VITE_ROOM_ASSIGNMENTS_ENDPOINT_PATH is the path to the room assignments' endpoint.
+   */
+  readonly VITE_ROOM_ASSIGNMENTS_ENDPOINT_PATH: string;
+  /**
+   * # VITE_RATE_PLANS_ENDPOINT_PATH is the path to the rate plans' endpoint.
+   */
+  readonly VITE_RATE_PLANS_ENDPOINT_PATH: string;
+  /**
+   * # VITE_DAILY_RATES_ENDPOINT_PATH is the path to the daily rates' endpoint.
+   */
+  readonly VITE_DAILY_RATES_ENDPOINT_PATH: string;
+  /**
    * # VITE_PRIMEVUE_LICENSE_KEY is the license key for the PrimeVue library.
    */
   readonly VITE_PRIMEVUE_LICENSE_KEY?: string;

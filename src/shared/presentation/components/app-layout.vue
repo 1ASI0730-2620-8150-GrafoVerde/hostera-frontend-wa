@@ -20,6 +20,12 @@ const currentOperator = { name: 'Lucía Martín', initials: 'LM' };
 
 const navigationItems = [
   {
+    label: 'shared.app-layout.rooms',
+    icon: 'pi pi-key',
+    to: { name: 'rooms-availability' },
+    section: '/rooms',
+  },
+  {
     label: 'shared.app-layout.inventory',
     icon: 'pi pi-box',
     to: { name: 'inventory-items' },

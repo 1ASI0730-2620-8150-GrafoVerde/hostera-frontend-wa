@@ -30,7 +30,15 @@ See [server/README.md](server/README.md) for fixture structure, database generat
 
 Start the mock API with `npm run server:start`, then start the SPA with `npm run dev`. Open `/inventory` to manage property-scoped storage locations, supplies, stock adjustments, and internal transfers. English and Spanish are available in the workspace language selector.
 
-The SPA connects directly to the API configured by `VITE_HOSTERA_API_URL`. `.env.development` and `.env.production` currently use the local mock at `http://localhost:3000`, with `VITE_PROPERTIES_ENDPOINT_PATH`, `VITE_INVENTORY_ITEMS_ENDPOINT_PATH`, and `VITE_STORAGE_LOCATIONS_ENDPOINT_PATH` defining its resource paths. `vite-env.d.ts` declares these variables for editor type information and autocompletion; it does not assign or validate their runtime values.
+## Rooms workspace
+
+Open `/rooms` to review each room's day status across a week, manage room types and rooms, and set or release operational statuses (Blocked, Out of service, Needs cleaning) from the weekly grid or a room's monthly calendar. On small screens the weekly grid becomes a one-day room list. Reserved and Occupied days come from read-only room assignments until the Reservations context exists.
+
+The Rates tab shows a rate plan's nightly rates for its active room types across a week. Create or edit rate plans (room types, included services, refundability, and cancellation policy), and set daily rates for a room type over a date range or return those nights to the room type's base nightly rate. Rate plans use the property's currency and are made inactive instead of deleted.
+
+## Environment
+
+The SPA connects directly to the API configured by `VITE_HOSTERA_API_URL`. `.env.development` and `.env.production` currently use the local mock at `http://localhost:3000`, with `VITE_PROPERTIES_ENDPOINT_PATH`, `VITE_INVENTORY_ITEMS_ENDPOINT_PATH`, `VITE_STORAGE_LOCATIONS_ENDPOINT_PATH`, `VITE_ROOM_TYPES_ENDPOINT_PATH`, `VITE_ROOMS_ENDPOINT_PATH`, `VITE_STATUS_PERIODS_ENDPOINT_PATH`, `VITE_ROOM_ASSIGNMENTS_ENDPOINT_PATH`, `VITE_RATE_PLANS_ENDPOINT_PATH`, and `VITE_DAILY_RATES_ENDPOINT_PATH` defining its resource paths. `vite-env.d.ts` declares these variables for editor type information and autocompletion; it does not assign or validate their runtime values.
 
 Vite loads `.env.development` for `npm run dev` and `.env.production` for `npm run build`. Use the ignored `.env.development.local` or `.env.production.local` files to override API settings for a specific mode. Restart Vite after changing environment files. Before deployment, set `VITE_HOSTERA_API_URL` to the deployed backend URL; the mock API is not deployed with the SPA. See [Vite environment variables and modes](https://vite.dev/guide/env-and-mode).
 
