@@ -23,6 +23,7 @@ import enRoomsRoomStatusForm from './locales/en/rooms/room-status-form.json';
 import enRoomsReservationControlledDialog from './locales/en/rooms/reservation-controlled-dialog.json';
 import enRoomsRoomMonthCalendar from './locales/en/rooms/room-month-calendar.json';
 import enRoomsRoomDetail from './locales/en/rooms/room-detail.json';
+import enRoomsRatePlanForm from './locales/en/rooms/rate-plan-form.json';
 import esSharedHome from './locales/es/shared/home.json';
 import esSharedAppLayout from './locales/es/shared/app-layout.json';
 import esSharedLanguageSwitcher from './locales/es/shared/language-switcher.json';
@@ -47,6 +48,7 @@ import esRoomsRoomStatusForm from './locales/es/rooms/room-status-form.json';
 import esRoomsReservationControlledDialog from './locales/es/rooms/reservation-controlled-dialog.json';
 import esRoomsRoomMonthCalendar from './locales/es/rooms/room-month-calendar.json';
 import esRoomsRoomDetail from './locales/es/rooms/room-detail.json';
+import esRoomsRatePlanForm from './locales/es/rooms/rate-plan-form.json';
 
 const i18n = createI18n({
   legacy: false,
@@ -83,6 +85,7 @@ const i18n = createI18n({
         'reservation-controlled-dialog': enRoomsReservationControlledDialog,
         'room-month-calendar': enRoomsRoomMonthCalendar,
         'room-detail': enRoomsRoomDetail,
+        'rate-plan-form': enRoomsRatePlanForm,
       },
     },
     es: {
@@ -115,6 +118,7 @@ const i18n = createI18n({
         'reservation-controlled-dialog': esRoomsReservationControlledDialog,
         'room-month-calendar': esRoomsRoomMonthCalendar,
         'room-detail': esRoomsRoomDetail,
+        'rate-plan-form': esRoomsRatePlanForm,
       },
     },
   },
