@@ -50,10 +50,28 @@ const { t, locale } = useI18n();
     <template #footer>
       <pv-button
         :label="t('rooms.booking-controlled-dialog.close')"
+        severity="secondary"
+        outlined
         rounded
-        autofocus
         @click="visible = false"
       />
+      <router-link
+        v-slot="{ navigate }"
+        :to="{
+          name: 'bookings-booking-detail',
+          params: { id: roomAssignment.bookingId },
+        }"
+        custom
+      >
+        <pv-button
+          :label="t('rooms.booking-controlled-dialog.open-booking')"
+          icon="pi pi-arrow-right"
+          icon-pos="right"
+          rounded
+          autofocus
+          @click="navigate"
+        />
+      </router-link>
     </template>
   </pv-dialog>
 </template>
