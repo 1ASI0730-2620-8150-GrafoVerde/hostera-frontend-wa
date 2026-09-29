@@ -185,6 +185,31 @@ export class Booking {
   }
 
   /**
+   * Whether the booking can be confirmed.
+   * @returns {boolean}
+   */
+  get canBeConfirmed() {
+    return this.status === 'pending';
+  }
+
+  /**
+   * Confirms a pending booking.
+   * @param {string} at - ISO date-time of the confirmation.
+   * @param {string} by - Operator who confirms.
+   * @returns {Booking} Confirmed copy of the booking.
+   * @throws {BookingsError} When the booking is not pending.
+   */
+  confirm(at, by) {
+    if (!this.canBeConfirmed) throw new BookingsError('invalid-status-change');
+    return new Booking({
+      ...this,
+      status: 'confirmed',
+      confirmedAt: at,
+      confirmedBy: by,
+    });
+  }
+
+  /**
    * Lists the nights of the stay, from the check-in day to the day before check-out.
    * @returns {string[]} ISO days of each night.
    */
