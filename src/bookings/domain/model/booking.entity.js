@@ -105,6 +105,14 @@ export class Booking {
    * @param {number} [params.totalAmount=0] - Price of all nights when the booking was saved.
    * @param {string} [params.guestRequest=''] - Guest's request for the stay.
    * @param {string} [params.createdAt=''] - ISO day the booking was created.
+   * @param {?string} [params.confirmedAt=null] - ISO date-time the booking was confirmed.
+   * @param {?string} [params.confirmedBy=null] - Operator who confirmed the booking.
+   * @param {?string} [params.cancelledAt=null] - ISO date-time the booking was cancelled.
+   * @param {?string} [params.cancelledBy=null] - Operator who cancelled the booking.
+   * @param {?string} [params.cancellationReason=null] - Why the booking was cancelled.
+   * @param {string} [params.cancellationNote=''] - Internal note about the cancellation.
+   * @param {?string} [params.noShowAt=null] - ISO date-time the no-show was recorded.
+   * @param {?string} [params.noShowBy=null] - Operator who recorded the no-show.
    */
   constructor({
     id = null,
@@ -124,6 +132,14 @@ export class Booking {
     totalAmount = 0,
     guestRequest = '',
     createdAt = '',
+    confirmedAt = null,
+    confirmedBy = null,
+    cancelledAt = null,
+    cancelledBy = null,
+    cancellationReason = null,
+    cancellationNote = '',
+    noShowAt = null,
+    noShowBy = null,
   }) {
     this.id = id;
     this.propertyId = propertyId;
@@ -142,6 +158,14 @@ export class Booking {
     this.totalAmount = totalAmount;
     this.guestRequest = guestRequest.trim();
     this.createdAt = createdAt;
+    this.confirmedAt = confirmedAt;
+    this.confirmedBy = confirmedBy;
+    this.cancelledAt = cancelledAt;
+    this.cancelledBy = cancelledBy;
+    this.cancellationReason = cancellationReason;
+    this.cancellationNote = cancellationNote.trim();
+    this.noShowAt = noShowAt;
+    this.noShowBy = noShowBy;
   }
 
   /**
