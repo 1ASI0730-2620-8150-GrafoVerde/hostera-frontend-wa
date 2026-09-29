@@ -8,6 +8,7 @@ import { defineStore } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import { BookingsApi } from '../infrastructure/bookings-api.js';
 import { BookingAssembler } from '../infrastructure/booking.assembler.js';
+import { BookingsError } from '../domain/model/bookings.error.js';
 import useRoomsStore from '../../rooms/application/rooms.store.js';
 
 const bookingsApi = new BookingsApi();
@@ -88,6 +89,70 @@ const useBookingsStore = defineStore('bookings', () => {
     return bookings.value.find((booking) => booking['id'] === idNum);
   }
 
+  /**
+   * Derives the price of a stay as the sum of its nightly rates.
+   * @param {Booking} booking - Booking with room type, rate plan, and stay dates.
+   * @returns {number} Price of all nights in the property's currency.
+   */
+  function quoteTotal(booking) {
+    const total = booking.nights.reduce(
+      (sum, date) =>
+        sum +
+        (roomsStore.getNightlyRate(
+          booking.roomTypeId,
+          booking.ratePlanId,
+          date,
+        ) ?? 0),
+      0,
+    );
+    return Math.round(total * 100) / 100;
+  }
+
+  /**
+   * Whether a room is free for a stay: no other room-holding booking shares a night, and no status prevents booking.
+   * @param {number} roomId - Room identifier.
+   * @param {Booking} booking - Booking whose stay is checked; it never conflicts with itself.
+   * @returns {boolean}
+   */
+  function isRoomAvailable(roomId, booking) {
+    return (
+      !bookings.value.some(
+        (entry) =>
+          entry['id'] !== booking.id &&
+          entry.roomId === roomId &&
+          entry.holdsRoom &&
+          entry.overlaps(booking.checkInDate, booking.checkOutDate),
+      ) &&
+      roomsStore.isRoomBookable(roomId, booking.checkInDate, booking.lastNight)
+    );
+  }
+
+  /**
+   * Rejects a booking whose room, rate plan, or guests cannot be sold for its stay.
+   * A room type or rate plan made inactive stays acceptable for the booking that already uses it.
+   * @param {Booking} booking - Booking to check.
+   * @param {?Booking} [currentBooking=null] - Persisted booking, when updating.
+   * @throws {BookingsError} When the booking cannot be sold.
+   */
+  function ensureBookable(booking, currentBooking = null) {
+    const roomType = roomsStore.getRoomTypeById(booking.roomTypeId);
+    if (!roomType) throw new BookingsError('room-type-required');
+    if (!roomType.isActive && currentBooking?.roomTypeId !== roomType.id)
+      throw new BookingsError('inactive-room-type');
+    if (roomsStore.getRoomById(booking.roomId)?.roomTypeId !== roomType.id)
+      throw new BookingsError('room-not-in-room-type');
+    const ratePlan = roomsStore.getRatePlanById(booking.ratePlanId);
+    if (!ratePlan) throw new BookingsError('rate-plan-required');
+    if (!ratePlan.isActive && currentBooking?.ratePlanId !== ratePlan.id)
+      throw new BookingsError('inactive-rate-plan');
+    if (!ratePlan.appliesTo(roomType.id))
+      throw new BookingsError('rate-plan-not-for-room-type');
+    if (booking.guests > roomType.capacity)
+      throw new BookingsError('over-capacity');
+    if (!isRoomAvailable(booking.roomId, booking))
+      throw new BookingsError('room-unavailable');
+  }
+
   return {
     bookings,
     errors,
@@ -97,6 +162,8 @@ const useBookingsStore = defineStore('bookings', () => {
     bookingsCount,
     fetchBookings,
     getBookingById,
+    quoteTotal,
+    isRoomAvailable,
   };
 });
 
