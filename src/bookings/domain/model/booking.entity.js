@@ -33,6 +33,18 @@ export class Booking {
   static editableStatuses = ['pending', 'confirmed'];
 
   /**
+   * Reasons staff can give when cancelling a booking.
+   * @type {string[]}
+   */
+  static cancellationReasons = [
+    'guest-request',
+    'change-of-plans',
+    'duplicate-booking',
+    'property-unable',
+    'other',
+  ];
+
+  /**
    * Languages a guest can prefer for communication.
    * @type {string[]}
    */
@@ -193,6 +205,14 @@ export class Booking {
   }
 
   /**
+   * Whether the booking can be cancelled.
+   * @returns {boolean}
+   */
+  get canBeCancelled() {
+    return this.status === 'pending' || this.status === 'confirmed';
+  }
+
+  /**
    * Confirms a pending booking.
    * @param {string} at - ISO date-time of the confirmation.
    * @param {string} by - Operator who confirms.
@@ -206,6 +226,32 @@ export class Booking {
       status: 'confirmed',
       confirmedAt: at,
       confirmedBy: by,
+    });
+  }
+
+  /**
+   * Cancels a pending or confirmed booking, which frees its room.
+   * @param {Object} cancellation - Cancellation details.
+   * @param {string} cancellation.reason - Cancellation reason.
+   * @param {string} [cancellation.note=''] - Internal note, required for the Other reason.
+   * @param {string} cancellation.at - ISO date-time of the cancellation.
+   * @param {string} cancellation.by - Operator who cancels.
+   * @returns {Booking} Cancelled copy of the booking.
+   * @throws {BookingsError} When the booking cannot be cancelled or the reason is incomplete.
+   */
+  cancel({ reason, note = '', at, by }) {
+    if (!this.canBeCancelled) throw new BookingsError('invalid-status-change');
+    if (!Booking.cancellationReasons.includes(reason))
+      throw new BookingsError('invalid-cancellation-reason');
+    if (reason === 'other' && !note.trim())
+      throw new BookingsError('cancellation-note-required');
+    return new Booking({
+      ...this,
+      status: 'cancelled',
+      cancelledAt: at,
+      cancelledBy: by,
+      cancellationReason: reason,
+      cancellationNote: note,
     });
   }
 
