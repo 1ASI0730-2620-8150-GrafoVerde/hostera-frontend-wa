@@ -222,6 +222,16 @@ export class Booking {
   }
 
   /**
+   * Whether a cancelled booking can be restored because its stay has not started.
+   * Its room must also still be available, which the application checks.
+   * @param {string} today - Current ISO calendar day.
+   * @returns {boolean}
+   */
+  canBeRestored(today) {
+    return this.status === 'cancelled' && today <= this.checkInDate;
+  }
+
+  /**
    * Confirms a pending booking.
    * @param {string} at - ISO date-time of the confirmation.
    * @param {string} by - Operator who confirms.
@@ -280,6 +290,27 @@ export class Booking {
       status: 'no-show',
       noShowAt: at,
       noShowBy: by,
+    });
+  }
+
+  /**
+   * Returns a cancelled booking to Pending, keeping its saved total, so it must be confirmed again.
+   * @param {string} today - Current ISO calendar day.
+   * @returns {Booking} Pending copy of the booking without its cancellation.
+   * @throws {BookingsError} When the booking is not cancelled or its stay has started.
+   */
+  restore(today) {
+    if (!this.canBeRestored(today))
+      throw new BookingsError('invalid-status-change');
+    return new Booking({
+      ...this,
+      status: 'pending',
+      confirmedAt: null,
+      confirmedBy: null,
+      cancelledAt: null,
+      cancelledBy: null,
+      cancellationReason: null,
+      cancellationNote: '',
     });
   }
 
