@@ -1,0 +1,37 @@
+{
+  "room-number": "Room {number}",
+  "nights": "{count} nights | {count} night | {count} nights",
+  "guests": "{count} guests | {count} guest | {count} guests",
+  "statuses": {
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "checked-in": "Checked in",
+    "checked-out": "Checked out",
+    "cancelled": "Cancelled",
+    "no-show": "No-show"
+  },
+  "languages": {
+    "es": "Spanish",
+    "en": "English"
+  },
+  "errors": {
+    "connection": "The mock API is unavailable. Start the server and try again.",
+    "no-properties": "No properties are configured.",
+    "required-fields": "Complete all required fields.",
+    "invalid-email": "Enter a valid email address.",
+    "invalid-language": "Choose a supported language.",
+    "invalid-stay-dates": "Choose a check-out date after the check-in date.",
+    "invalid-guests": "Enter at least one guest.",
+    "invalid-status": "The booking has an unsupported status.",
+    "room-type-required": "Choose a room type of the active property.",
+    "inactive-room-type": "Inactive room types cannot be booked.",
+    "room-not-in-room-type": "Choose a room of the selected room type.",
+    "rate-plan-required": "Choose a rate plan of the active property.",
+    "inactive-rate-plan": "Inactive rate plans cannot be booked.",
+    "rate-plan-not-for-room-type": "The selected rate plan does not sell this room type.",
+    "over-capacity": "The guests exceed the room type's capacity.",
+    "room-unavailable": "Choose another room or change the stay dates.",
+    "not-editable": "Only pending and confirmed bookings can be edited.",
+    "not-found": "The booking no longer exists in the active property."
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "room-number": "Habitación {number}",
+  "nights": "{count} noches | {count} noche | {count} noches",
+  "guests": "{count} huéspedes | {count} huésped | {count} huéspedes",
+  "statuses": {
+    "pending": "Pendiente",
+    "confirmed": "Confirmada",
+    "checked-in": "En estadía",
+    "checked-out": "Finalizada",
+    "cancelled": "Cancelada",
+    "no-show": "No se presentó"
+  },
+  "languages": {
+    "es": "Español",
+    "en": "Inglés"
+  },
+  "errors": {
+    "connection": "La API simulada no está disponible. Inicia el servidor e inténtalo de nuevo.",
+    "no-properties": "No hay establecimientos configurados.",
+    "required-fields": "Completa todos los campos obligatorios.",
+    "invalid-email": "Ingresa un correo electrónico válido.",
+    "invalid-language": "Elige un idioma válido.",
+    "invalid-stay-dates": "Elige una fecha de salida posterior a la de llegada.",
+    "invalid-guests": "Ingresa al menos un huésped.",
+    "invalid-status": "La reserva tiene un estado no válido.",
+    "room-type-required": "Elige un tipo de habitación del establecimiento activo.",
+    "inactive-room-type": "Los tipos de habitación inactivos no se pueden reservar.",
+    "room-not-in-room-type": "Elige una habitación del tipo seleccionado.",
+    "rate-plan-required": "Elige un plan tarifario del establecimiento activo.",
+    "inactive-rate-plan": "Los planes tarifarios inactivos no se pueden reservar.",
+    "rate-plan-not-for-room-type": "El plan tarifario elegido no vende este tipo de habitación.",
+    "over-capacity": "Los huéspedes superan la capacidad del tipo de habitación.",
+    "room-unavailable": "Elige otra habitación o cambia las fechas de la estadía.",
+    "not-editable": "Solo se pueden editar las reservas pendientes o confirmadas.",
+    "not-found": "La reserva ya no existe en el establecimiento activo."
+  }
+}
