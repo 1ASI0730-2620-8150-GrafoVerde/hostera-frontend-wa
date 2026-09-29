@@ -213,6 +213,15 @@ export class Booking {
   }
 
   /**
+   * Whether the guest's absence can be recorded: the booking is confirmed and its check-in day has arrived.
+   * @param {string} today - Current ISO calendar day.
+   * @returns {boolean}
+   */
+  canBeMarkedNoShow(today) {
+    return this.status === 'confirmed' && this.checkInDate <= today;
+  }
+
+  /**
    * Confirms a pending booking.
    * @param {string} at - ISO date-time of the confirmation.
    * @param {string} by - Operator who confirms.
@@ -252,6 +261,25 @@ export class Booking {
       cancelledBy: by,
       cancellationReason: reason,
       cancellationNote: note,
+    });
+  }
+
+  /**
+   * Records that the guest of a confirmed booking did not arrive, which frees its room.
+   * @param {string} today - Current ISO calendar day.
+   * @param {string} at - ISO date-time the no-show is recorded.
+   * @param {string} by - Operator who records it.
+   * @returns {Booking} No-show copy of the booking.
+   * @throws {BookingsError} When the booking is not confirmed or its check-in day has not arrived.
+   */
+  markNoShow(today, at, by) {
+    if (!this.canBeMarkedNoShow(today))
+      throw new BookingsError('invalid-status-change');
+    return new Booking({
+      ...this,
+      status: 'no-show',
+      noShowAt: at,
+      noShowBy: by,
     });
   }
 
