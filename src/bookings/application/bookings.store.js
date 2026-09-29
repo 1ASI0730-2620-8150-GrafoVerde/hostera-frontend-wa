@@ -8,6 +8,7 @@ import { defineStore } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import { BookingsApi } from '../infrastructure/bookings-api.js';
 import { BookingAssembler } from '../infrastructure/booking.assembler.js';
+import { Booking } from '../domain/model/booking.entity.js';
 import { BookingsError } from '../domain/model/bookings.error.js';
 import useRoomsStore from '../../rooms/application/rooms.store.js';
 
@@ -153,6 +154,63 @@ const useBookingsStore = defineStore('bookings', () => {
       throw new BookingsError('room-unavailable');
   }
 
+  /**
+   * Tracks a create or update request and records its errors.
+   * @template T
+   * @param {Promise<T>} request - Pending infrastructure request.
+   * @returns {Promise<T>} The same request result.
+   */
+  function trackSaving(request) {
+    saving.value = true;
+    return request
+      .catch((error) => {
+        errors.value.push(error);
+        throw error;
+      })
+      .finally(() => {
+        saving.value = false;
+      });
+  }
+
+  /**
+   * Creates a pending booking with the property's next booking code and its quoted total, then refreshes room availability.
+   * @param {Booking} booking - Booking entity to persist.
+   * @returns {Promise<Booking>} Created booking.
+   * @throws {BookingsError} When a business rule is violated.
+   */
+  function addBooking(booking) {
+    booking.validate();
+    ensureBookable(booking);
+    return trackSaving(
+      bookingsApi
+        .getLatestBooking(currentPropertyId.value)
+        .then((response) => {
+          const [latestBooking] =
+            BookingAssembler.toEntitiesFromResponse(response);
+          const newBooking = new Booking({
+            ...booking,
+            propertyId: currentPropertyId.value,
+            code: Booking.nextCode(
+              currentPropertyId.value,
+              latestBooking?.code,
+            ),
+            status: 'pending',
+            totalAmount: quoteTotal(booking),
+            createdAt: new Date().toISOString().slice(0, 10),
+          });
+          return bookingsApi.createBooking(newBooking);
+        })
+        .then((response) => {
+          const newBooking = BookingAssembler.toEntityFromResource(
+            response.data,
+          );
+          bookings.value.push(newBooking);
+          roomsStore.fetchRoomAssignments();
+          return newBooking;
+        }),
+    );
+  }
+
   return {
     bookings,
     errors,
@@ -164,6 +222,7 @@ const useBookingsStore = defineStore('bookings', () => {
     getBookingById,
     quoteTotal,
     isRoomAvailable,
+    addBooking,
   };
 });
 
