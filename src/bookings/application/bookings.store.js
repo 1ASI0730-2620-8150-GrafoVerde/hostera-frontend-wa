@@ -211,6 +211,43 @@ const useBookingsStore = defineStore('bookings', () => {
     );
   }
 
+  /**
+   * Updates a pending or confirmed booking, quoting a new total when its room type, rate plan, or nights change.
+   * @param {Booking} booking - Booking entity with updated data.
+   * @returns {Promise<Booking>} Updated booking.
+   * @throws {BookingsError} When a business rule is violated.
+   */
+  function updateBooking(booking) {
+    const currentBooking = getBookingById(booking.id);
+    if (!currentBooking) throw new BookingsError('not-found');
+    if (!currentBooking.isEditable) throw new BookingsError('not-editable');
+    booking.validate();
+    ensureBookable(booking, currentBooking);
+    const updatedBooking = new Booking({
+      ...booking,
+      propertyId: currentBooking.propertyId,
+      code: currentBooking.code,
+      status: currentBooking.status,
+      createdAt: currentBooking.createdAt,
+      totalAmount: booking.hasSamePricingAs(currentBooking)
+        ? currentBooking.totalAmount
+        : quoteTotal(booking),
+    });
+    return trackSaving(
+      bookingsApi.updateBooking(updatedBooking).then((response) => {
+        const savedBooking = BookingAssembler.toEntityFromResource(
+          response.data,
+        );
+        const index = bookings.value.findIndex(
+          (entry) => entry['id'] === savedBooking.id,
+        );
+        if (index !== -1) bookings.value[index] = savedBooking;
+        roomsStore.fetchRoomAssignments();
+        return savedBooking;
+      }),
+    );
+  }
+
   return {
     bookings,
     errors,
@@ -223,6 +260,7 @@ const useBookingsStore = defineStore('bookings', () => {
     quoteTotal,
     isRoomAvailable,
     addBooking,
+    updateBooking,
   };
 });
 
