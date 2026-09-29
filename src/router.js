@@ -2,9 +2,11 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from './shared/presentation/views/home.vue';
 import inventoryRoutes from './inventory/presentation/inventory-routes.js';
 import roomsRoutes from './rooms/presentation/rooms-routes.js';
+import bookingsRoutes from './bookings/presentation/bookings-routes.js';
 
 const routes = [
   { path: '/home', name: 'home', component: Home, meta: { title: 'Home' } },
+  { path: '/bookings', children: bookingsRoutes },
   {
     path: '/rooms',
     name: 'rooms',
