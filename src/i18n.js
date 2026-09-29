@@ -15,6 +15,9 @@ import enInventoryStorageLocationForm from './locales/en/inventory/storage-locat
 import enInventoryStockAdjustmentForm from './locales/en/inventory/stock-adjustment-form.json';
 import enBookingsBookingsTerms from './locales/en/bookings/bookings-terms.json';
 import enBookingsBookingsLayout from './locales/en/bookings/bookings-layout.json';
+import enBookingsBookingList from './locales/en/bookings/booking-list.json';
+import enBookingsBookingDetail from './locales/en/bookings/booking-detail.json';
+import enBookingsBookingForm from './locales/en/bookings/booking-form.json';
 import enRoomsRoomsTerms from './locales/en/rooms/rooms-terms.json';
 import enRoomsRoomsLayout from './locales/en/rooms/rooms-layout.json';
 import enRoomsRoomAvailability from './locales/en/rooms/room-availability.json';
@@ -44,6 +47,9 @@ import esInventoryStorageLocationForm from './locales/es/inventory/storage-locat
 import esInventoryStockAdjustmentForm from './locales/es/inventory/stock-adjustment-form.json';
 import esBookingsBookingsTerms from './locales/es/bookings/bookings-terms.json';
 import esBookingsBookingsLayout from './locales/es/bookings/bookings-layout.json';
+import esBookingsBookingList from './locales/es/bookings/booking-list.json';
+import esBookingsBookingDetail from './locales/es/bookings/booking-detail.json';
+import esBookingsBookingForm from './locales/es/bookings/booking-form.json';
 import esRoomsRoomsTerms from './locales/es/rooms/rooms-terms.json';
 import esRoomsRoomsLayout from './locales/es/rooms/rooms-layout.json';
 import esRoomsRoomAvailability from './locales/es/rooms/room-availability.json';
@@ -85,6 +91,9 @@ const i18n = createI18n({
       bookings: {
         'bookings-terms': enBookingsBookingsTerms,
         'bookings-layout': enBookingsBookingsLayout,
+        'booking-list': enBookingsBookingList,
+        'booking-detail': enBookingsBookingDetail,
+        'booking-form': enBookingsBookingForm,
       },
       rooms: {
         'rooms-terms': enRoomsRoomsTerms,
@@ -124,6 +133,9 @@ const i18n = createI18n({
       bookings: {
         'bookings-terms': esBookingsBookingsTerms,
         'bookings-layout': esBookingsBookingsLayout,
+        'booking-list': esBookingsBookingList,
+        'booking-detail': esBookingsBookingDetail,
+        'booking-form': esBookingsBookingForm,
       },
       rooms: {
         'rooms-terms': esRoomsRoomsTerms,
