@@ -52,7 +52,7 @@ The frontend enforces unique codes, sufficient stock, fixed units after history 
 
 ## Rooms resources
 
-- `GET /room-types?propertyId=1`, `GET /rooms?propertyId=1`, `GET /status-periods?propertyId=1`, and `GET /room-assignments?propertyId=1`: property-scoped collections. Properties include the `currency` used for room rates.
+- `GET /room-types?propertyId=1`, `GET /rooms?propertyId=1`, and `GET /status-periods?propertyId=1`: property-scoped collections. Properties include the `currency` used for room rates.
 - `POST`, `PUT /:id`, and `DELETE /:id` on `/room-types`: manage room types; the frontend removes only types that no room uses.
 - `POST` and `PUT /:id` on `/rooms`: create and edit rooms. A room takes its capacity and beds from its room type.
 - `POST`, `PUT /:id`, and `DELETE /:id` on `/status-periods`: setting or releasing a status may delete, trim, or split existing periods and create a new one, sent as separate requests.
@@ -61,4 +61,12 @@ The frontend enforces unique codes, sufficient stock, fixed units after history 
 - `POST` and `PUT /:id` on `/rate-plans`: create and edit rate plans; plans are made inactive instead of deleted.
 - `POST`, `PUT /:id`, and `DELETE /:id` on `/daily-rates`: setting rates sends one request per night; returning nights to the base nightly rate deletes their daily rates.
 
-Status periods and room assignments cover inclusive ISO date ranges (`startDate` to `endDate`). Room assignments are read-only demonstration data standing in for the future Bookings API; their seed dates, like the daily rates, fall in October 2026. The frontend keeps a room's status periods from overlapping each other or its assignments; direct API requests can bypass these rules, and a failed request in a multi-request status change can leave partial updates, which the SPA reloads. The same applies to the daily rates of a multi-night rate change.
+Status periods cover inclusive ISO date ranges (`startDate` to `endDate`); their seed dates, like the daily rates and bookings, fall around October 2026. Rooms derives its read-only room assignments from `/bookings`. The frontend keeps a room's status periods from overlapping each other or its bookings; direct API requests can bypass these rules, and a failed request in a multi-request status change can leave partial updates, which the SPA reloads. The same applies to the daily rates of a multi-night rate change.
+
+## Bookings resources
+
+- `GET /bookings?propertyId=1`: a property's bookings, with the guest's contact details, stay dates, room type, room, rate plan, and saved total. `checkInDate` is the first night and `checkOutDate` the departure day, so a stay covers each night before check-out.
+- `GET /bookings?propertyId=1&_sort=code&_order=desc&_limit=1`: the property's booking with the highest code, used to number its next booking (`BKG-1071`, …). Each property numbers bookings in its own thousand.
+- `POST` and `PUT /:id` on `/bookings`: create pending bookings and edit pending or confirmed ones. The frontend prices each night with the room type's nightly rate under the rate plan and saves the total with the booking.
+
+Pending, confirmed, and checked-in bookings hold their room: the frontend rejects stays that share a night with them or with a Blocked or Out of service period, while Needs cleaning does not prevent booking. Cancelled, no-show, and checked-out bookings no longer hold their room. Direct API requests can bypass these rules, and booking codes are numbered without concurrency control.
