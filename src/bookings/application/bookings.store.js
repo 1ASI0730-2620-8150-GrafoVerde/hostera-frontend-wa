@@ -233,8 +233,17 @@ const useBookingsStore = defineStore('bookings', () => {
         ? currentBooking.totalAmount
         : quoteTotal(booking),
     });
+    return saveChanges(updatedBooking);
+  }
+
+  /**
+   * Persists a changed booking, replaces it in local state, and refreshes room availability.
+   * @param {Booking} booking - Changed booking.
+   * @returns {Promise<Booking>} Persisted booking.
+   */
+  function saveChanges(booking) {
     return trackSaving(
-      bookingsApi.updateBooking(updatedBooking).then((response) => {
+      bookingsApi.updateBooking(booking).then((response) => {
         const savedBooking = BookingAssembler.toEntityFromResource(
           response.data,
         );
