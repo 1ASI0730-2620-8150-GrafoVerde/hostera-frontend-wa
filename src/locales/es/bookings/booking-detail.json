@@ -22,5 +22,20 @@
   "total": "Total de la reserva",
   "total-help": "Se guarda con la reserva, así que los cambios posteriores de tarifas no lo modifican.",
   "not-found": "Esta reserva no existe en el establecimiento activo.",
-  "back": "Volver a reservas"
+  "back": "Volver a reservas",
+  "actions": "Acciones",
+  "cancel": "Cancelar reserva",
+  "no-show": "Marcar como no presentada",
+  "checked-in-locked": "Las reservas con estadía en curso no se pueden cancelar ni marcar como no presentadas.",
+  "no-show-confirmed-only": "Solo las reservas confirmadas se pueden marcar como no presentadas.",
+  "no-show-from-check-in": "Disponible desde el día de llegada.",
+  "panels": {
+    "pending": "Pendiente de confirmación",
+    "confirmed": "Confirmada",
+    "cancelled": "Cancelación",
+    "no-show": "No presentación registrada"
+  },
+  "pending-help": "Revisa las fechas, la habitación y el contacto del huésped antes de confirmar la reserva.",
+  "confirm": "Confirmar reserva",
+  "saved": "Reserva actualizada"
 }

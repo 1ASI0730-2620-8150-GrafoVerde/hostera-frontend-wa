@@ -1,20 +1,26 @@
 <script setup>
-import { computed, toRefs } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
+import { useToast } from 'primevue';
 import useBookingsStore from '../../application/bookings.store.js';
 import useRoomsStore from '../../../rooms/application/rooms.store.js';
 import {
+  CalendarDate,
   formatDay,
   formatMoney,
 } from '../../../shared/presentation/calendar-format.js';
 import BookingsLayout from '../components/bookings-layout.vue';
 import BookingStatusTag from '../components/booking-status-tag.vue';
+import BookingStatusDialog from '../components/booking-status-dialog.vue';
+import BookingCancelDialog from '../components/booking-cancel-dialog.vue';
 
 const { t, locale } = useI18n();
 const route = useRoute();
+const toast = useToast();
 const store = useBookingsStore();
 const roomsStore = useRoomsStore();
+const { saving } = toRefs(store);
 const { currentProperty } = toRefs(roomsStore);
 const { getBookingById } = store;
 const { getRoomById, getRoomTypeById, getRatePlanById } = roomsStore;
@@ -25,6 +31,45 @@ const roomType = computed(() => getRoomTypeById(booking.value?.roomTypeId));
 const ratePlan = computed(() => getRatePlanById(booking.value?.ratePlanId));
 const currency = computed(() => currentProperty.value?.currency ?? 'PEN');
 const nightsCount = computed(() => booking.value?.nights.length ?? 0);
+const today = CalendarDate.today();
+const actionsMenu = ref(null);
+const statusAction = ref(null);
+const cancelDialogVisible = ref(false);
+// Cancelling and marking a no-show apply to bookings that have not ended; others have no actions.
+const hasActions = computed(() =>
+  ['pending', 'confirmed', 'checked-in'].includes(booking.value?.status),
+);
+const actionItems = computed(() => {
+  if (!booking.value) return [];
+  const checkedIn = booking.value.status === 'checked-in';
+  return [
+    {
+      label: t('bookings.booking-detail.cancel'),
+      icon: 'pi pi-times-circle',
+      disabled: !booking.value.canBeCancelled,
+      caption: checkedIn ? t('bookings.booking-detail.checked-in-locked') : '',
+      command: () => (cancelDialogVisible.value = true),
+    },
+    {
+      label: t('bookings.booking-detail.no-show'),
+      icon: 'pi pi-user-minus',
+      disabled: !booking.value.canBeMarkedNoShow(today),
+      caption: checkedIn
+        ? t('bookings.booking-detail.checked-in-locked')
+        : booking.value.status === 'pending'
+          ? t('bookings.booking-detail.no-show-confirmed-only')
+          : t('bookings.booking-detail.no-show-from-check-in'),
+      command: () => (statusAction.value = 'no-show'),
+    },
+  ];
+});
+// Icons of the status panel; bookings in other statuses have none.
+const statusPanels = {
+  pending: 'pi pi-clock',
+  confirmed: 'pi pi-calendar',
+  cancelled: 'pi pi-times-circle',
+  'no-show': 'pi pi-user-minus',
+};
 const breadcrumbItems = computed(() => [
   {
     label: t('bookings.booking-detail.bookings'),
@@ -69,6 +114,17 @@ const bookingFacts = computed(() => [
       : '—',
   },
 ]);
+
+/**
+ * Confirms that the booking's status changed.
+ */
+const notifySaved = () => {
+  toast.add({
+    severity: 'success',
+    summary: t('bookings.booking-detail.saved'),
+    life: 3000,
+  });
+};
 
 /**
  * Formats a stay day with its weekday.
@@ -153,6 +209,43 @@ const stayDay = (date) =>
               @click="navigate"
             />
           </router-link>
+          <template v-if="hasActions">
+            <pv-button
+              :label="t('bookings.booking-detail.actions')"
+              icon="pi pi-chevron-down"
+              icon-pos="right"
+              severity="secondary"
+              outlined
+              rounded
+              aria-haspopup="true"
+              aria-controls="booking-actions"
+              :disabled="saving"
+              @click="actionsMenu.toggle($event)"
+            />
+            <pv-menu
+              id="booking-actions"
+              ref="actionsMenu"
+              :model="actionItems"
+              popup
+            >
+              <template #item="{ item, props: itemProps }">
+                <a
+                  v-bind="itemProps.action"
+                  class="flex align-items-start gap-2 px-3 py-2"
+                >
+                  <i :class="[item.icon, 'mt-1']" aria-hidden="true" />
+                  <span class="flex flex-column">
+                    <span>{{ item.label }}</span>
+                    <small
+                      v-if="item.disabled && item.caption"
+                      class="text-color-secondary"
+                      >{{ item.caption }}</small
+                    >
+                  </span>
+                </a>
+              </template>
+            </pv-menu>
+          </template>
         </div>
       </header>
 
@@ -293,7 +386,40 @@ const stayDay = (date) =>
           </div>
         </div>
 
-        <aside class="col-12 xl:col-4">
+        <aside class="col-12 xl:col-4 flex flex-column gap-3">
+          <section
+            v-if="booking.status in statusPanels"
+            class="flex flex-column gap-3 p-4 surface-card border-1 surface-border border-round-xl"
+            :aria-labelledby="'booking-status-title'"
+          >
+            <h3
+              id="booking-status-title"
+              class="flex align-items-center gap-2 m-0 text-base font-semibold"
+            >
+              <i
+                :class="[statusPanels[booking.status], 'text-color-secondary']"
+                aria-hidden="true"
+              />
+              {{ t(`bookings.booking-detail.panels.${booking.status}`) }}
+            </h3>
+            <p
+              v-if="booking.status === 'pending'"
+              class="m-0 text-sm text-color-secondary line-height-3"
+            >
+              {{ t('bookings.booking-detail.pending-help') }}
+            </p>
+            <pv-button
+              v-if="booking.canBeConfirmed"
+              :label="t('bookings.booking-detail.confirm')"
+              icon="pi pi-check"
+              rounded
+              fluid
+              :disabled="saving"
+              @click="statusAction = 'confirm'"
+            />
+
+          </section>
+
           <div
             class="flex flex-column gap-3 p-4 surface-50 border-1 surface-border border-round-xl"
           >
@@ -321,6 +447,21 @@ const stayDay = (date) =>
           </div>
         </aside>
       </div>
+
+      <booking-status-dialog
+        v-if="statusAction"
+        :visible="!!statusAction"
+        :booking="booking"
+        :action="statusAction"
+        @update:visible="(value) => !value && (statusAction = null)"
+        @saved="notifySaved"
+      />
+      <booking-cancel-dialog
+        v-if="cancelDialogVisible"
+        v-model:visible="cancelDialogVisible"
+        :booking="booking"
+        @saved="notifySaved"
+      />
     </template>
     <pv-message v-else severity="warn" icon="pi pi-search">
       <div class="flex flex-column sm:flex-row sm:align-items-center gap-3">

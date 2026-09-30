@@ -22,5 +22,20 @@
   "total": "Booking total",
   "total-help": "Saved with the booking, so later rate changes do not alter it.",
   "not-found": "This booking does not exist in the active property.",
-  "back": "Back to bookings"
+  "back": "Back to bookings",
+  "actions": "Actions",
+  "cancel": "Cancel booking",
+  "no-show": "Mark as no-show",
+  "checked-in-locked": "Checked-in bookings cannot be cancelled or marked as no-show.",
+  "no-show-confirmed-only": "Only confirmed bookings can be marked as no-show.",
+  "no-show-from-check-in": "Available from the check-in day.",
+  "panels": {
+    "pending": "Pending confirmation",
+    "confirmed": "Confirmed",
+    "cancelled": "Cancellation",
+    "no-show": "No-show recorded"
+  },
+  "pending-help": "Check the dates, room, and guest contact before confirming the booking.",
+  "confirm": "Confirm booking",
+  "saved": "Booking updated"
 }
