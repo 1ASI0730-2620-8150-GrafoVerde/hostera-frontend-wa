@@ -131,6 +131,14 @@ export class Booking {
    * @param {string} [params.cancellationNote=''] - Internal note about the cancellation.
    * @param {?string} [params.noShowAt=null] - ISO date-time the no-show was recorded.
    * @param {?string} [params.noShowBy=null] - Operator who recorded the no-show.
+   * @param {?string} [params.checkedInAt=null] - ISO date-time the guest checked in.
+   * @param {?string} [params.checkedInBy=null] - Operator who completed the check-in.
+   * @param {?string} [params.guestDocumentType=null] - Identity document verified at check-in.
+   * @param {string} [params.guestDocumentNumber=''] - Number of the verified identity document.
+   * @param {?string} [params.checkedOutAt=null] - ISO date-time the guest checked out.
+   * @param {?string} [params.checkedOutBy=null] - Operator who completed the check-out.
+   * @param {?string} [params.roomCondition=null] - Room condition reported at check-out.
+   * @param {string} [params.departureNote=''] - Internal note about the departure.
    */
   constructor({
     id = null,
@@ -158,6 +166,14 @@ export class Booking {
     cancellationNote = '',
     noShowAt = null,
     noShowBy = null,
+    checkedInAt = null,
+    checkedInBy = null,
+    guestDocumentType = null,
+    guestDocumentNumber = '',
+    checkedOutAt = null,
+    checkedOutBy = null,
+    roomCondition = null,
+    departureNote = '',
   }) {
     this.id = id;
     this.propertyId = propertyId;
@@ -184,6 +200,14 @@ export class Booking {
     this.cancellationNote = cancellationNote.trim();
     this.noShowAt = noShowAt;
     this.noShowBy = noShowBy;
+    this.checkedInAt = checkedInAt;
+    this.checkedInBy = checkedInBy;
+    this.guestDocumentType = guestDocumentType;
+    this.guestDocumentNumber = guestDocumentNumber.trim();
+    this.checkedOutAt = checkedOutAt;
+    this.checkedOutBy = checkedOutBy;
+    this.roomCondition = roomCondition;
+    this.departureNote = departureNote.trim();
   }
 
   /**
