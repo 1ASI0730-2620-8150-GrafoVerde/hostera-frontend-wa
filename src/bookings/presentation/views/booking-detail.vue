@@ -7,6 +7,7 @@ import useBookingsStore from '../../application/bookings.store.js';
 import useRoomsStore from '../../../rooms/application/rooms.store.js';
 import {
   CalendarDate,
+  formatDateTime,
   formatDay,
   formatMoney,
 } from '../../../shared/presentation/calendar-format.js';
@@ -70,6 +71,55 @@ const statusPanels = {
   cancelled: 'pi pi-times-circle',
   'no-show': 'pi pi-user-minus',
 };
+const statusFacts = computed(() => {
+  const { status } = booking.value;
+  if (status === 'cancelled')
+    return [
+      {
+        label: t('bookings.booking-detail.cancelled-at'),
+        value: dateTime(booking.value.cancelledAt),
+      },
+      {
+        label: t('bookings.booking-detail.by'),
+        value: operatorName(booking.value.cancelledBy),
+      },
+      {
+        label: t('bookings.booking-detail.reason'),
+        value: booking.value.cancellationReason
+          ? t(
+              `bookings.bookings-terms.cancellation-reasons.${booking.value.cancellationReason}`,
+            )
+          : '—',
+      },
+    ];
+  if (status === 'no-show')
+    return [
+      {
+        label: t('bookings.booking-detail.recorded-at'),
+        value: dateTime(booking.value.noShowAt),
+      },
+      {
+        label: t('bookings.booking-detail.by'),
+        value: operatorName(booking.value.noShowBy),
+      },
+      {
+        label: t('bookings.booking-detail.arrival'),
+        value: t('bookings.booking-detail.not-recorded'),
+      },
+    ];
+  if (status === 'confirmed' && booking.value.confirmedAt)
+    return [
+      {
+        label: t('bookings.booking-detail.confirmed-at'),
+        value: dateTime(booking.value.confirmedAt),
+      },
+      {
+        label: t('bookings.booking-detail.by'),
+        value: operatorName(booking.value.confirmedBy),
+      },
+    ];
+  return [];
+});
 const breadcrumbItems = computed(() => [
   {
     label: t('bookings.booking-detail.bookings'),
@@ -114,6 +164,23 @@ const bookingFacts = computed(() => [
       : '—',
   },
 ]);
+
+/**
+ * Formats the moment a status changed, when it was recorded.
+ * @param {?string} value - ISO date-time.
+ * @returns {string} Localized date and time.
+ */
+const dateTime = (value) => (value ? formatDateTime(value, locale.value) : '—');
+
+/**
+ * Returns the display name of the operator who changed the booking's status.
+ * @param {?string} operator - Recorded operator.
+ * @returns {string} Localized operator name.
+ */
+const operatorName = (operator) =>
+  operator === 'Demo operator'
+    ? t('bookings.bookings-terms.demo-operator')
+    : (operator ?? '—');
 
 /**
  * Confirms that the booking's status changed.
@@ -408,6 +475,34 @@ const stayDay = (date) =>
             >
               {{ t('bookings.booking-detail.pending-help') }}
             </p>
+            <dl v-if="statusFacts.length" class="flex flex-column gap-2 m-0">
+              <div
+                v-for="fact in statusFacts"
+                :key="fact.label"
+                class="flex justify-content-between gap-3"
+              >
+                <dt class="text-color-secondary">{{ fact.label }}</dt>
+                <dd class="m-0 text-right font-medium">{{ fact.value }}</dd>
+              </div>
+            </dl>
+            <p
+              v-if="booking.cancellationNote"
+              class="m-0 p-3 surface-50 border-round-lg text-sm line-height-3"
+            >
+              {{ booking.cancellationNote }}
+            </p>
+            <pv-message
+              v-if="!booking.holdsRoom && booking.status !== 'checked-out'"
+              severity="secondary"
+              size="small"
+              icon="pi pi-key"
+            >
+              {{
+                t(`bookings.booking-detail.released.${booking.status}`, {
+                  number: room?.number ?? '—',
+                })
+              }}
+            </pv-message>
             <pv-button
               v-if="booking.canBeConfirmed"
               :label="t('bookings.booking-detail.confirm')"

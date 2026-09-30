@@ -37,5 +37,16 @@
   },
   "pending-help": "Check the dates, room, and guest contact before confirming the booking.",
   "confirm": "Confirm booking",
+  "confirmed-at": "Confirmed",
+  "cancelled-at": "Cancelled",
+  "recorded-at": "Recorded",
+  "by": "By",
+  "reason": "Reason",
+  "arrival": "Arrival",
+  "not-recorded": "Not recorded",
+  "released": {
+    "cancelled": "Room {number} was released.",
+    "no-show": "Room {number} was released. The booking stays in the history."
+  },
   "saved": "Booking updated"
 }

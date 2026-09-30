@@ -37,5 +37,16 @@
   },
   "pending-help": "Revisa las fechas, la habitación y el contacto del huésped antes de confirmar la reserva.",
   "confirm": "Confirmar reserva",
+  "confirmed-at": "Confirmada",
+  "cancelled-at": "Cancelada",
+  "recorded-at": "Registrada",
+  "by": "Por",
+  "reason": "Motivo",
+  "arrival": "Llegada",
+  "not-recorded": "No registrada",
+  "released": {
+    "cancelled": "Se liberó la habitación {number}.",
+    "no-show": "Se liberó la habitación {number}. La reserva queda en el historial."
+  },
   "saved": "Reserva actualizada"
 }
