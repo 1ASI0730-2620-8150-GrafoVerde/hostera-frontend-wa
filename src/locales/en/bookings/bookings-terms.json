@@ -14,6 +14,14 @@
     "es": "Spanish",
     "en": "English"
   },
+  "demo-operator": "Demo operator",
+  "cancellation-reasons": {
+    "guest-request": "Guest request",
+    "change-of-plans": "Change of plans",
+    "duplicate-booking": "Duplicate booking",
+    "property-unable": "Property unable to host",
+    "other": "Other"
+  },
   "errors": {
     "connection": "The mock API is unavailable. Start the server and try again.",
     "no-properties": "No properties are configured.",
@@ -32,6 +40,9 @@
     "over-capacity": "The guests exceed the room type's capacity.",
     "room-unavailable": "Choose another room or change the stay dates.",
     "not-editable": "Only pending and confirmed bookings can be edited.",
-    "not-found": "The booking no longer exists in the active property."
+    "not-found": "The booking no longer exists in the active property.",
+    "invalid-status-change": "This action is not available for the booking’s current status.",
+    "invalid-cancellation-reason": "Choose a cancellation reason.",
+    "cancellation-note-required": "Explain the cancellation in the internal note."
   }
 }

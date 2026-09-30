@@ -14,6 +14,14 @@
     "es": "Español",
     "en": "Inglés"
   },
+  "demo-operator": "Operador de demostración",
+  "cancellation-reasons": {
+    "guest-request": "Solicitud del huésped",
+    "change-of-plans": "Cambio de planes",
+    "duplicate-booking": "Reserva duplicada",
+    "property-unable": "El establecimiento no puede atenderla",
+    "other": "Otro"
+  },
   "errors": {
     "connection": "La API simulada no está disponible. Inicia el servidor e inténtalo de nuevo.",
     "no-properties": "No hay establecimientos configurados.",
@@ -32,6 +40,9 @@
     "over-capacity": "Los huéspedes superan la capacidad del tipo de habitación.",
     "room-unavailable": "Elige otra habitación o cambia las fechas de la estadía.",
     "not-editable": "Solo se pueden editar las reservas pendientes o confirmadas.",
-    "not-found": "La reserva ya no existe en el establecimiento activo."
+    "not-found": "La reserva ya no existe en el establecimiento activo.",
+    "invalid-status-change": "Esta acción no está disponible para el estado actual de la reserva.",
+    "invalid-cancellation-reason": "Elige un motivo de cancelación.",
+    "cancellation-note-required": "Explica la cancelación en la nota interna."
   }
 }
