@@ -48,6 +48,7 @@
     "cancelled": "Se liberó la habitación {number}.",
     "no-show": "Se liberó la habitación {number}. La reserva queda en el historial."
   },
+  "duplicate": "Duplicar reserva",
   "restore": "Restaurar reserva",
   "restore-help": "Disponible antes de que empiece la estadía y mientras la habitación siga libre. La reserva vuelve a Pendiente.",
   "saved": "Reserva actualizada"

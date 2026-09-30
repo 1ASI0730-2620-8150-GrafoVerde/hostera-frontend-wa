@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'primevue';
 import useBookingsStore from '../../application/bookings.store.js';
 import useRoomsStore from '../../../rooms/application/rooms.store.js';
@@ -19,6 +19,7 @@ import BookingCancelDialog from '../components/booking-cancel-dialog.vue';
 
 const { t, locale } = useI18n();
 const route = useRoute();
+const router = useRouter();
 const toast = useToast();
 const store = useBookingsStore();
 const roomsStore = useRoomsStore();
@@ -212,6 +213,16 @@ const restore = async () => {
     restoreErrorCode.value =
       error instanceof BookingsError ? error.code : 'connection';
   }
+};
+
+/**
+ * Starts a new booking with this booking's guest, room type, guests, and rate plan.
+ */
+const duplicate = () => {
+  router.push({
+    name: 'bookings-booking-new',
+    query: { from: booking.value.id },
+  });
 };
 
 /**
@@ -534,6 +545,15 @@ const stayDay = (date) =>
               @click="statusAction = 'confirm'"
             />
             <template v-if="!booking.holdsRoom">
+              <pv-button
+                :label="t('bookings.booking-detail.duplicate')"
+                icon="pi pi-copy"
+                severity="secondary"
+                outlined
+                rounded
+                fluid
+                @click="duplicate"
+              />
               <template v-if="booking.status === 'cancelled'">
                 <pv-button
                   :label="t('bookings.booking-detail.restore')"
