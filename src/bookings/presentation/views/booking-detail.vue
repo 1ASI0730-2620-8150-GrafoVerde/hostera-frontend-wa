@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router';
 import { useToast } from 'primevue';
 import useBookingsStore from '../../application/bookings.store.js';
 import useRoomsStore from '../../../rooms/application/rooms.store.js';
+import { BookingsError } from '../../domain/model/bookings.error.js';
 import {
   CalendarDate,
   formatDateTime,
@@ -23,7 +24,7 @@ const store = useBookingsStore();
 const roomsStore = useRoomsStore();
 const { saving } = toRefs(store);
 const { currentProperty } = toRefs(roomsStore);
-const { getBookingById } = store;
+const { getBookingById, isRoomAvailable, restoreBooking } = store;
 const { getRoomById, getRoomTypeById, getRatePlanById } = roomsStore;
 
 const booking = computed(() => getBookingById(route.params.id));
@@ -36,6 +37,7 @@ const today = CalendarDate.today();
 const actionsMenu = ref(null);
 const statusAction = ref(null);
 const cancelDialogVisible = ref(false);
+const restoreErrorCode = ref('');
 // Cancelling and marking a no-show apply to bookings that have not ended; others have no actions.
 const hasActions = computed(() =>
   ['pending', 'confirmed', 'checked-in'].includes(booking.value?.status),
@@ -71,6 +73,11 @@ const statusPanels = {
   cancelled: 'pi pi-times-circle',
   'no-show': 'pi pi-user-minus',
 };
+const canRestore = computed(
+  () =>
+    booking.value?.canBeRestored(today) &&
+    isRoomAvailable(booking.value.roomId, booking.value),
+);
 const statusFacts = computed(() => {
   const { status } = booking.value;
   if (status === 'cancelled')
@@ -191,6 +198,20 @@ const notifySaved = () => {
     summary: t('bookings.booking-detail.saved'),
     life: 3000,
   });
+};
+
+/**
+ * Restores a cancelled booking as pending when its room is still available.
+ */
+const restore = async () => {
+  restoreErrorCode.value = '';
+  try {
+    await restoreBooking(booking.value.id);
+    notifySaved();
+  } catch (error) {
+    restoreErrorCode.value =
+      error instanceof BookingsError ? error.code : 'connection';
+  }
 };
 
 /**
@@ -512,7 +533,30 @@ const stayDay = (date) =>
               :disabled="saving"
               @click="statusAction = 'confirm'"
             />
-
+            <template v-if="!booking.holdsRoom">
+              <template v-if="booking.status === 'cancelled'">
+                <pv-button
+                  :label="t('bookings.booking-detail.restore')"
+                  icon="pi pi-replay"
+                  rounded
+                  fluid
+                  :disabled="saving || !canRestore"
+                  :loading="saving"
+                  @click="restore"
+                />
+                <small class="text-center text-color-secondary line-height-3">{{
+                  t('bookings.booking-detail.restore-help')
+                }}</small>
+                <pv-message
+                  v-if="restoreErrorCode"
+                  severity="error"
+                  size="small"
+                  icon="pi pi-times-circle"
+                >
+                  {{ t(`bookings.bookings-terms.errors.${restoreErrorCode}`) }}
+                </pv-message>
+              </template>
+            </template>
           </section>
 
           <div

@@ -48,5 +48,7 @@
     "cancelled": "Room {number} was released.",
     "no-show": "Room {number} was released. The booking stays in the history."
   },
+  "restore": "Restore booking",
+  "restore-help": "Available before the stay starts while the room is still free. The booking returns to Pending.",
   "saved": "Booking updated"
 }
