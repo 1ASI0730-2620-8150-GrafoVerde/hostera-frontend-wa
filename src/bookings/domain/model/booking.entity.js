@@ -45,6 +45,12 @@ export class Booking {
   ];
 
   /**
+   * Statuses whose booking can still receive payments.
+   * @type {string[]}
+   */
+  static paymentAcceptingStatuses = ['pending', 'confirmed', 'checked-in'];
+
+  /**
    * Languages a guest can prefer for communication.
    * @type {string[]}
    */
@@ -229,6 +235,34 @@ export class Booking {
    */
   canBeRestored(today) {
     return this.status === 'cancelled' && today <= this.checkInDate;
+  }
+
+  /**
+   * Whether the booking can still receive payments.
+   * @returns {boolean}
+   */
+  get acceptsPayments() {
+    return Booking.paymentAcceptingStatuses.includes(this.status);
+  }
+
+  /**
+   * Derives the amount still owed after the booking's payments.
+   * @param {import('./payment.entity.js').Payment[]} payments - Payments of the booking.
+   * @returns {number} Balance due, never below zero.
+   */
+  balanceDue(payments) {
+    const paid = payments.reduce((sum, payment) => sum + payment.amount, 0);
+    return Math.max(Math.round((this.totalAmount - paid) * 100) / 100, 0);
+  }
+
+  /**
+   * Classifies how much of the booking total has been paid.
+   * @param {import('./payment.entity.js').Payment[]} payments - Payments of the booking.
+   * @returns {'unpaid'|'partially-paid'|'paid'}
+   */
+  paymentStatus(payments) {
+    if (this.balanceDue(payments) === 0) return 'paid';
+    return payments.length ? 'partially-paid' : 'unpaid';
   }
 
   /**
