@@ -287,6 +287,24 @@ const useBookingsStore = defineStore('bookings', () => {
     );
   }
 
+  /**
+   * Cancels a pending or confirmed booking, which frees its room.
+   * @param {import('../domain/cancel-booking.command.js').CancelBookingCommand} cancelBookingCommand - Cancel-booking command.
+   * @returns {Promise<Booking>} Cancelled booking.
+   * @throws {BookingsError} When the booking cannot be cancelled.
+   */
+  function cancelBooking(cancelBookingCommand) {
+    const { bookingId, reason, note } = cancelBookingCommand;
+    return saveChanges(
+      requireBooking(bookingId).cancel({
+        reason,
+        note,
+        at: new Date().toISOString(),
+        by: demoOperator,
+      }),
+    );
+  }
+
   return {
     bookings,
     errors,
@@ -301,6 +319,7 @@ const useBookingsStore = defineStore('bookings', () => {
     addBooking,
     updateBooking,
     confirmBooking,
+    cancelBooking,
   };
 });
 
