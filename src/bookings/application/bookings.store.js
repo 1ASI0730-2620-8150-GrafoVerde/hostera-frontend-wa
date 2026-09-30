@@ -276,6 +276,17 @@ const useBookingsStore = defineStore('bookings', () => {
   }
 
   /**
+   * Returns the current local ISO calendar day.
+   * @returns {string}
+   */
+  function today() {
+    const date = new Date();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${date.getFullYear()}-${month}-${day}`;
+  }
+
+  /**
    * Confirms a pending booking.
    * @param {number} bookingId - Booking identifier.
    * @returns {Promise<Booking>} Confirmed booking.
@@ -305,6 +316,22 @@ const useBookingsStore = defineStore('bookings', () => {
     );
   }
 
+  /**
+   * Records that the guest of a confirmed booking did not arrive, which frees its room.
+   * @param {number} bookingId - Booking identifier.
+   * @returns {Promise<Booking>} No-show booking.
+   * @throws {BookingsError} When the booking cannot be marked as no-show.
+   */
+  function markNoShow(bookingId) {
+    return saveChanges(
+      requireBooking(bookingId).markNoShow(
+        today(),
+        new Date().toISOString(),
+        demoOperator,
+      ),
+    );
+  }
+
   return {
     bookings,
     errors,
@@ -320,6 +347,7 @@ const useBookingsStore = defineStore('bookings', () => {
     updateBooking,
     confirmBooking,
     cancelBooking,
+    markNoShow,
   };
 });
 
