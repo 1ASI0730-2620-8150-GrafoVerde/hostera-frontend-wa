@@ -45,6 +45,12 @@ export class Booking {
   ];
 
   /**
+   * Identity documents staff can verify at check-in.
+   * @type {string[]}
+   */
+  static documentTypes = ['dni', 'passport', 'foreign-resident-card'];
+
+  /**
    * Statuses whose booking can still receive payments.
    * @type {string[]}
    */
@@ -287,6 +293,49 @@ export class Booking {
   paymentStatus(payments) {
     if (this.balanceDue(payments) === 0) return 'paid';
     return payments.length ? 'partially-paid' : 'unpaid';
+  }
+
+  /**
+   * Whether the guest can check in: the booking is confirmed and today is one of its nights.
+   * @param {string} today - Current ISO calendar day.
+   * @returns {boolean}
+   */
+  canBeCheckedIn(today) {
+    return (
+      this.status === 'confirmed' &&
+      this.checkInDate <= today &&
+      today < this.checkOutDate
+    );
+  }
+
+  /**
+   * Checks the guest in after their identity document is verified; a balance due does not prevent it.
+   * @param {Object} checkIn - Check-in details.
+   * @param {string} checkIn.today - Current ISO calendar day.
+   * @param {string} checkIn.documentType - Type of the verified identity document.
+   * @param {string} checkIn.documentNumber - Number of the verified identity document.
+   * @param {boolean} checkIn.documentVerified - Whether staff verified the original document.
+   * @param {string} checkIn.at - ISO date-time of the check-in.
+   * @param {string} checkIn.by - Operator who completes it.
+   * @returns {Booking} Checked-in copy of the booking.
+   * @throws {BookingsError} When the booking cannot be checked in or the identity is not verified.
+   */
+  checkIn({ today, documentType, documentNumber, documentVerified, at, by }) {
+    if (!this.canBeCheckedIn(today))
+      throw new BookingsError('invalid-status-change');
+    if (!Booking.documentTypes.includes(documentType))
+      throw new BookingsError('invalid-document-type');
+    if (!documentNumber?.trim())
+      throw new BookingsError('document-number-required');
+    if (!documentVerified) throw new BookingsError('identity-not-verified');
+    return new Booking({
+      ...this,
+      status: 'checked-in',
+      checkedInAt: at,
+      checkedInBy: by,
+      guestDocumentType: documentType,
+      guestDocumentNumber: documentNumber,
+    });
   }
 
   /**
