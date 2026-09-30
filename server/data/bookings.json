@@ -17,7 +17,15 @@
       "ratePlanId": 1,
       "totalAmount": 370,
       "guestRequest": "Arrival after 8:00 PM. Please keep the booking for a late check-in.",
-      "createdAt": "2026-09-27"
+      "createdAt": "2026-09-27",
+      "confirmedAt": "2026-09-27T15:11:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 2,
@@ -36,7 +44,15 @@
       "ratePlanId": 1,
       "totalAmount": 850,
       "guestRequest": "Quiet room away from the elevator, if possible.",
-      "createdAt": "2026-10-05"
+      "createdAt": "2026-10-05",
+      "confirmedAt": "2026-10-05T15:12:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 3,
@@ -55,7 +71,15 @@
       "ratePlanId": 2,
       "totalAmount": 1350,
       "guestRequest": "",
-      "createdAt": "2026-09-23"
+      "createdAt": "2026-09-23",
+      "confirmedAt": "2026-09-23T15:13:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 4,
@@ -74,7 +98,15 @@
       "ratePlanId": 1,
       "totalAmount": 870,
       "guestRequest": "",
-      "createdAt": "2026-10-02"
+      "createdAt": "2026-10-02",
+      "confirmedAt": "2026-10-02T15:14:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 5,
@@ -93,7 +125,15 @@
       "ratePlanId": 3,
       "totalAmount": 380,
       "guestRequest": "Extra pillows, please.",
-      "createdAt": "2026-09-24"
+      "createdAt": "2026-09-24",
+      "confirmedAt": "2026-09-24T15:15:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 6,
@@ -112,7 +152,15 @@
       "ratePlanId": 1,
       "totalAmount": 950,
       "guestRequest": "",
-      "createdAt": "2026-09-27"
+      "createdAt": "2026-09-27",
+      "confirmedAt": null,
+      "confirmedBy": null,
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 7,
@@ -131,7 +179,15 @@
       "ratePlanId": 2,
       "totalAmount": 920,
       "guestRequest": "Celebrating an anniversary.",
-      "createdAt": "2026-09-27"
+      "createdAt": "2026-09-27",
+      "confirmedAt": "2026-09-27T15:17:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 8,
@@ -150,7 +206,15 @@
       "ratePlanId": 1,
       "totalAmount": 1200,
       "guestRequest": "",
-      "createdAt": "2026-09-22"
+      "createdAt": "2026-09-22",
+      "confirmedAt": "2026-09-22T15:18:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 9,
@@ -169,7 +233,15 @@
       "ratePlanId": 1,
       "totalAmount": 990,
       "guestRequest": "Arrival after 8:00 PM. Please keep the booking for a late check-in.",
-      "createdAt": "2026-09-26"
+      "createdAt": "2026-09-26",
+      "confirmedAt": null,
+      "confirmedBy": null,
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 10,
@@ -188,7 +260,15 @@
       "ratePlanId": 1,
       "totalAmount": 360,
       "guestRequest": "Quiet room away from the elevator, if possible.",
-      "createdAt": "2026-09-25"
+      "createdAt": "2026-09-25",
+      "confirmedAt": "2026-09-25T15:20:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 11,
@@ -207,7 +287,15 @@
       "ratePlanId": 2,
       "totalAmount": 1380,
       "guestRequest": "",
-      "createdAt": "2026-09-29"
+      "createdAt": "2026-09-29",
+      "confirmedAt": "2026-09-29T15:21:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 12,
@@ -226,7 +314,15 @@
       "ratePlanId": 1,
       "totalAmount": 3640,
       "guestRequest": "",
-      "createdAt": "2026-09-21"
+      "createdAt": "2026-09-21",
+      "confirmedAt": "2026-09-21T15:22:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 13,
@@ -245,7 +341,15 @@
       "ratePlanId": 3,
       "totalAmount": 720,
       "guestRequest": "Extra pillows, please.",
-      "createdAt": "2026-10-10"
+      "createdAt": "2026-10-10",
+      "confirmedAt": "2026-10-10T15:23:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 14,
@@ -264,7 +368,15 @@
       "ratePlanId": 1,
       "totalAmount": 450,
       "guestRequest": "",
-      "createdAt": "2026-09-30"
+      "createdAt": "2026-09-30",
+      "confirmedAt": "2026-09-30T15:24:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 15,
@@ -283,7 +395,15 @@
       "ratePlanId": 2,
       "totalAmount": 240,
       "guestRequest": "Celebrating an anniversary.",
-      "createdAt": "2026-09-25"
+      "createdAt": "2026-09-25",
+      "confirmedAt": "2026-09-25T15:25:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 16,
@@ -302,7 +422,15 @@
       "ratePlanId": 1,
       "totalAmount": 760,
       "guestRequest": "",
-      "createdAt": "2026-10-15"
+      "createdAt": "2026-10-15",
+      "confirmedAt": "2026-10-15T15:26:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 17,
@@ -321,7 +449,15 @@
       "ratePlanId": 6,
       "totalAmount": 450,
       "guestRequest": "Arrival after 8:00 PM. Please keep the booking for a late check-in.",
-      "createdAt": "2026-09-24"
+      "createdAt": "2026-09-24",
+      "confirmedAt": "2026-09-24T15:27:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 18,
@@ -340,7 +476,15 @@
       "ratePlanId": 6,
       "totalAmount": 780,
       "guestRequest": "Quiet room away from the elevator, if possible.",
-      "createdAt": "2026-09-28"
+      "createdAt": "2026-09-28",
+      "confirmedAt": null,
+      "confirmedBy": null,
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 19,
@@ -359,7 +503,15 @@
       "ratePlanId": 2,
       "totalAmount": 440,
       "guestRequest": "",
-      "createdAt": "2026-10-10"
+      "createdAt": "2026-10-10",
+      "confirmedAt": null,
+      "confirmedBy": null,
+      "cancelledAt": "2026-10-03T19:18:00.000Z",
+      "cancelledBy": "Demo operator",
+      "cancellationReason": "change-of-plans",
+      "cancellationNote": "Guest moved the trip to November and will book again.",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 20,
@@ -378,7 +530,15 @@
       "ratePlanId": 1,
       "totalAmount": 200,
       "guestRequest": "",
-      "createdAt": "2026-09-25"
+      "createdAt": "2026-09-25",
+      "confirmedAt": "2026-09-25T15:30:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": "2026-10-06T04:15:00.000Z",
+      "noShowBy": "Demo operator"
     },
     {
       "id": 21,
@@ -397,7 +557,15 @@
       "ratePlanId": 3,
       "totalAmount": 720,
       "guestRequest": "Extra pillows, please.",
-      "createdAt": "2026-09-18"
+      "createdAt": "2026-09-18",
+      "confirmedAt": "2026-09-18T15:31:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     },
     {
       "id": 22,
@@ -416,7 +584,15 @@
       "ratePlanId": 6,
       "totalAmount": 330,
       "guestRequest": "",
-      "createdAt": "2026-09-21"
+      "createdAt": "2026-09-21",
+      "confirmedAt": "2026-09-21T15:32:00.000Z",
+      "confirmedBy": "Demo operator",
+      "cancelledAt": null,
+      "cancelledBy": null,
+      "cancellationReason": null,
+      "cancellationNote": "",
+      "noShowAt": null,
+      "noShowBy": null
     }
   ]
 }
