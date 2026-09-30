@@ -332,6 +332,19 @@ const useBookingsStore = defineStore('bookings', () => {
     );
   }
 
+  /**
+   * Returns a cancelled booking to Pending when its stay has not started and its room is still available.
+   * @param {number} bookingId - Booking identifier.
+   * @returns {Promise<Booking>} Restored booking.
+   * @throws {BookingsError} When the booking cannot be restored.
+   */
+  function restoreBooking(bookingId) {
+    const restoredBooking = requireBooking(bookingId).restore(today());
+    if (!isRoomAvailable(restoredBooking.roomId, restoredBooking))
+      throw new BookingsError('room-unavailable');
+    return saveChanges(restoredBooking);
+  }
+
   return {
     bookings,
     errors,
@@ -348,6 +361,7 @@ const useBookingsStore = defineStore('bookings', () => {
     confirmBooking,
     cancelBooking,
     markNoShow,
+    restoreBooking,
   };
 });
 
