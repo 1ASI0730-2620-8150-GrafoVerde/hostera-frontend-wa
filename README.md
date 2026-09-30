@@ -32,7 +32,7 @@ Start the mock API with `npm run server:start`, then start the SPA with `npm run
 
 ## Bookings workspace
 
-Open `/bookings` to list a property's bookings, filter them by guest, booking code, stay period, or status, and open a booking's detail. Create bookings with the guest's contact details, stay dates, guests, room type, room, and rate plan; rooms already booked or Blocked or Out of service for those nights cannot be chosen, and the estimated total adds each night's rate. New bookings start as Pending, and only pending or confirmed bookings can be edited. The property selection is shared with the Rooms workspace.
+Open `/bookings` to list a property's bookings, filter them by guest, booking code, stay period, or status, and open a booking's detail. Create bookings with the guest's contact details, stay dates, guests, room type, room, and rate plan; rooms already booked or Blocked or Out of service for those nights cannot be chosen, and the estimated total adds each night's rate. New bookings start as Pending, and only pending or confirmed bookings can be edited. From a booking's detail, confirm a pending booking, cancel a pending or confirmed one with a reason, mark a confirmed booking as no-show from its check-in day, restore a cancelled booking as Pending before its stay starts while the room is free, or duplicate a cancelled or no-show booking into a new one. Cancelled and no-show bookings release their room. The property selection is shared with the Rooms workspace.
 
 ## Rooms workspace
 
