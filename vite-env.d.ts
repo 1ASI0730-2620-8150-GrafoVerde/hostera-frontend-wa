@@ -40,6 +40,10 @@ interface ImportMetaEnv {
    */
   readonly VITE_BOOKINGS_ENDPOINT_PATH: string;
   /**
+   * # VITE_PAYMENTS_ENDPOINT_PATH is the path to the payments' endpoint.
+   */
+  readonly VITE_PAYMENTS_ENDPOINT_PATH: string;
+  /**
    * # VITE_RATE_PLANS_ENDPOINT_PATH is the path to the rate plans' endpoint.
    */
   readonly VITE_RATE_PLANS_ENDPOINT_PATH: string;
