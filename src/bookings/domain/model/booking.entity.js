@@ -51,6 +51,12 @@ export class Booking {
   static documentTypes = ['dni', 'passport', 'foreign-resident-card'];
 
   /**
+   * Room conditions staff can report at check-out.
+   * @type {string[]}
+   */
+  static roomConditions = ['no-issues', 'needs-attention'];
+
+  /**
    * Statuses whose booking can still receive payments.
    * @type {string[]}
    */
@@ -309,6 +315,14 @@ export class Booking {
   }
 
   /**
+   * Whether the guest can check out.
+   * @returns {boolean}
+   */
+  get canBeCheckedOut() {
+    return this.status === 'checked-in';
+  }
+
+  /**
    * Checks the guest in after their identity document is verified; a balance due does not prevent it.
    * @param {Object} checkIn - Check-in details.
    * @param {string} checkIn.today - Current ISO calendar day.
@@ -335,6 +349,32 @@ export class Booking {
       checkedInBy: by,
       guestDocumentType: documentType,
       guestDocumentNumber: documentNumber,
+    });
+  }
+
+  /**
+   * Checks the guest out once nothing is owed, which frees the room for any remaining nights.
+   * @param {Object} checkOut - Check-out details.
+   * @param {number} checkOut.balanceDue - Amount still owed.
+   * @param {string} checkOut.roomCondition - Room condition reported at departure.
+   * @param {string} [checkOut.note=''] - Internal note about the departure.
+   * @param {string} checkOut.at - ISO date-time of the check-out.
+   * @param {string} checkOut.by - Operator who completes it.
+   * @returns {Booking} Checked-out copy of the booking.
+   * @throws {BookingsError} When the booking cannot be checked out or a balance remains.
+   */
+  checkOut({ balanceDue, roomCondition, note = '', at, by }) {
+    if (!this.canBeCheckedOut) throw new BookingsError('invalid-status-change');
+    if (balanceDue > 0) throw new BookingsError('balance-due');
+    if (!Booking.roomConditions.includes(roomCondition))
+      throw new BookingsError('invalid-room-condition');
+    return new Booking({
+      ...this,
+      status: 'checked-out',
+      checkedOutAt: at,
+      checkedOutBy: by,
+      roomCondition,
+      departureNote: note,
     });
   }
 
