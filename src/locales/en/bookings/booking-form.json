@@ -35,5 +35,6 @@
   "save": "Save changes",
   "create": "Create booking",
   "saved": "Changes saved",
-  "created": "Booking {code} created"
+  "created": "Booking {code} created",
+  "copied-from": "Copied from {code}"
 }

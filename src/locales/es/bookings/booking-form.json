@@ -35,5 +35,6 @@
   "save": "Guardar cambios",
   "create": "Crear reserva",
   "saved": "Cambios guardados",
-  "created": "Reserva {code} creada"
+  "created": "Reserva {code} creada",
+  "copied-from": "Copiada de {code}"
 }

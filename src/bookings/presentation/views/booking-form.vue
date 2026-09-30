@@ -37,6 +37,10 @@ const currentBooking = computed(() =>
   route.params.id ? getBookingById(route.params.id) : null,
 );
 const isEdit = computed(() => !!route.params.id);
+// A duplicated booking is the source of a new booking's guest, guests, room type, and rate plan.
+const sourceBooking = computed(() =>
+  !isEdit.value && route.query.from ? getBookingById(route.query.from) : null,
+);
 
 /**
  * Builds the form state from a booking, or empty values for a new booking.
@@ -59,14 +63,37 @@ const formFrom = (booking) => ({
   roomId: booking?.roomId ?? null,
   ratePlanId: booking?.ratePlanId ?? null,
 });
-const form = ref(formFrom(currentBooking.value));
+
+/**
+ * Builds the form state of a new booking from a duplicated one, leaving its stay and room to be chosen again.
+ * @param {Booking} booking - Duplicated booking.
+ * @returns {Object} Form state.
+ */
+const formCopiedFrom = (booking) => ({
+  ...formFrom(booking),
+  checkIn: null,
+  checkOut: null,
+  roomId: null,
+});
+
+/**
+ * Builds the form state for the edited, duplicated, or new booking.
+ * @returns {Object} Form state.
+ */
+const initialForm = () =>
+  sourceBooking.value
+    ? formCopiedFrom(sourceBooking.value)
+    : formFrom(currentBooking.value);
+
+const form = ref(initialForm());
 const errorCode = ref('');
-// Direct visits load the booking after the form opens; fill the form once it arrives.
-let formBookingId = currentBooking.value?.id ?? null;
-watch(currentBooking, (booking) => {
-  if (!booking || booking.id === formBookingId) return;
-  formBookingId = booking.id;
-  form.value = formFrom(booking);
+// Direct visits load the bookings after the form opens; fill the form once the booking arrives.
+let formSourceId = (currentBooking.value ?? sourceBooking.value)?.id ?? null;
+watch([currentBooking, sourceBooking], ([booking, source]) => {
+  const loaded = booking ?? source;
+  if (!loaded || loaded.id === formSourceId) return;
+  formSourceId = loaded.id;
+  form.value = initialForm();
 });
 
 const datesSelected = computed(
@@ -276,6 +303,15 @@ const cancel = () => {
               <span>{{ currentBooking.guestName }}</span>
               <booking-status-tag :status="currentBooking.status" />
             </span>
+            <span
+              v-else-if="sourceBooking"
+              class="text-sm text-color-secondary"
+              >{{
+                t('bookings.booking-form.copied-from', {
+                  code: sourceBooking.code,
+                })
+              }}</span
+            >
             <span v-else class="text-sm text-color-secondary">{{
               currentProperty?.name
             }}</span>
