@@ -15,6 +15,12 @@ import useRoomsStore from '../../rooms/application/rooms.store.js';
 const bookingsApi = new BookingsApi();
 
 /**
+ * Operator recorded in booking status changes until IAM is implemented.
+ * @type {string}
+ */
+const demoOperator = 'Demo operator';
+
+/**
  * Reactive store that exposes Bookings commands and queries.
  *
  * @returns {Object} Store state and actions.
@@ -257,6 +263,30 @@ const useBookingsStore = defineStore('bookings', () => {
     );
   }
 
+  /**
+   * Finds a booking that must exist to change its status.
+   * @param {number} bookingId - Booking identifier.
+   * @returns {Booking} Persisted booking.
+   * @throws {BookingsError} When the booking no longer exists.
+   */
+  function requireBooking(bookingId) {
+    const booking = getBookingById(bookingId);
+    if (!booking) throw new BookingsError('not-found');
+    return booking;
+  }
+
+  /**
+   * Confirms a pending booking.
+   * @param {number} bookingId - Booking identifier.
+   * @returns {Promise<Booking>} Confirmed booking.
+   * @throws {BookingsError} When the booking cannot be confirmed.
+   */
+  function confirmBooking(bookingId) {
+    return saveChanges(
+      requireBooking(bookingId).confirm(new Date().toISOString(), demoOperator),
+    );
+  }
+
   return {
     bookings,
     errors,
@@ -270,6 +300,7 @@ const useBookingsStore = defineStore('bookings', () => {
     isRoomAvailable,
     addBooking,
     updateBooking,
+    confirmBooking,
   };
 });
 
