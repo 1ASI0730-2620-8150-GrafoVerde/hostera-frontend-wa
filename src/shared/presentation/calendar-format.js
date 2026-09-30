@@ -125,6 +125,21 @@ export function formatDayRange(startDate, endDate, locale) {
 }
 
 /**
+ * Formats an ISO date-time, such as the moment a status changed, for the active locale.
+ * @param {string} value - ISO date-time.
+ * @param {string} locale - Active locale.
+ * @returns {string} Localized date and time, such as "Oct 6, 3:42 PM".
+ */
+export function formatDateTime(value, locale) {
+  return new Intl.DateTimeFormat(locale, {
+    day: 'numeric',
+    month: 'short',
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(new Date(value));
+}
+
+/**
  * Regional formats that show a currency with its local symbol, such as S/ for the Peruvian sol.
  * Currencies without an entry keep the active locale, which may show their ISO code instead.
  * @type {Object<string, string>}
