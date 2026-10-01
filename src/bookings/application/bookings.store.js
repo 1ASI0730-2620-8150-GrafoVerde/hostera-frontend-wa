@@ -402,6 +402,26 @@ const useBookingsStore = defineStore('bookings', () => {
   }
 
   /**
+   * Checks out the guest of a checked-in booking once its balance is paid.
+   * @param {import('../domain/check-out-booking.command.js').CheckOutBookingCommand} checkOutBookingCommand - Check-out command.
+   * @returns {Promise<Booking>} Checked-out booking.
+   * @throws {BookingsError} When the booking cannot be checked out.
+   */
+  function checkOutBooking(checkOutBookingCommand) {
+    const { bookingId, roomCondition, note } = checkOutBookingCommand;
+    const booking = requireBooking(bookingId);
+    return saveChanges(
+      booking.checkOut({
+        balanceDue: getBalanceDue(booking),
+        roomCondition,
+        note,
+        at: new Date().toISOString(),
+        by: demoOperator,
+      }),
+    );
+  }
+
+  /**
    * Confirms a pending booking.
    * @param {number} bookingId - Booking identifier.
    * @returns {Promise<Booking>} Confirmed booking.
@@ -484,6 +504,7 @@ const useBookingsStore = defineStore('bookings', () => {
     restoreBooking,
     recordPayment,
     checkInBooking,
+    checkOutBooking,
   };
 });
 
