@@ -2,6 +2,7 @@ import { BaseApi } from '../../shared/infrastructure/base-api.js';
 import { BaseEndpoint } from '../../shared/infrastructure/base-endpoint.js';
 
 const bookingsEndpointPath = import.meta.env.VITE_BOOKINGS_ENDPOINT_PATH;
+const paymentsEndpointPath = import.meta.env.VITE_PAYMENTS_ENDPOINT_PATH;
 
 /**
  * Infrastructure gateway for Bookings bounded-context endpoints.
@@ -15,11 +16,17 @@ export class BookingsApi extends BaseApi {
    * @private
    */
   #bookingsEndpoint;
+  /**
+   * @type {BaseEndpoint}
+   * @private
+   */
+  #paymentsEndpoint;
 
-  /** Creates the endpoint client for bookings. */
+  /** Creates the endpoint clients for bookings and their payments. */
   constructor() {
     super();
     this.#bookingsEndpoint = new BaseEndpoint(this, bookingsEndpointPath);
+    this.#paymentsEndpoint = new BaseEndpoint(this, paymentsEndpointPath);
   }
 
   /**
@@ -61,5 +68,23 @@ export class BookingsApi extends BaseApi {
    */
   updateBooking(resource) {
     return this.#bookingsEndpoint.update(resource.id, resource);
+  }
+
+  /**
+   * Fetches the payments of a property's bookings.
+   * @param {number|string} propertyId - The ID of the property.
+   * @returns {Promise<import('axios').AxiosResponse>} Promise resolving to the payments' response.
+   */
+  getPayments(propertyId) {
+    return this.#paymentsEndpoint.getAll({ propertyId });
+  }
+
+  /**
+   * Creates a payment resource.
+   * @param {Object} resource - Payment resource payload.
+   * @returns {Promise<import('axios').AxiosResponse>} Promise resolving to the created payment response.
+   */
+  createPayment(resource) {
+    return this.#paymentsEndpoint.create(resource);
   }
 }
