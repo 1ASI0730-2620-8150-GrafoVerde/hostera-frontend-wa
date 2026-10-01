@@ -381,6 +381,27 @@ const useBookingsStore = defineStore('bookings', () => {
   }
 
   /**
+   * Checks in the guest of a confirmed booking after verifying their identity document.
+   * @param {import('../domain/check-in-booking.command.js').CheckInBookingCommand} checkInBookingCommand - Check-in command.
+   * @returns {Promise<Booking>} Checked-in booking.
+   * @throws {BookingsError} When the booking cannot be checked in.
+   */
+  function checkInBooking(checkInBookingCommand) {
+    const { bookingId, documentType, documentNumber, documentVerified } =
+      checkInBookingCommand;
+    return saveChanges(
+      requireBooking(bookingId).checkIn({
+        today: today(),
+        documentType,
+        documentNumber,
+        documentVerified,
+        at: new Date().toISOString(),
+        by: demoOperator,
+      }),
+    );
+  }
+
+  /**
    * Confirms a pending booking.
    * @param {number} bookingId - Booking identifier.
    * @returns {Promise<Booking>} Confirmed booking.
@@ -462,6 +483,7 @@ const useBookingsStore = defineStore('bookings', () => {
     markNoShow,
     restoreBooking,
     recordPayment,
+    checkInBooking,
   };
 });
 
