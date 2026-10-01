@@ -22,6 +22,11 @@
     "property-unable": "Property unable to host",
     "other": "Other"
   },
+  "document-types": {
+    "dni": "DNI",
+    "passport": "Passport",
+    "foreign-resident-card": "Foreign resident card"
+  },
   "payment-methods": {
     "cash": "Cash",
     "card-terminal": "Card terminal",
@@ -32,6 +37,10 @@
     "unpaid": "Unpaid",
     "partially-paid": "Partially paid",
     "paid": "Paid"
+  },
+  "room-conditions": {
+    "no-issues": "No issues reported",
+    "needs-attention": "Needs attention"
   },
   "errors": {
     "connection": "The mock API is unavailable. Start the server and try again.",
@@ -55,6 +64,11 @@
     "invalid-status-change": "This action is not available for the booking’s current status.",
     "invalid-cancellation-reason": "Choose a cancellation reason.",
     "cancellation-note-required": "Explain the cancellation in the internal note.",
+    "invalid-document-type": "Choose a supported identity document.",
+    "document-number-required": "Enter the identity document number.",
+    "identity-not-verified": "Verify the guest’s original identity document before checking in.",
+    "balance-due": "Record the outstanding balance before checking out.",
+    "invalid-room-condition": "Choose the room condition at departure.",
     "payments-not-accepted": "This booking no longer accepts payments.",
     "invalid-payment-amount": "Enter an amount greater than zero.",
     "invalid-payment-method": "Choose a payment method.",

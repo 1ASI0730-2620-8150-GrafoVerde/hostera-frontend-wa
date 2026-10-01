@@ -22,6 +22,11 @@
     "property-unable": "El establecimiento no puede atenderla",
     "other": "Otro"
   },
+  "document-types": {
+    "dni": "DNI",
+    "passport": "Pasaporte",
+    "foreign-resident-card": "Carné de extranjería"
+  },
   "payment-methods": {
     "cash": "Efectivo",
     "card-terminal": "Terminal de tarjeta",
@@ -32,6 +37,10 @@
     "unpaid": "Sin pagar",
     "partially-paid": "Pago parcial",
     "paid": "Pagada"
+  },
+  "room-conditions": {
+    "no-issues": "Sin incidencias",
+    "needs-attention": "Requiere atención"
   },
   "errors": {
     "connection": "La API simulada no está disponible. Inicia el servidor e inténtalo de nuevo.",
@@ -55,6 +64,11 @@
     "invalid-status-change": "Esta acción no está disponible para el estado actual de la reserva.",
     "invalid-cancellation-reason": "Elige un motivo de cancelación.",
     "cancellation-note-required": "Explica la cancelación en la nota interna.",
+    "invalid-document-type": "Elige un documento de identidad válido.",
+    "document-number-required": "Ingresa el número del documento de identidad.",
+    "identity-not-verified": "Verifica el documento de identidad original del huésped antes del check-in.",
+    "balance-due": "Registra el saldo pendiente antes del check-out.",
+    "invalid-room-condition": "Elige el estado de la habitación a la salida.",
     "payments-not-accepted": "Esta reserva ya no acepta pagos.",
     "invalid-payment-amount": "Ingresa un monto mayor que cero.",
     "invalid-payment-method": "Elige un método de pago.",
