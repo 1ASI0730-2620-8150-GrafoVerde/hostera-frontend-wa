@@ -132,6 +132,35 @@ const useBookingsStore = defineStore('bookings', () => {
   }
 
   /**
+   * Lists the payments of a booking, oldest first.
+   * @param {number} bookingId - Booking identifier.
+   * @returns {Payment[]} Payments of the booking.
+   */
+  function getPaymentsOf(bookingId) {
+    return payments.value
+      .filter((payment) => payment.bookingId === bookingId)
+      .toSorted((a, b) => a.paidAt.localeCompare(b.paidAt));
+  }
+
+  /**
+   * Derives the amount a booking still owes.
+   * @param {Booking} booking - Booking to check.
+   * @returns {number} Balance due.
+   */
+  function getBalanceDue(booking) {
+    return booking.balanceDue(getPaymentsOf(booking.id));
+  }
+
+  /**
+   * Classifies how much of a booking has been paid.
+   * @param {Booking} booking - Booking to check.
+   * @returns {'unpaid'|'partially-paid'|'paid'}
+   */
+  function getPaymentStatus(booking) {
+    return booking.paymentStatus(getPaymentsOf(booking.id));
+  }
+
+  /**
    * Derives the price of a stay as the sum of its nightly rates.
    * @param {Booking} booking - Booking with room type, rate plan, and stay dates.
    * @returns {number} Price of all nights in the property's currency.
@@ -391,6 +420,9 @@ const useBookingsStore = defineStore('bookings', () => {
     bookingsCount,
     fetchBookings,
     getBookingById,
+    getPaymentsOf,
+    getBalanceDue,
+    getPaymentStatus,
     quoteTotal,
     isRoomAvailable,
     addBooking,
