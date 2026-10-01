@@ -23,6 +23,7 @@ import enBookingsBookingCancelDialog from './locales/en/bookings/booking-cancel-
 import enBookingsBookingPaymentSummary from './locales/en/bookings/booking-payment-summary.json';
 import enBookingsPaymentForm from './locales/en/bookings/payment-form.json';
 import enBookingsBookingCheckIn from './locales/en/bookings/booking-check-in.json';
+import enBookingsBookingCheckOut from './locales/en/bookings/booking-check-out.json';
 import enRoomsRoomsTerms from './locales/en/rooms/rooms-terms.json';
 import enRoomsRoomsLayout from './locales/en/rooms/rooms-layout.json';
 import enRoomsRoomAvailability from './locales/en/rooms/room-availability.json';
@@ -60,6 +61,7 @@ import esBookingsBookingCancelDialog from './locales/es/bookings/booking-cancel-
 import esBookingsBookingPaymentSummary from './locales/es/bookings/booking-payment-summary.json';
 import esBookingsPaymentForm from './locales/es/bookings/payment-form.json';
 import esBookingsBookingCheckIn from './locales/es/bookings/booking-check-in.json';
+import esBookingsBookingCheckOut from './locales/es/bookings/booking-check-out.json';
 import esRoomsRoomsTerms from './locales/es/rooms/rooms-terms.json';
 import esRoomsRoomsLayout from './locales/es/rooms/rooms-layout.json';
 import esRoomsRoomAvailability from './locales/es/rooms/room-availability.json';
@@ -109,6 +111,7 @@ const i18n = createI18n({
         'booking-payment-summary': enBookingsBookingPaymentSummary,
         'payment-form': enBookingsPaymentForm,
         'booking-check-in': enBookingsBookingCheckIn,
+        'booking-check-out': enBookingsBookingCheckOut,
       },
       rooms: {
         'rooms-terms': enRoomsRoomsTerms,
@@ -156,6 +159,7 @@ const i18n = createI18n({
         'booking-payment-summary': esBookingsBookingPaymentSummary,
         'payment-form': esBookingsPaymentForm,
         'booking-check-in': esBookingsBookingCheckIn,
+        'booking-check-out': esBookingsBookingCheckOut,
       },
       rooms: {
         'rooms-terms': esRoomsRoomsTerms,
