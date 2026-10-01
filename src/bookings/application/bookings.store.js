@@ -10,6 +10,7 @@ import { BookingsApi } from '../infrastructure/bookings-api.js';
 import { BookingAssembler } from '../infrastructure/booking.assembler.js';
 import { PaymentAssembler } from '../infrastructure/payment.assembler.js';
 import { Booking } from '../domain/model/booking.entity.js';
+import { Payment } from '../domain/model/payment.entity.js';
 import { BookingsError } from '../domain/model/bookings.error.js';
 import useRoomsStore from '../../rooms/application/rooms.store.js';
 
@@ -351,6 +352,35 @@ const useBookingsStore = defineStore('bookings', () => {
   }
 
   /**
+   * Records a payment received for a booking that still accepts payments, up to its balance due.
+   * @param {Payment} payment - Payment entity to persist.
+   * @returns {Promise<Payment>} Recorded payment.
+   * @throws {BookingsError} When a business rule is violated.
+   */
+  function recordPayment(payment) {
+    const booking = requireBooking(payment.bookingId);
+    if (!booking.acceptsPayments)
+      throw new BookingsError('payments-not-accepted');
+    payment.validate();
+    if (payment.amount > getBalanceDue(booking))
+      throw new BookingsError('payment-exceeds-balance');
+    const newPayment = new Payment({
+      ...payment,
+      propertyId: booking.propertyId,
+      recordedBy: demoOperator,
+    });
+    return trackSaving(
+      bookingsApi.createPayment(newPayment).then((response) => {
+        const savedPayment = PaymentAssembler.toEntityFromResource(
+          response.data,
+        );
+        payments.value.push(savedPayment);
+        return savedPayment;
+      }),
+    );
+  }
+
+  /**
    * Confirms a pending booking.
    * @param {number} bookingId - Booking identifier.
    * @returns {Promise<Booking>} Confirmed booking.
@@ -431,6 +461,7 @@ const useBookingsStore = defineStore('bookings', () => {
     cancelBooking,
     markNoShow,
     restoreBooking,
+    recordPayment,
   };
 });
 
