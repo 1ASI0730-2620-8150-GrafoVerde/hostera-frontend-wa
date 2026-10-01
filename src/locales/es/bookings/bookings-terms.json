@@ -22,6 +22,17 @@
     "property-unable": "El establecimiento no puede atenderla",
     "other": "Otro"
   },
+  "payment-methods": {
+    "cash": "Efectivo",
+    "card-terminal": "Terminal de tarjeta",
+    "bank-transfer": "Transferencia bancaria",
+    "other": "Otro"
+  },
+  "payment-statuses": {
+    "unpaid": "Sin pagar",
+    "partially-paid": "Pago parcial",
+    "paid": "Pagada"
+  },
   "errors": {
     "connection": "La API simulada no está disponible. Inicia el servidor e inténtalo de nuevo.",
     "no-properties": "No hay establecimientos configurados.",
@@ -43,6 +54,11 @@
     "not-found": "La reserva ya no existe en el establecimiento activo.",
     "invalid-status-change": "Esta acción no está disponible para el estado actual de la reserva.",
     "invalid-cancellation-reason": "Elige un motivo de cancelación.",
-    "cancellation-note-required": "Explica la cancelación en la nota interna."
+    "cancellation-note-required": "Explica la cancelación en la nota interna.",
+    "payments-not-accepted": "Esta reserva ya no acepta pagos.",
+    "invalid-payment-amount": "Ingresa un monto mayor que cero.",
+    "invalid-payment-method": "Elige un método de pago.",
+    "invalid-payment-date": "Elige cuándo se recibió el pago.",
+    "payment-exceeds-balance": "Ingresa un monto de hasta {amount}. El pago no se registró."
   }
 }
