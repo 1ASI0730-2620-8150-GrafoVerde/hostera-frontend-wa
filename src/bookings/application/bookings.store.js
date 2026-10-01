@@ -62,25 +62,43 @@ const useBookingsStore = defineStore('bookings', () => {
   });
 
   /**
-   * Loads the current property's bookings and ignores responses for a previously selected property.
+   * Loads one property-scoped collection and ignores responses for a previously selected property.
+   * @param {(propertyId: number) => Promise<import('axios').AxiosResponse>} request - Infrastructure request.
+   * @param {{toEntitiesFromResponse: Function}} assembler - Assembler for the collection.
+   * @param {import('vue').Ref<Array>} collection - Collection state.
+   * @param {import('vue').Ref<boolean>} loaded - Loaded flag of the collection.
    * @returns {Promise<void>}
    */
-  function fetchBookings() {
+  function fetchCollection(request, assembler, collection, loaded) {
     const propertyId = currentPropertyId.value;
-    errors.value = [];
-    bookings.value = [];
-    bookingsLoaded.value = false;
+    collection.value = [];
+    loaded.value = false;
     if (!propertyId) return Promise.resolve();
-    return bookingsApi
-      .getBookings(propertyId)
+    return request(propertyId)
       .then((response) => {
         if (propertyId !== currentPropertyId.value) return;
-        bookings.value = BookingAssembler.toEntitiesFromResponse(response);
-        bookingsLoaded.value = true;
+        collection.value = assembler.toEntitiesFromResponse(response);
+        loaded.value = true;
       })
       .catch((error) => {
         if (propertyId === currentPropertyId.value) errors.value.push(error);
       });
+  }
+
+  /**
+   * Loads the current property's bookings.
+   * @returns {Promise<void>}
+   */
+  function fetchBookings() {
+    errors.value = [];
+    return Promise.all([
+      fetchCollection(
+        (propertyId) => bookingsApi.getBookings(propertyId),
+        BookingAssembler,
+        bookings,
+        bookingsLoaded,
+      ),
+    ]).then(() => {});
   }
 
   // Bookings follow the property selected in either context.
