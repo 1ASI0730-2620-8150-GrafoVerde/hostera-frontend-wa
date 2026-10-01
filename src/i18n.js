@@ -20,6 +20,7 @@ import enBookingsBookingDetail from './locales/en/bookings/booking-detail.json';
 import enBookingsBookingForm from './locales/en/bookings/booking-form.json';
 import enBookingsBookingStatusDialog from './locales/en/bookings/booking-status-dialog.json';
 import enBookingsBookingCancelDialog from './locales/en/bookings/booking-cancel-dialog.json';
+import enBookingsBookingPaymentSummary from './locales/en/bookings/booking-payment-summary.json';
 import enBookingsPaymentForm from './locales/en/bookings/payment-form.json';
 import enRoomsRoomsTerms from './locales/en/rooms/rooms-terms.json';
 import enRoomsRoomsLayout from './locales/en/rooms/rooms-layout.json';
@@ -55,6 +56,7 @@ import esBookingsBookingDetail from './locales/es/bookings/booking-detail.json';
 import esBookingsBookingForm from './locales/es/bookings/booking-form.json';
 import esBookingsBookingStatusDialog from './locales/es/bookings/booking-status-dialog.json';
 import esBookingsBookingCancelDialog from './locales/es/bookings/booking-cancel-dialog.json';
+import esBookingsBookingPaymentSummary from './locales/es/bookings/booking-payment-summary.json';
 import esBookingsPaymentForm from './locales/es/bookings/payment-form.json';
 import esRoomsRoomsTerms from './locales/es/rooms/rooms-terms.json';
 import esRoomsRoomsLayout from './locales/es/rooms/rooms-layout.json';
@@ -102,6 +104,7 @@ const i18n = createI18n({
         'booking-form': enBookingsBookingForm,
         'booking-status-dialog': enBookingsBookingStatusDialog,
         'booking-cancel-dialog': enBookingsBookingCancelDialog,
+        'booking-payment-summary': enBookingsBookingPaymentSummary,
         'payment-form': enBookingsPaymentForm,
       },
       rooms: {
@@ -147,6 +150,7 @@ const i18n = createI18n({
         'booking-form': esBookingsBookingForm,
         'booking-status-dialog': esBookingsBookingStatusDialog,
         'booking-cancel-dialog': esBookingsBookingCancelDialog,
+        'booking-payment-summary': esBookingsBookingPaymentSummary,
         'payment-form': esBookingsPaymentForm,
       },
       rooms: {
