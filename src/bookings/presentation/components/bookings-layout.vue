@@ -14,7 +14,7 @@ const { t } = useI18n();
 const router = useRouter();
 const store = useBookingsStore();
 const roomsStore = useRoomsStore();
-const { bookingsLoaded, errors, saving } = toRefs(store);
+const { bookingsLoaded, paymentsLoaded, errors, saving } = toRefs(store);
 const {
   properties,
   propertiesLoaded,
@@ -35,6 +35,7 @@ const noProperties = computed(
 const bookingsDataLoaded = computed(
   () =>
     bookingsLoaded.value &&
+    paymentsLoaded.value &&
     roomTypesLoaded.value &&
     roomsLoaded.value &&
     statusPeriodsLoaded.value &&

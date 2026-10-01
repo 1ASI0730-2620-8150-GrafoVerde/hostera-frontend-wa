@@ -8,6 +8,7 @@ import { defineStore } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import { BookingsApi } from '../infrastructure/bookings-api.js';
 import { BookingAssembler } from '../infrastructure/booking.assembler.js';
+import { PaymentAssembler } from '../infrastructure/payment.assembler.js';
 import { Booking } from '../domain/model/booking.entity.js';
 import { BookingsError } from '../domain/model/bookings.error.js';
 import useRoomsStore from '../../rooms/application/rooms.store.js';
@@ -34,6 +35,11 @@ const useBookingsStore = defineStore('bookings', () => {
    */
   const bookings = ref([]);
   /**
+   * List of payment entities of the current property's bookings.
+   * @type {import('vue').Ref<Payment[]>}
+   */
+  const payments = ref([]);
+  /**
    * List of errors encountered during API operations.
    * @type {import('vue').Ref<Error[]>}
    */
@@ -43,6 +49,11 @@ const useBookingsStore = defineStore('bookings', () => {
    * @type {import('vue').Ref<boolean>}
    */
   const bookingsLoaded = ref(false);
+  /**
+   * Whether payments have been loaded from the API.
+   * @type {import('vue').Ref<boolean>}
+   */
+  const paymentsLoaded = ref(false);
   /**
    * Whether a create or update operation is in progress.
    * @type {import('vue').Ref<boolean>}
@@ -86,7 +97,7 @@ const useBookingsStore = defineStore('bookings', () => {
   }
 
   /**
-   * Loads the current property's bookings.
+   * Loads the current property's bookings and their payments.
    * @returns {Promise<void>}
    */
   function fetchBookings() {
@@ -97,6 +108,12 @@ const useBookingsStore = defineStore('bookings', () => {
         BookingAssembler,
         bookings,
         bookingsLoaded,
+      ),
+      fetchCollection(
+        (propertyId) => bookingsApi.getPayments(propertyId),
+        PaymentAssembler,
+        payments,
+        paymentsLoaded,
       ),
     ]).then(() => {});
   }
@@ -365,8 +382,10 @@ const useBookingsStore = defineStore('bookings', () => {
 
   return {
     bookings,
+    payments,
     errors,
     bookingsLoaded,
+    paymentsLoaded,
     saving,
     currentPropertyId,
     bookingsCount,
