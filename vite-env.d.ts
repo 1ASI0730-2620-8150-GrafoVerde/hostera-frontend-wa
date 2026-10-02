@@ -44,6 +44,14 @@ interface ImportMetaEnv {
    */
   readonly VITE_PAYMENTS_ENDPOINT_PATH: string;
   /**
+   * # VITE_CREDENTIALS_ENDPOINT_PATH is the path to the credentials' endpoint.
+   */
+  readonly VITE_CREDENTIALS_ENDPOINT_PATH: string;
+  /**
+   * # VITE_STAFF_MEMBERS_ENDPOINT_PATH is the path to the staff members' endpoint.
+   */
+  readonly VITE_STAFF_MEMBERS_ENDPOINT_PATH: string;
+  /**
    * # VITE_RATE_PLANS_ENDPOINT_PATH is the path to the rate plans' endpoint.
    */
   readonly VITE_RATE_PLANS_ENDPOINT_PATH: string;
