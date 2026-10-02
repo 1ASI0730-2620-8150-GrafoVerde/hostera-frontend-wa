@@ -9,9 +9,11 @@ import { computed, ref, watch } from 'vue';
 import { AccessControlApi } from '../infrastructure/access-control-api.js';
 import { CredentialAssembler } from '../infrastructure/credential.assembler.js';
 import { StaffMemberAssembler } from '../infrastructure/staff-member.assembler.js';
+import { RfidEncoder } from '../infrastructure/rfid-encoder.js';
 import useRoomsStore from '../../rooms/application/rooms.store.js';
 
 const accessControlApi = new AccessControlApi();
+const rfidEncoder = new RfidEncoder();
 
 /**
  * Reactive store that exposes Access Control commands and queries.
@@ -51,6 +53,11 @@ const useAccessControlStore = defineStore('access-control', () => {
    * @type {import('vue').Ref<boolean>}
    */
   const saving = ref(false);
+  /**
+   * State of the front desk RFID encoder.
+   * @type {import('vue').Ref<'ready'|'encoding'|'verifying'|'encoded'|'failed'>}
+   */
+  const encoderState = ref('ready');
   /**
    * Identifier of the property whose access is managed, shared with the Rooms context.
    * @type {import('vue').ComputedRef<?number>}
@@ -154,6 +161,34 @@ const useAccessControlStore = defineStore('access-control', () => {
       .toSorted((a, b) => b.issuedAt.localeCompare(a.issuedAt));
   }
 
+  /**
+   * Writes a new key card on the front desk encoder, retrying until its card ID is unique in the property.
+   * @returns {Promise<string>} Card ID of the encoded card.
+   * @throws {Error} When the encoder fails.
+   */
+  async function encodeKeyCard() {
+    try {
+      let cardId;
+      do {
+        cardId = await rfidEncoder.encode((state) => {
+          encoderState.value = state;
+        });
+      } while (credentials.value.some((entry) => entry.cardId === cardId));
+      encoderState.value = 'encoded';
+      return cardId;
+    } catch (error) {
+      encoderState.value = 'failed';
+      throw error;
+    }
+  }
+
+  /**
+   * Returns the encoder to its ready state, such as when a new card is placed.
+   */
+  function resetEncoder() {
+    encoderState.value = 'ready';
+  }
+
   return {
     credentials,
     staffMembers,
@@ -161,12 +196,15 @@ const useAccessControlStore = defineStore('access-control', () => {
     credentialsLoaded,
     staffMembersLoaded,
     saving,
+    encoderState,
     currentPropertyId,
     fetchAccessControl,
     getCredentialById,
     getStaffMemberById,
     getCredentialStatus,
     getKeyCardsOfBooking,
+    encodeKeyCard,
+    resetEncoder,
   };
 });
 
