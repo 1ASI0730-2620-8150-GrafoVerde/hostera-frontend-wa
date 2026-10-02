@@ -71,6 +71,8 @@ const statusPanels = {
   confirmed: 'pi pi-calendar',
   cancelled: 'pi pi-times-circle',
   'no-show': 'pi pi-user-minus',
+  'checked-in': 'pi pi-sign-in',
+  'checked-out': 'pi pi-sign-out',
 };
 const canRestore = computed(
   () =>
@@ -112,6 +114,47 @@ const statusFacts = computed(() => {
         label: t('bookings.booking-detail.arrival'),
         value: t('bookings.booking-detail.not-recorded'),
       },
+    ];
+  if (status === 'checked-in' || status === 'checked-out')
+    return [
+      {
+        label: t('bookings.booking-detail.checked-in-at'),
+        value: dateTime(booking.value.checkedInAt),
+      },
+      ...(status === 'checked-out'
+        ? [
+            {
+              label: t('bookings.booking-detail.checked-out-at'),
+              value: dateTime(booking.value.checkedOutAt),
+            },
+          ]
+        : []),
+      {
+        label: t('bookings.booking-detail.by'),
+        value: operatorName(
+          status === 'checked-out'
+            ? booking.value.checkedOutBy
+            : booking.value.checkedInBy,
+        ),
+      },
+      {
+        label: t('bookings.booking-detail.document'),
+        value: booking.value.guestDocumentType
+          ? `${t(`bookings.bookings-terms.document-types.${booking.value.guestDocumentType}`)} ${booking.value.guestDocumentNumber}`
+          : '—',
+      },
+      ...(status === 'checked-out'
+        ? [
+            {
+              label: t('bookings.booking-detail.room-condition'),
+              value: booking.value.roomCondition
+                ? t(
+                    `bookings.bookings-terms.room-conditions.${booking.value.roomCondition}`,
+                  )
+                : '—',
+            },
+          ]
+        : []),
     ];
   if (status === 'confirmed' && booking.value.confirmedAt)
     return [
@@ -542,6 +585,12 @@ const stayDay = (date) =>
               :disabled="saving"
               @click="statusAction = 'confirm'"
             />
+            <p
+              v-if="booking.departureNote"
+              class="m-0 p-3 surface-50 border-round-lg text-sm line-height-3"
+            >
+              {{ booking.departureNote }}
+            </p>
             <template v-if="!booking.holdsRoom">
               <pv-button
                 :label="t('bookings.booking-detail.duplicate')"

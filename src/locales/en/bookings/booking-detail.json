@@ -31,7 +31,9 @@
     "pending": "Pending confirmation",
     "confirmed": "Confirmed",
     "cancelled": "Cancellation",
-    "no-show": "No-show recorded"
+    "no-show": "No-show recorded",
+    "checked-in": "Stay in progress",
+    "checked-out": "Stay completed"
   },
   "pending-help": "Check the dates, room, and guest contact before confirming the booking.",
   "confirm": "Confirm booking",
@@ -49,5 +51,9 @@
   "duplicate": "Duplicate booking",
   "restore": "Restore booking",
   "restore-help": "Available before the stay starts while the room is still free. The booking returns to Pending.",
-  "saved": "Booking updated"
+  "saved": "Booking updated",
+  "checked-in-at": "Checked in",
+  "checked-out-at": "Checked out",
+  "document": "Document",
+  "room-condition": "Room condition"
 }
