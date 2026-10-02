@@ -10,12 +10,12 @@ import {
   CalendarDate,
   formatDateTime,
   formatDay,
-  formatMoney,
 } from '../../../shared/presentation/calendar-format.js';
 import BookingsLayout from '../components/bookings-layout.vue';
 import BookingStatusTag from '../components/booking-status-tag.vue';
 import BookingStatusDialog from '../components/booking-status-dialog.vue';
 import BookingCancelDialog from '../components/booking-cancel-dialog.vue';
+import BookingPaymentSummary from '../components/booking-payment-summary.vue';
 
 const { t, locale } = useI18n();
 const route = useRoute();
@@ -24,7 +24,6 @@ const toast = useToast();
 const store = useBookingsStore();
 const roomsStore = useRoomsStore();
 const { saving } = toRefs(store);
-const { currentProperty } = toRefs(roomsStore);
 const { getBookingById, isRoomAvailable, restoreBooking } = store;
 const { getRoomById, getRoomTypeById, getRatePlanById } = roomsStore;
 
@@ -32,7 +31,6 @@ const booking = computed(() => getBookingById(route.params.id));
 const room = computed(() => getRoomById(booking.value?.roomId));
 const roomType = computed(() => getRoomTypeById(booking.value?.roomTypeId));
 const ratePlan = computed(() => getRatePlanById(booking.value?.ratePlanId));
-const currency = computed(() => currentProperty.value?.currency ?? 'PEN');
 const nightsCount = computed(() => booking.value?.nights.length ?? 0);
 const today = CalendarDate.today();
 const actionsMenu = ref(null);
@@ -582,20 +580,7 @@ const stayDay = (date) =>
           <div
             class="flex flex-column gap-3 p-4 surface-50 border-1 surface-border border-round-xl"
           >
-            <h3
-              class="flex align-items-center gap-2 m-0 text-base font-semibold"
-            >
-              <i class="pi pi-wallet text-color-secondary" aria-hidden="true" />
-              {{ t('bookings.booking-detail.price') }}
-            </h3>
-            <div class="flex align-items-end justify-content-between gap-3">
-              <span class="text-color-secondary">{{
-                t('bookings.booking-detail.total')
-              }}</span>
-              <span class="font-mono text-2xl font-semibold">{{
-                formatMoney(booking.totalAmount, currency, locale)
-              }}</span>
-            </div>
+            <booking-payment-summary :booking="booking" />
             <span class="text-sm text-color-secondary">
               {{ t('bookings.bookings-terms.nights', nightsCount) }} ·
               {{ ratePlan?.name }}
