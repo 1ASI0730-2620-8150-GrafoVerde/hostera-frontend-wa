@@ -1,26 +1,35 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { useToast } from 'primevue';
 import useBookingsStore from '../../application/bookings.store.js';
 import useRoomsStore from '../../../rooms/application/rooms.store.js';
 import { Booking } from '../../domain/model/booking.entity.js';
+import { BookingsError } from '../../domain/model/bookings.error.js';
+import { CheckInBookingCommand } from '../../domain/check-in-booking.command.js';
 import {
   CalendarDate,
   formatDayRange,
 } from '../../../shared/presentation/calendar-format.js';
 import BookingsLayout from '../components/bookings-layout.vue';
+import BookingPaymentSummary from '../components/booking-payment-summary.vue';
 import PaymentStatusTag from '../components/payment-status-tag.vue';
 
 const { t, locale } = useI18n();
 const route = useRoute();
+const router = useRouter();
+const toast = useToast();
 const store = useBookingsStore();
 const roomsStore = useRoomsStore();
-const { getBookingById, getPaymentStatus } = store;
+const { saving } = toRefs(store);
+const { getBookingById, getBalanceDue, getPaymentStatus, checkInBooking } =
+  store;
 
 const today = CalendarDate.today();
 const step = ref('1');
 const form = ref({ documentType: 'dni', documentNumber: '', verified: false });
+const errorCode = ref('');
 
 const booking = computed(() => getBookingById(route.params.id));
 const room = computed(() => roomsStore.getRoomById(booking.value?.roomId));
@@ -48,6 +57,35 @@ const breadcrumbItems = computed(() => [
   { label: booking.value?.code, route: detailRoute.value, mono: true },
   { label: t('bookings.booking-check-in.breadcrumb') },
 ]);
+
+/**
+ * Completes the check-in and returns to the booking.
+ */
+const completeCheckIn = async () => {
+  errorCode.value = '';
+  try {
+    await checkInBooking(
+      new CheckInBookingCommand({
+        bookingId: booking.value.id,
+        documentType: form.value.documentType,
+        documentNumber: form.value.documentNumber,
+        documentVerified: form.value.verified,
+      }),
+    );
+    toast.add({
+      severity: 'success',
+      summary: t('bookings.booking-check-in.completed', {
+        name: booking.value.guestName,
+        number: room.value?.number ?? '—',
+      }),
+      life: 4000,
+    });
+    router.push(detailRoute.value);
+  } catch (error) {
+    errorCode.value =
+      error instanceof BookingsError ? error.code : 'connection';
+  }
+};
 </script>
 
 <template>
@@ -253,6 +291,52 @@ const breadcrumbItems = computed(() => [
                     icon-pos="right"
                     rounded
                     :disabled="!identityComplete"
+                  />
+                </div>
+              </pv-step-panel>
+
+              <pv-step-panel value="2">
+                <div
+                  class="flex flex-column gap-3 p-4 surface-card border-1 surface-border border-round-xl"
+                >
+                  <booking-payment-summary :booking="booking" />
+                  <pv-message
+                    v-if="getBalanceDue(booking) > 0"
+                    severity="info"
+                    icon="pi pi-info-circle"
+                  >
+                    <div class="flex flex-column gap-1">
+                      <span class="font-semibold">{{
+                        t('bookings.booking-check-in.balance-title')
+                      }}</span>
+                      <span>{{
+                        t('bookings.booking-check-in.balance-text')
+                      }}</span>
+                    </div>
+                  </pv-message>
+                  <pv-message
+                    v-if="errorCode"
+                    severity="error"
+                    icon="pi pi-times-circle"
+                  >
+                    {{ t(`bookings.bookings-terms.errors.${errorCode}`) }}
+                  </pv-message>
+                </div>
+                <div class="flex justify-content-between gap-2 mt-3">
+                  <pv-button
+                    :label="t('bookings.booking-check-in.back')"
+                    severity="secondary"
+                    outlined
+                    rounded
+                    :disabled="saving"
+                    @click="step = '1'"
+                  />
+                  <pv-button
+                    :label="t('bookings.booking-check-in.complete')"
+                    icon="pi pi-check"
+                    rounded
+                    :loading="saving"
+                    @click="completeCheckIn"
                   />
                 </div>
               </pv-step-panel>
