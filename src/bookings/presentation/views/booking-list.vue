@@ -12,6 +12,7 @@ import {
 } from '../../../shared/presentation/calendar-format.js';
 import BookingsLayout from '../components/bookings-layout.vue';
 import BookingStatusTag from '../components/booking-status-tag.vue';
+import PaymentStatusTag from '../components/payment-status-tag.vue';
 
 const { t, locale } = useI18n();
 const router = useRouter();
@@ -20,6 +21,7 @@ const roomsStore = useRoomsStore();
 const { bookings, currentPropertyId } = toRefs(store);
 const { currentProperty } = toRefs(roomsStore);
 const { getRoomById, getRoomTypeById } = roomsStore;
+const { getPaymentStatus } = store;
 
 // Below PrimeFlex's md breakpoint the table becomes a list of bookings.
 const compactQuery = window.matchMedia('(max-width: 767px)');
@@ -59,6 +61,7 @@ const bookingRows = computed(() =>
       room,
       roomType: getRoomTypeById(booking.roomTypeId),
       nightsCount: booking.nights.length,
+      paymentStatus: getPaymentStatus(booking),
     };
   }),
 );
@@ -305,6 +308,14 @@ const openBooking = (booking) => {
         >
           <template #body="{ data }">
             <booking-status-tag :status="data.booking.status" />
+          </template>
+        </pv-column>
+        <pv-column
+          field="paymentStatus"
+          :header="t('bookings.booking-list.payment')"
+        >
+          <template #body="{ data }">
+            <payment-status-tag :status="data.paymentStatus" />
           </template>
         </pv-column>
         <pv-column

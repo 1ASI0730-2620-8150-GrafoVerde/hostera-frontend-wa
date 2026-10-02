@@ -18,5 +18,6 @@
   "total": "Total",
   "empty-title": "No hay reservas para mostrar",
   "empty-filtered": "Cambia la búsqueda o limpia los filtros actuales.",
-  "empty-text": "Crea la primera reserva del establecimiento para planificar una estadía."
+  "empty-text": "Crea la primera reserva del establecimiento para planificar una estadía.",
+  "payment": "Pago"
 }

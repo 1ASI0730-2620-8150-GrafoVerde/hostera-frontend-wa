@@ -18,5 +18,6 @@
   "total": "Total",
   "empty-title": "No bookings to show",
   "empty-filtered": "Change the search or clear the current filters.",
-  "empty-text": "Create the property's first booking to plan a guest stay."
+  "empty-text": "Create the property's first booking to plan a guest stay.",
+  "payment": "Payment"
 }
