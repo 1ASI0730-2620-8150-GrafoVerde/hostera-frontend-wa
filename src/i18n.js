@@ -24,6 +24,7 @@ import enBookingsBookingPaymentSummary from './locales/en/bookings/booking-payme
 import enBookingsPaymentForm from './locales/en/bookings/payment-form.json';
 import enBookingsBookingCheckIn from './locales/en/bookings/booking-check-in.json';
 import enBookingsBookingCheckOut from './locales/en/bookings/booking-check-out.json';
+import enAccessControlAccessControlTerms from './locales/en/access-control/access-control-terms.json';
 import enRoomsRoomsTerms from './locales/en/rooms/rooms-terms.json';
 import enRoomsRoomsLayout from './locales/en/rooms/rooms-layout.json';
 import enRoomsRoomAvailability from './locales/en/rooms/room-availability.json';
@@ -62,6 +63,7 @@ import esBookingsBookingPaymentSummary from './locales/es/bookings/booking-payme
 import esBookingsPaymentForm from './locales/es/bookings/payment-form.json';
 import esBookingsBookingCheckIn from './locales/es/bookings/booking-check-in.json';
 import esBookingsBookingCheckOut from './locales/es/bookings/booking-check-out.json';
+import esAccessControlAccessControlTerms from './locales/es/access-control/access-control-terms.json';
 import esRoomsRoomsTerms from './locales/es/rooms/rooms-terms.json';
 import esRoomsRoomsLayout from './locales/es/rooms/rooms-layout.json';
 import esRoomsRoomAvailability from './locales/es/rooms/room-availability.json';
@@ -113,6 +115,9 @@ const i18n = createI18n({
         'booking-check-in': enBookingsBookingCheckIn,
         'booking-check-out': enBookingsBookingCheckOut,
       },
+      'access-control': {
+        'access-control-terms': enAccessControlAccessControlTerms,
+      },
       rooms: {
         'rooms-terms': enRoomsRoomsTerms,
         'rooms-layout': enRoomsRoomsLayout,
@@ -160,6 +165,9 @@ const i18n = createI18n({
         'payment-form': esBookingsPaymentForm,
         'booking-check-in': esBookingsBookingCheckIn,
         'booking-check-out': esBookingsBookingCheckOut,
+      },
+      'access-control': {
+        'access-control-terms': esAccessControlAccessControlTerms,
       },
       rooms: {
         'rooms-terms': esRoomsRoomsTerms,
