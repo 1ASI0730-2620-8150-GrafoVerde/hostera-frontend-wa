@@ -591,7 +591,53 @@ const stayDay = (date) =>
             >
               {{ booking.departureNote }}
             </p>
-            <template v-if="!booking.holdsRoom">
+            <template v-if="booking.status === 'confirmed'">
+              <router-link
+                v-slot="{ navigate }"
+                :to="{
+                  name: 'bookings-booking-check-in',
+                  params: { id: booking.id },
+                }"
+                custom
+              >
+                <pv-button
+                  :label="t('bookings.booking-detail.start-check-in')"
+                  icon="pi pi-sign-in"
+                  rounded
+                  fluid
+                  :disabled="saving || !booking.canBeCheckedIn(today)"
+                  @click="navigate"
+                />
+              </router-link>
+              <small
+                v-if="!booking.canBeCheckedIn(today)"
+                class="text-center text-color-secondary line-height-3"
+                >{{
+                  today < booking.checkInDate
+                    ? t('bookings.booking-detail.check-in-from')
+                    : t('bookings.booking-detail.check-in-ended')
+                }}</small
+              >
+            </template>
+            <router-link
+              v-if="booking.canBeCheckedOut"
+              v-slot="{ navigate }"
+              :to="{
+                name: 'bookings-booking-check-out',
+                params: { id: booking.id },
+              }"
+              custom
+            >
+              <pv-button
+                :label="t('bookings.booking-detail.start-check-out')"
+                icon="pi pi-sign-out"
+                rounded
+                fluid
+                :disabled="saving"
+                @click="navigate"
+              />
+            </router-link>
+            <template v-if="['cancelled', 'no-show'].includes(booking.status)">
               <pv-button
                 :label="t('bookings.booking-detail.duplicate')"
                 icon="pi pi-copy"

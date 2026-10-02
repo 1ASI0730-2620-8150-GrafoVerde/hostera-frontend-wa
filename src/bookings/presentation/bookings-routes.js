@@ -2,6 +2,8 @@
 const bookingList = () => import('./views/booking-list.vue');
 const bookingDetail = () => import('./views/booking-detail.vue');
 const bookingForm = () => import('./views/booking-form.vue');
+const bookingCheckIn = () => import('./views/booking-check-in.vue');
+const bookingCheckOut = () => import('./views/booking-check-out.vue');
 
 const bookingsRoutes = [
   {
@@ -27,6 +29,18 @@ const bookingsRoutes = [
     name: 'bookings-booking-edit',
     component: bookingForm,
     meta: { title: 'Edit Booking' },
+  },
+  {
+    path: ':id(\\d+)/check-in',
+    name: 'bookings-booking-check-in',
+    component: bookingCheckIn,
+    meta: { title: 'Check-in' },
+  },
+  {
+    path: ':id(\\d+)/check-out',
+    name: 'bookings-booking-check-out',
+    component: bookingCheckOut,
+    meta: { title: 'Check-out' },
   },
 ];
 

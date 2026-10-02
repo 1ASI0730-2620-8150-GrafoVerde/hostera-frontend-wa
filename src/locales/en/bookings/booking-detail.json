@@ -55,5 +55,9 @@
   "checked-in-at": "Checked in",
   "checked-out-at": "Checked out",
   "document": "Document",
-  "room-condition": "Room condition"
+  "room-condition": "Room condition",
+  "start-check-in": "Start check-in",
+  "check-in-from": "Available from the check-in day.",
+  "check-in-ended": "The stay dates have passed. Mark the booking as no-show or cancel it.",
+  "start-check-out": "Start check-out"
 }

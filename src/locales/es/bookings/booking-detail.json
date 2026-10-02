@@ -55,5 +55,9 @@
   "checked-in-at": "Check-in",
   "checked-out-at": "Check-out",
   "document": "Documento",
-  "room-condition": "Estado de la habitación"
+  "room-condition": "Estado de la habitación",
+  "start-check-in": "Iniciar check-in",
+  "check-in-from": "Disponible desde el día de llegada.",
+  "check-in-ended": "Las fechas de la estadía ya pasaron. Marca la reserva como no presentada o cancélala.",
+  "start-check-out": "Iniciar check-out"
 }
