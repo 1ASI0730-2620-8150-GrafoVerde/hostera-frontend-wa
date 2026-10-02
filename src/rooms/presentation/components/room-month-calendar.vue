@@ -2,7 +2,10 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import useRoomsStore from '../../application/rooms.store.js';
-import { CalendarDate, formatDay } from '../calendar-format.js';
+import {
+  CalendarDate,
+  formatDay,
+} from '../../../shared/presentation/calendar-format.js';
 import DayStatusTag from './day-status-tag.vue';
 
 const props = defineProps({
@@ -38,8 +41,7 @@ const weeks = computed(() => {
       date,
       inMonth: date.startsWith(month.value.slice(0, 7)),
       status: getDayStatus(props.room.id, date),
-      reservationCode: getRoomAssignmentOn(props.room.id, date)
-        ?.reservationCode,
+      bookingCode: getRoomAssignmentOn(props.room.id, date)?.bookingCode,
     });
   return Array.from({ length: days.length / 7 }, (_, index) =>
     days.slice(index * 7, index * 7 + 7),
@@ -62,7 +64,7 @@ const dayLabel = (day) =>
       month: 'long',
     }),
     t(`rooms.rooms-terms.day-statuses.${day.status}`),
-    day.reservationCode,
+    day.bookingCode,
   ]
     .filter(Boolean)
     .join(', ');

@@ -4,7 +4,10 @@ import { useI18n } from 'vue-i18n';
 import useRoomsStore from '../../application/rooms.store.js';
 import { RoomsError } from '../../domain/model/rooms.error.js';
 import { SetRoomStatusCommand } from '../../domain/set-room-status.command.js';
-import { CalendarDate, formatDayRange } from '../calendar-format.js';
+import {
+  CalendarDate,
+  formatDayRange,
+} from '../../../shared/presentation/calendar-format.js';
 import DayStatusTag from './day-status-tag.vue';
 
 const props = defineProps({
@@ -184,7 +187,7 @@ const saveStatus = async () => {
         variant="simple"
         icon="pi pi-lock"
       >
-        {{ t('rooms.room-status-form.reservation-note') }}
+        {{ t('rooms.room-status-form.booking-note') }}
       </pv-message>
       <pv-message v-if="errorCode" severity="error" icon="pi pi-times-circle">
         {{ t(`rooms.rooms-terms.errors.${errorCode}`) }}

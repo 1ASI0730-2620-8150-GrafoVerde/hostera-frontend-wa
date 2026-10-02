@@ -4,13 +4,17 @@ import { useI18n } from 'vue-i18n';
 import { useToast } from 'primevue';
 import useRoomsStore from '../../application/rooms.store.js';
 import { Room } from '../../domain/model/room.entity.js';
-import { CalendarDate, formatDay, formatDayRange } from '../calendar-format.js';
+import {
+  CalendarDate,
+  formatDay,
+  formatDayRange,
+} from '../../../shared/presentation/calendar-format.js';
 import RoomsLayout from '../components/rooms-layout.vue';
 import RoomAvatar from '../components/room-avatar.vue';
 import DayStatusTag from '../components/day-status-tag.vue';
 import RoomForm from '../components/room-form.vue';
 import RoomStatusForm from '../components/room-status-form.vue';
-import ReservationControlledDialog from '../components/reservation-controlled-dialog.vue';
+import BookingControlledDialog from '../components/booking-controlled-dialog.vue';
 
 const { t, n, locale } = useI18n();
 const toast = useToast();
@@ -37,7 +41,7 @@ const roomTypeFilter = ref(null);
 const statusFilter = ref('all');
 const roomFormVisible = ref(false);
 const statusFormVisible = ref(false);
-const reservationDialogVisible = ref(false);
+const bookingDialogVisible = ref(false);
 const selectedDay = ref(null);
 
 const visibleDays = computed(() =>
@@ -135,10 +139,7 @@ const resetFilters = () => {
  * @returns {string} Accessible description.
  */
 const dayLabel = (row, date) => {
-  const reservationCode = getRoomAssignmentOn(
-    row.room.id,
-    date,
-  )?.reservationCode;
+  const bookingCode = getRoomAssignmentOn(row.room.id, date)?.bookingCode;
   return [
     t('rooms.rooms-terms.room-number', { number: row.room.number }),
     formatDay(date, locale.value, {
@@ -147,21 +148,21 @@ const dayLabel = (row, date) => {
       month: 'long',
     }),
     t(`rooms.rooms-terms.day-statuses.${row.days[date]}`),
-    reservationCode,
+    bookingCode,
   ]
     .filter(Boolean)
     .join(', ');
 };
 
 /**
- * Opens the status form for a room day, or explains why its reservation controls it.
+ * Opens the status form for a room day, or explains why its booking controls it.
  * @param {Object} room - Selected room.
  * @param {string} date - Selected ISO calendar day.
  */
 const openDay = (room, date) => {
   const roomAssignment = getRoomAssignmentOn(room.id, date);
   selectedDay.value = { room, date, roomAssignment };
-  if (roomAssignment) reservationDialogVisible.value = true;
+  if (roomAssignment) bookingDialogVisible.value = true;
   else statusFormVisible.value = true;
 };
 
@@ -473,9 +474,9 @@ const notifySaved = () => {
       :date="selectedDay.date"
       @saved="notifySaved"
     />
-    <reservation-controlled-dialog
-      v-if="reservationDialogVisible"
-      v-model:visible="reservationDialogVisible"
+    <booking-controlled-dialog
+      v-if="bookingDialogVisible"
+      v-model:visible="bookingDialogVisible"
       :room="selectedDay.room"
       :room-assignment="selectedDay.roomAssignment"
     />

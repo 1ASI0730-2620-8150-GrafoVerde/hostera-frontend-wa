@@ -12,7 +12,7 @@ const { t } = useI18n();
 
 const statusStyles = {
   available: { icon: 'pi pi-check', severity: 'success' },
-  reserved: { icon: 'pi pi-calendar', severity: 'info' },
+  booked: { icon: 'pi pi-calendar', severity: 'info' },
   occupied: { icon: 'pi pi-user', severity: undefined },
   blocked: { icon: 'pi pi-ban', severity: 'warn' },
   'out-of-service': { icon: 'pi pi-wrench', severity: 'danger' },

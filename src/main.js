@@ -56,6 +56,11 @@ import {
   SidebarPanel,
   SidebarSpacer,
   SidebarTrigger,
+  Step,
+  StepList,
+  StepPanel,
+  StepPanels,
+  Stepper,
   Tab,
   TabList,
   Tabs,
@@ -226,6 +231,11 @@ createApp(App)
   .component('pv-sidebar-panel', SidebarPanel)
   .component('pv-sidebar-spacer', SidebarSpacer)
   .component('pv-sidebar-trigger', SidebarTrigger)
+  .component('pv-step', Step)
+  .component('pv-step-list', StepList)
+  .component('pv-step-panel', StepPanel)
+  .component('pv-step-panels', StepPanels)
+  .component('pv-stepper', Stepper)
   .component('pv-tab', Tab)
   .component('pv-tab-list', TabList)
   .component('pv-tabs', Tabs)

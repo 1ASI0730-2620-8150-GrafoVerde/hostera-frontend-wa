@@ -1,5 +1,5 @@
 /**
- * Calendar navigation helpers for Rooms views.
+ * Calendar navigation helpers for views.
  * Days are ISO `YYYY-MM-DD` strings, as in the domain; these helpers convert them
  * to and from local dates and move between days and months.
  *
@@ -122,6 +122,21 @@ export function formatDayRange(startDate, endDate, locale) {
     CalendarDate.toDate(startDate),
     CalendarDate.toDate(endDate),
   );
+}
+
+/**
+ * Formats an ISO date-time, such as the moment a status changed, for the active locale.
+ * @param {string} value - ISO date-time.
+ * @param {string} locale - Active locale.
+ * @returns {string} Localized date and time, such as "Oct 6, 3:42 PM".
+ */
+export function formatDateTime(value, locale) {
+  return new Intl.DateTimeFormat(locale, {
+    day: 'numeric',
+    month: 'short',
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(new Date(value));
 }
 
 /**

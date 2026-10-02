@@ -1,6 +1,6 @@
 /**
  * Room assignment entity within the Rooms bounded context.
- * It is a read-only reference to the reservation or stay that controls a room's days.
+ * It is a read-only reference to the booking or stay that controls a room's days, derived from the booking.
  *
  * @class RoomAssignment
  */
@@ -9,15 +9,16 @@ export class RoomAssignment {
    * Day statuses that a room assignment controls.
    * @type {string[]}
    */
-  static statuses = ['reserved', 'occupied'];
+  static statuses = ['booked', 'occupied'];
 
   /**
    * @param {Object} params - Entity attributes.
    * @param {?number} [params.id=null] - Room assignment identifier.
    * @param {?number} [params.propertyId=null] - Identifier of the property that owns the room.
    * @param {?number} [params.roomId=null] - Identifier of the assigned room.
-   * @param {string} [params.reservationCode=''] - Code of the controlling reservation.
-   * @param {'reserved'|'occupied'} [params.status='reserved'] - Whether the guest is expected or staying.
+   * @param {?number} [params.bookingId=null] - Identifier of the controlling booking.
+   * @param {string} [params.bookingCode=''] - Code of the controlling booking.
+   * @param {'booked'|'occupied'} [params.status='booked'] - Whether the guest is expected or staying.
    * @param {string} [params.startDate=''] - First ISO night covered by the assignment.
    * @param {string} [params.endDate=''] - Last ISO night covered by the assignment.
    */
@@ -25,15 +26,17 @@ export class RoomAssignment {
     id = null,
     propertyId = null,
     roomId = null,
-    reservationCode = '',
-    status = 'reserved',
+    bookingId = null,
+    bookingCode = '',
+    status = 'booked',
     startDate = '',
     endDate = '',
   }) {
     this.id = id;
     this.propertyId = propertyId;
     this.roomId = roomId;
-    this.reservationCode = reservationCode;
+    this.bookingId = bookingId;
+    this.bookingCode = bookingCode;
     this.status = status;
     this.startDate = startDate;
     this.endDate = endDate;

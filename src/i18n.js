@@ -13,6 +13,17 @@ import enInventoryStorageLocationList from './locales/en/inventory/storage-locat
 import enInventoryStorageLocationDetail from './locales/en/inventory/storage-location-detail.json';
 import enInventoryStorageLocationForm from './locales/en/inventory/storage-location-form.json';
 import enInventoryStockAdjustmentForm from './locales/en/inventory/stock-adjustment-form.json';
+import enBookingsBookingsTerms from './locales/en/bookings/bookings-terms.json';
+import enBookingsBookingsLayout from './locales/en/bookings/bookings-layout.json';
+import enBookingsBookingList from './locales/en/bookings/booking-list.json';
+import enBookingsBookingDetail from './locales/en/bookings/booking-detail.json';
+import enBookingsBookingForm from './locales/en/bookings/booking-form.json';
+import enBookingsBookingStatusDialog from './locales/en/bookings/booking-status-dialog.json';
+import enBookingsBookingCancelDialog from './locales/en/bookings/booking-cancel-dialog.json';
+import enBookingsBookingPaymentSummary from './locales/en/bookings/booking-payment-summary.json';
+import enBookingsPaymentForm from './locales/en/bookings/payment-form.json';
+import enBookingsBookingCheckIn from './locales/en/bookings/booking-check-in.json';
+import enBookingsBookingCheckOut from './locales/en/bookings/booking-check-out.json';
 import enRoomsRoomsTerms from './locales/en/rooms/rooms-terms.json';
 import enRoomsRoomsLayout from './locales/en/rooms/rooms-layout.json';
 import enRoomsRoomAvailability from './locales/en/rooms/room-availability.json';
@@ -20,7 +31,7 @@ import enRoomsRoomTypeList from './locales/en/rooms/room-type-list.json';
 import enRoomsRoomTypeForm from './locales/en/rooms/room-type-form.json';
 import enRoomsRoomForm from './locales/en/rooms/room-form.json';
 import enRoomsRoomStatusForm from './locales/en/rooms/room-status-form.json';
-import enRoomsReservationControlledDialog from './locales/en/rooms/reservation-controlled-dialog.json';
+import enRoomsBookingControlledDialog from './locales/en/rooms/booking-controlled-dialog.json';
 import enRoomsRoomMonthCalendar from './locales/en/rooms/room-month-calendar.json';
 import enRoomsRoomDetail from './locales/en/rooms/room-detail.json';
 import enRoomsRoomRates from './locales/en/rooms/room-rates.json';
@@ -40,6 +51,17 @@ import esInventoryStorageLocationList from './locales/es/inventory/storage-locat
 import esInventoryStorageLocationDetail from './locales/es/inventory/storage-location-detail.json';
 import esInventoryStorageLocationForm from './locales/es/inventory/storage-location-form.json';
 import esInventoryStockAdjustmentForm from './locales/es/inventory/stock-adjustment-form.json';
+import esBookingsBookingsTerms from './locales/es/bookings/bookings-terms.json';
+import esBookingsBookingsLayout from './locales/es/bookings/bookings-layout.json';
+import esBookingsBookingList from './locales/es/bookings/booking-list.json';
+import esBookingsBookingDetail from './locales/es/bookings/booking-detail.json';
+import esBookingsBookingForm from './locales/es/bookings/booking-form.json';
+import esBookingsBookingStatusDialog from './locales/es/bookings/booking-status-dialog.json';
+import esBookingsBookingCancelDialog from './locales/es/bookings/booking-cancel-dialog.json';
+import esBookingsBookingPaymentSummary from './locales/es/bookings/booking-payment-summary.json';
+import esBookingsPaymentForm from './locales/es/bookings/payment-form.json';
+import esBookingsBookingCheckIn from './locales/es/bookings/booking-check-in.json';
+import esBookingsBookingCheckOut from './locales/es/bookings/booking-check-out.json';
 import esRoomsRoomsTerms from './locales/es/rooms/rooms-terms.json';
 import esRoomsRoomsLayout from './locales/es/rooms/rooms-layout.json';
 import esRoomsRoomAvailability from './locales/es/rooms/room-availability.json';
@@ -47,7 +69,7 @@ import esRoomsRoomTypeList from './locales/es/rooms/room-type-list.json';
 import esRoomsRoomTypeForm from './locales/es/rooms/room-type-form.json';
 import esRoomsRoomForm from './locales/es/rooms/room-form.json';
 import esRoomsRoomStatusForm from './locales/es/rooms/room-status-form.json';
-import esRoomsReservationControlledDialog from './locales/es/rooms/reservation-controlled-dialog.json';
+import esRoomsBookingControlledDialog from './locales/es/rooms/booking-controlled-dialog.json';
 import esRoomsRoomMonthCalendar from './locales/es/rooms/room-month-calendar.json';
 import esRoomsRoomDetail from './locales/es/rooms/room-detail.json';
 import esRoomsRoomRates from './locales/es/rooms/room-rates.json';
@@ -78,6 +100,19 @@ const i18n = createI18n({
         'storage-location-form': enInventoryStorageLocationForm,
         'stock-adjustment-form': enInventoryStockAdjustmentForm,
       },
+      bookings: {
+        'bookings-terms': enBookingsBookingsTerms,
+        'bookings-layout': enBookingsBookingsLayout,
+        'booking-list': enBookingsBookingList,
+        'booking-detail': enBookingsBookingDetail,
+        'booking-form': enBookingsBookingForm,
+        'booking-status-dialog': enBookingsBookingStatusDialog,
+        'booking-cancel-dialog': enBookingsBookingCancelDialog,
+        'booking-payment-summary': enBookingsBookingPaymentSummary,
+        'payment-form': enBookingsPaymentForm,
+        'booking-check-in': enBookingsBookingCheckIn,
+        'booking-check-out': enBookingsBookingCheckOut,
+      },
       rooms: {
         'rooms-terms': enRoomsRoomsTerms,
         'rooms-layout': enRoomsRoomsLayout,
@@ -86,7 +121,7 @@ const i18n = createI18n({
         'room-type-form': enRoomsRoomTypeForm,
         'room-form': enRoomsRoomForm,
         'room-status-form': enRoomsRoomStatusForm,
-        'reservation-controlled-dialog': enRoomsReservationControlledDialog,
+        'booking-controlled-dialog': enRoomsBookingControlledDialog,
         'room-month-calendar': enRoomsRoomMonthCalendar,
         'room-detail': enRoomsRoomDetail,
         'room-rates': enRoomsRoomRates,
@@ -113,6 +148,19 @@ const i18n = createI18n({
         'storage-location-form': esInventoryStorageLocationForm,
         'stock-adjustment-form': esInventoryStockAdjustmentForm,
       },
+      bookings: {
+        'bookings-terms': esBookingsBookingsTerms,
+        'bookings-layout': esBookingsBookingsLayout,
+        'booking-list': esBookingsBookingList,
+        'booking-detail': esBookingsBookingDetail,
+        'booking-form': esBookingsBookingForm,
+        'booking-status-dialog': esBookingsBookingStatusDialog,
+        'booking-cancel-dialog': esBookingsBookingCancelDialog,
+        'booking-payment-summary': esBookingsBookingPaymentSummary,
+        'payment-form': esBookingsPaymentForm,
+        'booking-check-in': esBookingsBookingCheckIn,
+        'booking-check-out': esBookingsBookingCheckOut,
+      },
       rooms: {
         'rooms-terms': esRoomsRoomsTerms,
         'rooms-layout': esRoomsRoomsLayout,
@@ -121,7 +169,7 @@ const i18n = createI18n({
         'room-type-form': esRoomsRoomTypeForm,
         'room-form': esRoomsRoomForm,
         'room-status-form': esRoomsRoomStatusForm,
-        'reservation-controlled-dialog': esRoomsReservationControlledDialog,
+        'booking-controlled-dialog': esRoomsBookingControlledDialog,
         'room-month-calendar': esRoomsRoomMonthCalendar,
         'room-detail': esRoomsRoomDetail,
         'room-rates': esRoomsRoomRates,

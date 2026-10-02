@@ -335,6 +335,23 @@ const useRoomsStore = defineStore('rooms', () => {
   }
 
   /**
+   * Whether a room can be booked over a range of nights, ignoring its bookings.
+   * Blocked and Out of service periods prevent booking; Needs cleaning does not.
+   * @param {number} roomId - Room identifier.
+   * @param {string} startDate - First ISO night.
+   * @param {string} endDate - Last ISO night.
+   * @returns {boolean}
+   */
+  function isRoomBookable(roomId, startDate, endDate) {
+    return !statusPeriods.value.some(
+      (statusPeriod) =>
+        statusPeriod.roomId === roomId &&
+        statusPeriod.preventsBooking &&
+        statusPeriod.overlaps(startDate, endDate),
+    );
+  }
+
+  /**
    * Lists the rooms classified by a room type.
    * @param {number} roomTypeId - Room type identifier.
    * @returns {Room[]} Rooms of the room type.
@@ -735,7 +752,7 @@ const useRoomsStore = defineStore('rooms', () => {
           roomAssignment.overlaps(startDate, endDate),
       )
     )
-      throw new RoomsError('reservation-controlled');
+      throw new RoomsError('booking-controlled');
 
     const created = [];
     const updated = [];
@@ -826,6 +843,7 @@ const useRoomsStore = defineStore('rooms', () => {
     getStatusPeriodOn,
     getDayStatus,
     getRoomsByRoomType,
+    isRoomBookable,
     getRatePlanById,
     getDailyRate,
     getNightlyRate,

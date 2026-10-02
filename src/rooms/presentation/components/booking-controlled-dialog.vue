@@ -1,6 +1,6 @@
 <script setup>
 import { useI18n } from 'vue-i18n';
-import { formatDayRange } from '../calendar-format.js';
+import { formatDayRange } from '../../../shared/presentation/calendar-format.js';
 
 defineProps({
   room: { type: Object, required: true },
@@ -15,7 +15,7 @@ const { t, locale } = useI18n();
   <pv-dialog
     v-model:visible="visible"
     modal
-    :header="t('rooms.reservation-controlled-dialog.title')"
+    :header="t('rooms.booking-controlled-dialog.title')"
     :draggable="false"
     class="w-full mx-3"
     style="max-width: 32rem"
@@ -24,16 +24,16 @@ const { t, locale } = useI18n();
       <pv-message severity="warn" icon="pi pi-lock">
         <div class="flex flex-column gap-1">
           <span class="font-semibold">{{
-            t('rooms.reservation-controlled-dialog.summary', {
+            t('rooms.booking-controlled-dialog.summary', {
               status: t(
                 `rooms.rooms-terms.day-statuses.${roomAssignment.status}`,
               ),
             })
           }}</span>
           <span>{{
-            t('rooms.reservation-controlled-dialog.detail', {
+            t('rooms.booking-controlled-dialog.detail', {
               number: room.number,
-              code: roomAssignment.reservationCode,
+              code: roomAssignment.bookingCode,
               dates: formatDayRange(
                 roomAssignment.startDate,
                 roomAssignment.endDate,
@@ -44,16 +44,34 @@ const { t, locale } = useI18n();
         </div>
       </pv-message>
       <p class="m-0 line-height-3 text-color-secondary">
-        {{ t('rooms.reservation-controlled-dialog.help') }}
+        {{ t('rooms.booking-controlled-dialog.help') }}
       </p>
     </div>
     <template #footer>
       <pv-button
-        :label="t('rooms.reservation-controlled-dialog.close')"
+        :label="t('rooms.booking-controlled-dialog.close')"
+        severity="secondary"
+        outlined
         rounded
-        autofocus
         @click="visible = false"
       />
+      <router-link
+        v-slot="{ navigate }"
+        :to="{
+          name: 'bookings-booking-detail',
+          params: { id: roomAssignment.bookingId },
+        }"
+        custom
+      >
+        <pv-button
+          :label="t('rooms.booking-controlled-dialog.open-booking')"
+          icon="pi pi-arrow-right"
+          icon-pos="right"
+          rounded
+          autofocus
+          @click="navigate"
+        />
+      </router-link>
     </template>
   </pv-dialog>
 </template>

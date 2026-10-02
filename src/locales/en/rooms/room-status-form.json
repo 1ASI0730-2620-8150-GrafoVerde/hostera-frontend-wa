@@ -12,7 +12,7 @@
   "dates-help": "Choose one day or a range. Existing statuses in the range are replaced.",
   "reason": "Reason",
   "reason-placeholder": "e.g. Air conditioning repair",
-  "reservation-note": "Days with a reservation or stay are controlled by that reservation.",
+  "booking-note": "Days with a booking or stay are controlled by that booking.",
   "cancel": "Cancel",
   "save": "Apply status"
 }
