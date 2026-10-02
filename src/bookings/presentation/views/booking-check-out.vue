@@ -9,11 +9,14 @@ import { Booking } from '../../domain/model/booking.entity.js';
 import { BookingsError } from '../../domain/model/bookings.error.js';
 import { CheckOutBookingCommand } from '../../domain/check-out-booking.command.js';
 import {
+  CalendarDate,
   formatDateTime,
   formatDayRange,
   formatMoney,
 } from '../../../shared/presentation/calendar-format.js';
 import BookingsLayout from '../components/bookings-layout.vue';
+import BookingStatusTag from '../components/booking-status-tag.vue';
+import BookingPaymentSummary from '../components/booking-payment-summary.vue';
 
 const { t, locale } = useI18n();
 const route = useRoute();
@@ -24,6 +27,7 @@ const roomsStore = useRoomsStore();
 const { saving } = toRefs(store);
 const { getBookingById, getBalanceDue, checkOutBooking } = store;
 
+const today = CalendarDate.today();
 const departure = new Date().toISOString();
 const form = ref({ roomCondition: 'no-issues', note: '' });
 const errorCode = ref('');
@@ -36,6 +40,10 @@ const roomType = computed(() =>
 const currency = computed(() => roomsStore.currentProperty?.currency ?? 'PEN');
 const balanceDue = computed(() =>
   booking.value ? getBalanceDue(booking.value) : 0,
+);
+// Leaving before the check-out day frees the remaining nights; the saved total does not change.
+const earlyDeparture = computed(
+  () => !!booking.value && today < booking.value.checkOutDate,
 );
 const roomConditionIcons = {
   'no-issues': 'pi pi-check-circle',
@@ -216,6 +224,14 @@ const completeCheckOut = async () => {
                 </dd>
               </div>
             </dl>
+            <pv-message
+              v-if="earlyDeparture"
+              severity="info"
+              size="small"
+              icon="pi pi-info-circle"
+            >
+              {{ t('bookings.booking-check-out.early') }}
+            </pv-message>
             <div class="flex flex-column gap-2">
               <label for="check-out-condition" class="text-sm font-medium">{{
                 t('bookings.booking-check-out.room-condition')
@@ -267,8 +283,89 @@ const completeCheckOut = async () => {
                 fluid
               />
             </div>
+            <pv-message
+              v-if="balanceDue > 0"
+              severity="warn"
+              icon="pi pi-wallet"
+            >
+              <div class="flex flex-column gap-1">
+                <span class="font-semibold">{{
+                  t('bookings.booking-check-out.balance-title')
+                }}</span>
+                <span>{{ t('bookings.booking-check-out.balance-text') }}</span>
+              </div>
+            </pv-message>
+          </div>
+          <div
+            v-if="balanceDue > 0"
+            class="p-4 surface-card border-1 surface-border border-round-xl"
+          >
+            <booking-payment-summary :booking="booking" />
           </div>
         </div>
+
+        <aside class="col-12 lg:col-4">
+          <div
+            class="flex flex-column gap-3 p-4 surface-50 border-1 surface-border border-round-xl"
+          >
+            <h3
+              class="flex align-items-center gap-2 m-0 text-base font-semibold"
+            >
+              <i
+                class="pi pi-arrow-right-arrow-left text-color-secondary"
+                aria-hidden="true"
+              />
+              {{ t('bookings.booking-check-out.changes') }}
+            </h3>
+            <dl class="flex flex-column gap-3 m-0">
+              <div
+                class="flex align-items-center justify-content-between gap-2"
+              >
+                <dt class="text-color-secondary">
+                  {{ t('bookings.booking-check-out.booking') }}
+                </dt>
+                <dd class="m-0 flex align-items-center gap-2">
+                  <booking-status-tag status="checked-in" />
+                  <i class="pi pi-arrow-right text-xs" aria-hidden="true" />
+                  <booking-status-tag status="checked-out" />
+                </dd>
+              </div>
+              <div
+                class="flex align-items-center justify-content-between gap-2"
+              >
+                <dt class="text-color-secondary">
+                  {{
+                    t('bookings.bookings-terms.room-number', {
+                      number: room?.number ?? '—',
+                    })
+                  }}
+                </dt>
+                <dd class="m-0 text-right font-medium">
+                  {{ t('bookings.booking-check-out.room-released') }}
+                </dd>
+              </div>
+              <div
+                class="flex align-items-center justify-content-between gap-2"
+              >
+                <dt class="text-color-secondary">
+                  {{ t('bookings.booking-payment-summary.title') }}
+                </dt>
+                <dd
+                  :class="[
+                    'm-0 font-medium',
+                    balanceDue > 0 ? 'text-red-600' : 'text-green-700',
+                  ]"
+                >
+                  {{
+                    balanceDue > 0
+                      ? t('bookings.booking-check-out.outstanding')
+                      : t('bookings.bookings-terms.payment-statuses.paid')
+                  }}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </aside>
 
         <div class="col-12">
           <pv-message
