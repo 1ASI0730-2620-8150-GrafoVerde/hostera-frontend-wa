@@ -25,6 +25,7 @@ import enBookingsPaymentForm from './locales/en/bookings/payment-form.json';
 import enBookingsBookingCheckIn from './locales/en/bookings/booking-check-in.json';
 import enBookingsBookingCheckOut from './locales/en/bookings/booking-check-out.json';
 import enAccessControlAccessControlTerms from './locales/en/access-control/access-control-terms.json';
+import enAccessControlStaffCredentialForm from './locales/en/access-control/staff-credential-form.json';
 import enAccessControlRfidEncoderPanel from './locales/en/access-control/rfid-encoder-panel.json';
 import enRoomsRoomsTerms from './locales/en/rooms/rooms-terms.json';
 import enRoomsRoomsLayout from './locales/en/rooms/rooms-layout.json';
@@ -65,6 +66,7 @@ import esBookingsPaymentForm from './locales/es/bookings/payment-form.json';
 import esBookingsBookingCheckIn from './locales/es/bookings/booking-check-in.json';
 import esBookingsBookingCheckOut from './locales/es/bookings/booking-check-out.json';
 import esAccessControlAccessControlTerms from './locales/es/access-control/access-control-terms.json';
+import esAccessControlStaffCredentialForm from './locales/es/access-control/staff-credential-form.json';
 import esAccessControlRfidEncoderPanel from './locales/es/access-control/rfid-encoder-panel.json';
 import esRoomsRoomsTerms from './locales/es/rooms/rooms-terms.json';
 import esRoomsRoomsLayout from './locales/es/rooms/rooms-layout.json';
@@ -119,6 +121,7 @@ const i18n = createI18n({
       },
       'access-control': {
         'access-control-terms': enAccessControlAccessControlTerms,
+        'staff-credential-form': enAccessControlStaffCredentialForm,
         'rfid-encoder-panel': enAccessControlRfidEncoderPanel,
       },
       rooms: {
@@ -171,6 +174,7 @@ const i18n = createI18n({
       },
       'access-control': {
         'access-control-terms': esAccessControlAccessControlTerms,
+        'staff-credential-form': esAccessControlStaffCredentialForm,
         'rfid-encoder-panel': esAccessControlRfidEncoderPanel,
       },
       rooms: {
