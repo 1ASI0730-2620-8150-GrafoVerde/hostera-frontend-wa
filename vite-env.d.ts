@@ -52,6 +52,10 @@ interface ImportMetaEnv {
    */
   readonly VITE_STAFF_MEMBERS_ENDPOINT_PATH: string;
   /**
+   * # VITE_ACCESS_EVENTS_ENDPOINT_PATH is the path to the access events' endpoint.
+   */
+  readonly VITE_ACCESS_EVENTS_ENDPOINT_PATH: string;
+  /**
    * # VITE_RATE_PLANS_ENDPOINT_PATH is the path to the rate plans' endpoint.
    */
   readonly VITE_RATE_PLANS_ENDPOINT_PATH: string;

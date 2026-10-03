@@ -4,6 +4,8 @@ import { BaseEndpoint } from '../../shared/infrastructure/base-endpoint.js';
 const credentialsEndpointPath = import.meta.env.VITE_CREDENTIALS_ENDPOINT_PATH;
 const staffMembersEndpointPath = import.meta.env
   .VITE_STAFF_MEMBERS_ENDPOINT_PATH;
+const accessEventsEndpointPath = import.meta.env
+  .VITE_ACCESS_EVENTS_ENDPOINT_PATH;
 
 /**
  * Infrastructure gateway for Access Control bounded-context endpoints.
@@ -22,14 +24,23 @@ export class AccessControlApi extends BaseApi {
    * @private
    */
   #staffMembersEndpoint;
+  /**
+   * @type {BaseEndpoint}
+   * @private
+   */
+  #accessEventsEndpoint;
 
-  /** Creates endpoint clients for credentials and staff members. */
+  /** Creates endpoint clients for credentials, staff members, and access events. */
   constructor() {
     super();
     this.#credentialsEndpoint = new BaseEndpoint(this, credentialsEndpointPath);
     this.#staffMembersEndpoint = new BaseEndpoint(
       this,
       staffMembersEndpointPath,
+    );
+    this.#accessEventsEndpoint = new BaseEndpoint(
+      this,
+      accessEventsEndpointPath,
     );
   }
 
@@ -67,5 +78,14 @@ export class AccessControlApi extends BaseApi {
    */
   getStaffMembers(propertyId) {
     return this.#staffMembersEndpoint.getAll({ propertyId });
+  }
+
+  /**
+   * Fetches the access events of a property.
+   * @param {number|string} propertyId - The ID of the property.
+   * @returns {Promise<import('axios').AxiosResponse>} Promise resolving to the access events' response.
+   */
+  getAccessEvents(propertyId) {
+    return this.#accessEventsEndpoint.getAll({ propertyId });
   }
 }
