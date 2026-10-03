@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'primevue';
 import useAccessControlStore from '../../application/access-control.store.js';
 import useRoomsStore from '../../../rooms/application/rooms.store.js';
@@ -9,9 +9,11 @@ import { formatDateTime } from '../../../shared/presentation/calendar-format.js'
 import AccessControlLayout from '../components/access-control-layout.vue';
 import CredentialStatusTag from '../components/credential-status-tag.vue';
 import RevokeCredentialDialog from '../components/revoke-credential-dialog.vue';
+import ReplaceCredentialDrawer from '../components/replace-credential-drawer.vue';
 
 const { t, locale } = useI18n();
 const route = useRoute();
+const router = useRouter();
 const toast = useToast();
 const store = useAccessControlStore();
 const roomsStore = useRoomsStore();
@@ -20,6 +22,7 @@ const { currentProperty } = toRefs(roomsStore);
 const { getCredentialById, getCredentialStatus, getStaffMemberById } = store;
 
 const revokeDialogVisible = ref(false);
+const replaceDrawerVisible = ref(false);
 
 const credential = computed(() => getCredentialById(route.params.id));
 const status = computed(() => getCredentialStatus(credential.value));
@@ -103,6 +106,24 @@ const notifyRevoked = () => {
     life: 3000,
   });
 };
+
+/**
+ * Opens the replacement card and confirms it.
+ * @param {Object} replacement - Replacement credential.
+ */
+const showReplacement = (replacement) => {
+  toast.add({
+    severity: 'success',
+    summary: t('access-control.credential-detail.replaced', {
+      card: replacement.cardId,
+    }),
+    life: 3000,
+  });
+  router.push({
+    name: 'access-control-credential-detail',
+    params: { id: replacement.id },
+  });
+};
 </script>
 
 <template>
@@ -154,6 +175,13 @@ const notifyRevoked = () => {
             rounded
             :disabled="saving"
             @click="revokeDialogVisible = true"
+          />
+          <pv-button
+            :label="t('access-control.credential-detail.replace')"
+            icon="pi pi-sync"
+            rounded
+            :disabled="saving"
+            @click="replaceDrawerVisible = true"
           />
         </div>
       </header>
@@ -372,6 +400,12 @@ const notifyRevoked = () => {
         :credential="credential"
         :access="access"
         @saved="notifyRevoked"
+      />
+      <replace-credential-drawer
+        v-if="replaceDrawerVisible"
+        v-model:visible="replaceDrawerVisible"
+        :credential="credential"
+        @saved="showReplacement"
       />
     </template>
     <pv-message v-else severity="warn" icon="pi pi-search">
