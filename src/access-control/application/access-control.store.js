@@ -318,6 +318,37 @@ const useAccessControlStore = defineStore('access-control', () => {
     return revoked;
   }
 
+  /**
+   * Revokes a credential and encodes a new card with the same holder, scope, and access period.
+   * @param {number} credentialId - Identifier of the credential to replace.
+   * @returns {Promise<Credential>} Replacement credential.
+   * @throws {AccessControlError} When the credential cannot be replaced.
+   */
+  async function replaceCredential(credentialId) {
+    const credential = getCredentialById(credentialId);
+    if (!credential) throw new AccessControlError('not-found');
+    const replacedAt = now();
+    const revoked = credential.revoke({
+      reason: 'replaced',
+      at: replacedAt,
+      by: demoOperator,
+    });
+    const cardId = await encodeKeyCard();
+    await saveChangedCredentials([revoked]);
+    const [replacement] = await saveNewCredentials([
+      new Credential({
+        ...credential,
+        id: null,
+        cardId,
+        validFrom:
+          credential.validFrom > replacedAt ? credential.validFrom : replacedAt,
+        issuedAt: replacedAt,
+        issuedBy: demoOperator,
+      }),
+    ]);
+    return replacement;
+  }
+
   return {
     credentials,
     staffMembers,
@@ -336,6 +367,7 @@ const useAccessControlStore = defineStore('access-control', () => {
     resetEncoder,
     issueStaffCredential,
     revokeCredential,
+    replaceCredential,
   };
 });
 
