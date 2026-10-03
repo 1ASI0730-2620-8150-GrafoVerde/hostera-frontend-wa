@@ -238,6 +238,32 @@ const useAccessControlStore = defineStore('access-control', () => {
   }
 
   /**
+   * Persists changed credentials and replaces them in local state.
+   * @param {Credential[]} changedCredentials - Credentials to persist.
+   * @returns {Promise<Credential[]>} Persisted credentials.
+   */
+  function saveChangedCredentials(changedCredentials) {
+    return trackSaving(
+      Promise.all(
+        changedCredentials.map((credential) =>
+          accessControlApi.updateCredential(credential),
+        ),
+      ).then((responses) => {
+        const saved = responses.map((response) =>
+          CredentialAssembler.toEntityFromResource(response.data),
+        );
+        for (const credential of saved) {
+          const index = credentials.value.findIndex(
+            (entry) => entry['id'] === credential.id,
+          );
+          if (index !== -1) credentials.value[index] = credential;
+        }
+        return saved;
+      }),
+    );
+  }
+
+  /**
    * Issues a staff credential on a new key card; a staff member holds at most one usable credential.
    * @param {import('../domain/issue-staff-credential.command.js').IssueStaffCredentialCommand} issueStaffCredentialCommand - Issue command.
    * @returns {Promise<Credential>} Issued credential.
@@ -276,6 +302,22 @@ const useAccessControlStore = defineStore('access-control', () => {
     return credential;
   }
 
+  /**
+   * Revokes an active or scheduled credential immediately.
+   * @param {import('../domain/revoke-credential.command.js').RevokeCredentialCommand} revokeCredentialCommand - Revoke command.
+   * @returns {Promise<Credential>} Revoked credential.
+   * @throws {AccessControlError} When the credential cannot be revoked.
+   */
+  async function revokeCredential(revokeCredentialCommand) {
+    const { credentialId, reason, note } = revokeCredentialCommand;
+    const credential = getCredentialById(credentialId);
+    if (!credential) throw new AccessControlError('not-found');
+    const [revoked] = await saveChangedCredentials([
+      credential.revoke({ reason, note, at: now(), by: demoOperator }),
+    ]);
+    return revoked;
+  }
+
   return {
     credentials,
     staffMembers,
@@ -293,6 +335,7 @@ const useAccessControlStore = defineStore('access-control', () => {
     encodeKeyCard,
     resetEncoder,
     issueStaffCredential,
+    revokeCredential,
   };
 });
 
