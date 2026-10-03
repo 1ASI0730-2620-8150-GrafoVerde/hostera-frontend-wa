@@ -1,22 +1,29 @@
 <script setup>
-import { computed, toRefs } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
+import { useToast } from 'primevue';
 import useAccessControlStore from '../../application/access-control.store.js';
 import useRoomsStore from '../../../rooms/application/rooms.store.js';
 import { formatDateTime } from '../../../shared/presentation/calendar-format.js';
 import AccessControlLayout from '../components/access-control-layout.vue';
 import CredentialStatusTag from '../components/credential-status-tag.vue';
+import RevokeCredentialDialog from '../components/revoke-credential-dialog.vue';
 
 const { t, locale } = useI18n();
 const route = useRoute();
+const toast = useToast();
 const store = useAccessControlStore();
 const roomsStore = useRoomsStore();
+const { saving } = toRefs(store);
 const { currentProperty } = toRefs(roomsStore);
 const { getCredentialById, getCredentialStatus, getStaffMemberById } = store;
 
+const revokeDialogVisible = ref(false);
+
 const credential = computed(() => getCredentialById(route.params.id));
 const status = computed(() => getCredentialStatus(credential.value));
+const usable = computed(() => ['active', 'scheduled'].includes(status.value));
 const room = computed(() => roomsStore.getRoomById(credential.value?.roomId));
 const staffMember = computed(() =>
   getStaffMemberById(credential.value?.staffMemberId),
@@ -52,6 +59,22 @@ const details = computed(() => [
     value: operatorName(credential.value.issuedBy),
   },
 ]);
+const revocationFacts = computed(() => [
+  {
+    label: t('access-control.credential-detail.revoked-at'),
+    value: dateTime(credential.value.revokedAt),
+  },
+  {
+    label: t('access-control.credential-detail.by'),
+    value: operatorName(credential.value.revokedBy),
+  },
+  {
+    label: t('access-control.credential-detail.reason'),
+    value: t(
+      `access-control.access-control-terms.revocation-reasons.${credential.value.revocationReason}`,
+    ),
+  },
+]);
 
 /**
  * Formats a moment of the credential.
@@ -69,6 +92,17 @@ const operatorName = (operator) =>
   operator === 'Demo operator'
     ? t('access-control.access-control-terms.demo-operator')
     : (operator ?? '—');
+
+/**
+ * Confirms that the credential was revoked.
+ */
+const notifyRevoked = () => {
+  toast.add({
+    severity: 'success',
+    summary: t('access-control.credential-detail.revoked'),
+    life: 3000,
+  });
+};
 </script>
 
 <template>
@@ -110,6 +144,17 @@ const operatorName = (operator) =>
               })
             }}</span>
           </div>
+        </div>
+        <div v-if="usable" class="flex flex-wrap align-items-center gap-2">
+          <pv-button
+            :label="t('access-control.credential-detail.revoke')"
+            icon="pi pi-ban"
+            severity="danger"
+            outlined
+            rounded
+            :disabled="saving"
+            @click="revokeDialogVisible = true"
+          />
         </div>
       </header>
 
@@ -219,6 +264,34 @@ const operatorName = (operator) =>
 
         <aside class="col-12 xl:col-4 flex flex-column gap-3">
           <section
+            v-if="status === 'revoked'"
+            class="flex flex-column gap-3 p-4 surface-card border-1 surface-border border-round-xl"
+          >
+            <h3
+              class="flex align-items-center gap-2 m-0 text-base font-semibold"
+            >
+              <i class="pi pi-ban text-red-600" aria-hidden="true" />
+              {{ t('access-control.credential-detail.revocation') }}
+            </h3>
+            <dl class="flex flex-column gap-2 m-0">
+              <div
+                v-for="fact in revocationFacts"
+                :key="fact.label"
+                class="flex justify-content-between gap-3"
+              >
+                <dt class="text-color-secondary">{{ fact.label }}</dt>
+                <dd class="m-0 text-right font-medium">{{ fact.value }}</dd>
+              </div>
+            </dl>
+            <p
+              v-if="credential.revocationNote"
+              class="m-0 p-3 surface-50 border-round-lg text-sm line-height-3"
+            >
+              {{ credential.revocationNote }}
+            </p>
+          </section>
+
+          <section
             class="flex flex-column gap-3 p-4 surface-50 border-1 surface-border border-round-xl"
           >
             <h3
@@ -292,6 +365,14 @@ const operatorName = (operator) =>
           </section>
         </aside>
       </div>
+
+      <revoke-credential-dialog
+        v-if="revokeDialogVisible"
+        v-model:visible="revokeDialogVisible"
+        :credential="credential"
+        :access="access"
+        @saved="notifyRevoked"
+      />
     </template>
     <pv-message v-else severity="warn" icon="pi pi-search">
       <div class="flex flex-column sm:flex-row sm:align-items-center gap-3">
