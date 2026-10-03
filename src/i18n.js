@@ -26,6 +26,8 @@ import enBookingsBookingCheckIn from './locales/en/bookings/booking-check-in.jso
 import enBookingsBookingCheckOut from './locales/en/bookings/booking-check-out.json';
 import enAccessControlAccessControlTerms from './locales/en/access-control/access-control-terms.json';
 import enAccessControlAccessControlLayout from './locales/en/access-control/access-control-layout.json';
+import enAccessControlCredentialList from './locales/en/access-control/credential-list.json';
+import enAccessControlCredentialDetail from './locales/en/access-control/credential-detail.json';
 import enAccessControlStaffCredentialForm from './locales/en/access-control/staff-credential-form.json';
 import enAccessControlRfidEncoderPanel from './locales/en/access-control/rfid-encoder-panel.json';
 import enRoomsRoomsTerms from './locales/en/rooms/rooms-terms.json';
@@ -68,6 +70,8 @@ import esBookingsBookingCheckIn from './locales/es/bookings/booking-check-in.jso
 import esBookingsBookingCheckOut from './locales/es/bookings/booking-check-out.json';
 import esAccessControlAccessControlTerms from './locales/es/access-control/access-control-terms.json';
 import esAccessControlAccessControlLayout from './locales/es/access-control/access-control-layout.json';
+import esAccessControlCredentialList from './locales/es/access-control/credential-list.json';
+import esAccessControlCredentialDetail from './locales/es/access-control/credential-detail.json';
 import esAccessControlStaffCredentialForm from './locales/es/access-control/staff-credential-form.json';
 import esAccessControlRfidEncoderPanel from './locales/es/access-control/rfid-encoder-panel.json';
 import esRoomsRoomsTerms from './locales/es/rooms/rooms-terms.json';
@@ -124,6 +128,8 @@ const i18n = createI18n({
       'access-control': {
         'access-control-terms': enAccessControlAccessControlTerms,
         'access-control-layout': enAccessControlAccessControlLayout,
+        'credential-list': enAccessControlCredentialList,
+        'credential-detail': enAccessControlCredentialDetail,
         'staff-credential-form': enAccessControlStaffCredentialForm,
         'rfid-encoder-panel': enAccessControlRfidEncoderPanel,
       },
@@ -178,6 +184,8 @@ const i18n = createI18n({
       'access-control': {
         'access-control-terms': esAccessControlAccessControlTerms,
         'access-control-layout': esAccessControlAccessControlLayout,
+        'credential-list': esAccessControlCredentialList,
+        'credential-detail': esAccessControlCredentialDetail,
         'staff-credential-form': esAccessControlStaffCredentialForm,
         'rfid-encoder-panel': esAccessControlRfidEncoderPanel,
       },
