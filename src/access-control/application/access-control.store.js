@@ -10,10 +10,18 @@ import { AccessControlApi } from '../infrastructure/access-control-api.js';
 import { CredentialAssembler } from '../infrastructure/credential.assembler.js';
 import { StaffMemberAssembler } from '../infrastructure/staff-member.assembler.js';
 import { RfidEncoder } from '../infrastructure/rfid-encoder.js';
+import { Credential } from '../domain/model/credential.entity.js';
+import { AccessControlError } from '../domain/model/access-control.error.js';
 import useRoomsStore from '../../rooms/application/rooms.store.js';
 
 const accessControlApi = new AccessControlApi();
 const rfidEncoder = new RfidEncoder();
+
+/**
+ * Operator recorded in credential changes until IAM is implemented.
+ * @type {string}
+ */
+const demoOperator = 'Demo operator';
 
 /**
  * Reactive store that exposes Access Control commands and queries.
@@ -162,6 +170,24 @@ const useAccessControlStore = defineStore('access-control', () => {
   }
 
   /**
+   * Tracks a create or update request and records its errors.
+   * @template T
+   * @param {Promise<T>} request - Pending infrastructure request.
+   * @returns {Promise<T>} The same request result.
+   */
+  function trackSaving(request) {
+    saving.value = true;
+    return request
+      .catch((error) => {
+        errors.value.push(error);
+        throw error;
+      })
+      .finally(() => {
+        saving.value = false;
+      });
+  }
+
+  /**
    * Writes a new key card on the front desk encoder, retrying until its card ID is unique in the property.
    * @returns {Promise<string>} Card ID of the encoded card.
    * @throws {Error} When the encoder fails.
@@ -189,6 +215,67 @@ const useAccessControlStore = defineStore('access-control', () => {
     encoderState.value = 'ready';
   }
 
+  /**
+   * Persists new credentials and appends them to local state.
+   * @param {Credential[]} newCredentials - Credentials to persist.
+   * @returns {Promise<Credential[]>} Persisted credentials.
+   */
+  function saveNewCredentials(newCredentials) {
+    newCredentials.forEach((credential) => credential.validate());
+    return trackSaving(
+      Promise.all(
+        newCredentials.map((credential) =>
+          accessControlApi.createCredential(credential),
+        ),
+      ).then((responses) => {
+        const saved = responses.map((response) =>
+          CredentialAssembler.toEntityFromResource(response.data),
+        );
+        credentials.value.push(...saved);
+        return saved;
+      }),
+    );
+  }
+
+  /**
+   * Issues a staff credential on a new key card; a staff member holds at most one usable credential.
+   * @param {import('../domain/issue-staff-credential.command.js').IssueStaffCredentialCommand} issueStaffCredentialCommand - Issue command.
+   * @returns {Promise<Credential>} Issued credential.
+   * @throws {AccessControlError} When a business rule is violated.
+   */
+  async function issueStaffCredential(issueStaffCredentialCommand) {
+    const { staffMemberId, scope, validUntil } = issueStaffCredentialCommand;
+    const staffMember = getStaffMemberById(staffMemberId);
+    if (!staffMember) throw new AccessControlError('staff-member-required');
+    const issuedAt = now();
+    if (
+      credentials.value.some(
+        (credential) =>
+          credential.staffMemberId === staffMemberId &&
+          credential.isUsableAt(issuedAt),
+      )
+    )
+      throw new AccessControlError('staff-credential-exists');
+    const draft = new Credential({
+      propertyId: currentPropertyId.value,
+      cardId: '0000',
+      type: 'staff-credential',
+      holderName: staffMember.name,
+      staffMemberId,
+      scope,
+      validFrom: issuedAt,
+      validUntil,
+      issuedAt,
+      issuedBy: demoOperator,
+    });
+    draft.validate();
+    const cardId = await encodeKeyCard();
+    const [credential] = await saveNewCredentials([
+      new Credential({ ...draft, cardId }),
+    ]);
+    return credential;
+  }
+
   return {
     credentials,
     staffMembers,
@@ -205,6 +292,7 @@ const useAccessControlStore = defineStore('access-control', () => {
     getKeyCardsOfBooking,
     encodeKeyCard,
     resetEncoder,
+    issueStaffCredential,
   };
 });
 
