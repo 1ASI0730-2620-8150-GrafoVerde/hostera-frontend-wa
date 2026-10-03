@@ -37,6 +37,12 @@ const navigationItems = [
     to: { name: 'inventory-items' },
     section: '/inventory',
   },
+  {
+    label: 'shared.app-layout.access-control',
+    icon: 'pi pi-lock',
+    to: { name: 'access-control-credentials' },
+    section: '/access-control',
+  },
 ];
 
 /**
