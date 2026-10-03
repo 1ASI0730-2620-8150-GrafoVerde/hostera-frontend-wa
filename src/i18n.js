@@ -30,6 +30,7 @@ import enAccessControlCredentialList from './locales/en/access-control/credentia
 import enAccessControlCredentialDetail from './locales/en/access-control/credential-detail.json';
 import enAccessControlStaffCredentialForm from './locales/en/access-control/staff-credential-form.json';
 import enAccessControlRfidEncoderPanel from './locales/en/access-control/rfid-encoder-panel.json';
+import enAccessControlRevokeCredentialDialog from './locales/en/access-control/revoke-credential-dialog.json';
 import enRoomsRoomsTerms from './locales/en/rooms/rooms-terms.json';
 import enRoomsRoomsLayout from './locales/en/rooms/rooms-layout.json';
 import enRoomsRoomAvailability from './locales/en/rooms/room-availability.json';
@@ -74,6 +75,7 @@ import esAccessControlCredentialList from './locales/es/access-control/credentia
 import esAccessControlCredentialDetail from './locales/es/access-control/credential-detail.json';
 import esAccessControlStaffCredentialForm from './locales/es/access-control/staff-credential-form.json';
 import esAccessControlRfidEncoderPanel from './locales/es/access-control/rfid-encoder-panel.json';
+import esAccessControlRevokeCredentialDialog from './locales/es/access-control/revoke-credential-dialog.json';
 import esRoomsRoomsTerms from './locales/es/rooms/rooms-terms.json';
 import esRoomsRoomsLayout from './locales/es/rooms/rooms-layout.json';
 import esRoomsRoomAvailability from './locales/es/rooms/room-availability.json';
@@ -132,6 +134,7 @@ const i18n = createI18n({
         'credential-detail': enAccessControlCredentialDetail,
         'staff-credential-form': enAccessControlStaffCredentialForm,
         'rfid-encoder-panel': enAccessControlRfidEncoderPanel,
+        'revoke-credential-dialog': enAccessControlRevokeCredentialDialog,
       },
       rooms: {
         'rooms-terms': enRoomsRoomsTerms,
@@ -188,6 +191,7 @@ const i18n = createI18n({
         'credential-detail': esAccessControlCredentialDetail,
         'staff-credential-form': esAccessControlStaffCredentialForm,
         'rfid-encoder-panel': esAccessControlRfidEncoderPanel,
+        'revoke-credential-dialog': esAccessControlRevokeCredentialDialog,
       },
       rooms: {
         'rooms-terms': esRoomsRoomsTerms,
