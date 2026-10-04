@@ -34,6 +34,7 @@ import enAccessControlRevokeCredentialDialog from './locales/en/access-control/r
 import enAccessControlReplaceCredentialDrawer from './locales/en/access-control/replace-credential-drawer.json';
 import enAccessControlAccessEventList from './locales/en/access-control/access-event-list.json';
 import enAccessControlAccessEventDrawer from './locales/en/access-control/access-event-drawer.json';
+import enOverviewOverviewPanel from './locales/en/overview/overview-panel.json';
 import enRoomsRoomsTerms from './locales/en/rooms/rooms-terms.json';
 import enRoomsRoomsLayout from './locales/en/rooms/rooms-layout.json';
 import enRoomsRoomAvailability from './locales/en/rooms/room-availability.json';
@@ -82,6 +83,7 @@ import esAccessControlRevokeCredentialDialog from './locales/es/access-control/r
 import esAccessControlReplaceCredentialDrawer from './locales/es/access-control/replace-credential-drawer.json';
 import esAccessControlAccessEventList from './locales/es/access-control/access-event-list.json';
 import esAccessControlAccessEventDrawer from './locales/es/access-control/access-event-drawer.json';
+import esOverviewOverviewPanel from './locales/es/overview/overview-panel.json';
 import esRoomsRoomsTerms from './locales/es/rooms/rooms-terms.json';
 import esRoomsRoomsLayout from './locales/es/rooms/rooms-layout.json';
 import esRoomsRoomAvailability from './locales/es/rooms/room-availability.json';
@@ -145,6 +147,9 @@ const i18n = createI18n({
         'access-event-list': enAccessControlAccessEventList,
         'access-event-drawer': enAccessControlAccessEventDrawer,
       },
+      overview: {
+        'overview-panel': enOverviewOverviewPanel,
+      },
       rooms: {
         'rooms-terms': enRoomsRoomsTerms,
         'rooms-layout': enRoomsRoomsLayout,
@@ -204,6 +209,9 @@ const i18n = createI18n({
         'replace-credential-drawer': esAccessControlReplaceCredentialDrawer,
         'access-event-list': esAccessControlAccessEventList,
         'access-event-drawer': esAccessControlAccessEventDrawer,
+      },
+      overview: {
+        'overview-panel': esOverviewOverviewPanel,
       },
       rooms: {
         'rooms-terms': esRoomsRoomsTerms,
