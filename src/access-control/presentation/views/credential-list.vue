@@ -143,6 +143,20 @@ const showIssued = (credential) => {
 <template>
   <access-control-layout>
     <template #actions>
+      <router-link
+        v-slot="{ navigate }"
+        :to="{ name: 'access-control-events' }"
+        custom
+      >
+        <pv-button
+          :label="t('access-control.credential-list.events')"
+          icon="pi pi-history"
+          severity="secondary"
+          outlined
+          rounded
+          @click="navigate"
+        />
+      </router-link>
       <pv-button
         :label="t('access-control.credential-list.issue')"
         icon="pi pi-plus"

@@ -32,6 +32,7 @@ import enAccessControlStaffCredentialForm from './locales/en/access-control/staf
 import enAccessControlRfidEncoderPanel from './locales/en/access-control/rfid-encoder-panel.json';
 import enAccessControlRevokeCredentialDialog from './locales/en/access-control/revoke-credential-dialog.json';
 import enAccessControlReplaceCredentialDrawer from './locales/en/access-control/replace-credential-drawer.json';
+import enAccessControlAccessEventList from './locales/en/access-control/access-event-list.json';
 import enAccessControlAccessEventDrawer from './locales/en/access-control/access-event-drawer.json';
 import enRoomsRoomsTerms from './locales/en/rooms/rooms-terms.json';
 import enRoomsRoomsLayout from './locales/en/rooms/rooms-layout.json';
@@ -79,6 +80,7 @@ import esAccessControlStaffCredentialForm from './locales/es/access-control/staf
 import esAccessControlRfidEncoderPanel from './locales/es/access-control/rfid-encoder-panel.json';
 import esAccessControlRevokeCredentialDialog from './locales/es/access-control/revoke-credential-dialog.json';
 import esAccessControlReplaceCredentialDrawer from './locales/es/access-control/replace-credential-drawer.json';
+import esAccessControlAccessEventList from './locales/es/access-control/access-event-list.json';
 import esAccessControlAccessEventDrawer from './locales/es/access-control/access-event-drawer.json';
 import esRoomsRoomsTerms from './locales/es/rooms/rooms-terms.json';
 import esRoomsRoomsLayout from './locales/es/rooms/rooms-layout.json';
@@ -140,6 +142,7 @@ const i18n = createI18n({
         'rfid-encoder-panel': enAccessControlRfidEncoderPanel,
         'revoke-credential-dialog': enAccessControlRevokeCredentialDialog,
         'replace-credential-drawer': enAccessControlReplaceCredentialDrawer,
+        'access-event-list': enAccessControlAccessEventList,
         'access-event-drawer': enAccessControlAccessEventDrawer,
       },
       rooms: {
@@ -199,6 +202,7 @@ const i18n = createI18n({
         'rfid-encoder-panel': esAccessControlRfidEncoderPanel,
         'revoke-credential-dialog': esAccessControlRevokeCredentialDialog,
         'replace-credential-drawer': esAccessControlReplaceCredentialDrawer,
+        'access-event-list': esAccessControlAccessEventList,
         'access-event-drawer': esAccessControlAccessEventDrawer,
       },
       rooms: {
