@@ -5,7 +5,7 @@
  * @module useOverviewStore
  */
 import { defineStore } from 'pinia';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { OverviewApi } from '../infrastructure/overview-api.js';
 import { PropertyOverviewAssembler } from '../infrastructure/property-overview.assembler.js';
 import useRoomsStore from '../../rooms/application/rooms.store.js';
@@ -81,11 +81,32 @@ const useOverviewStore = defineStore('overview', () => {
     { immediate: true },
   );
 
+  /**
+   * Today's arrivals of the current property: bookings due today and those already checked in today.
+   * @type {import('vue').ComputedRef<{booking: Booking, arrived: boolean, balanceDue: number}[]>}
+   */
+  const todaysArrivals = computed(() => {
+    const day = today();
+    return bookingsStore.bookings
+      .filter(
+        (booking) =>
+          booking.checkInDate === day &&
+          ['pending', 'confirmed', 'checked-in'].includes(booking.status),
+      )
+      .map((booking) => ({
+        booking,
+        arrived: booking.status === 'checked-in',
+        balanceDue: bookingsStore.getBalanceDue(booking),
+      }))
+      .toSorted((a, b) => Number(a.arrived) - Number(b.arrived));
+  });
+
   return {
     propertyOverviews,
     propertyOverviewsLoaded,
     propertyOverviewErrors,
     fetchPropertyOverviews,
+    todaysArrivals,
   };
 });
 

@@ -36,6 +36,7 @@ import enAccessControlAccessEventList from './locales/en/access-control/access-e
 import enAccessControlAccessEventDrawer from './locales/en/access-control/access-event-drawer.json';
 import enOverviewOverviewPanel from './locales/en/overview/overview-panel.json';
 import enOverviewPropertyOverviewCard from './locales/en/overview/property-overview-card.json';
+import enOverviewTodaysArrivalsCard from './locales/en/overview/todays-arrivals-card.json';
 import enRoomsRoomsTerms from './locales/en/rooms/rooms-terms.json';
 import enRoomsRoomsLayout from './locales/en/rooms/rooms-layout.json';
 import enRoomsRoomAvailability from './locales/en/rooms/room-availability.json';
@@ -86,6 +87,7 @@ import esAccessControlAccessEventList from './locales/es/access-control/access-e
 import esAccessControlAccessEventDrawer from './locales/es/access-control/access-event-drawer.json';
 import esOverviewOverviewPanel from './locales/es/overview/overview-panel.json';
 import esOverviewPropertyOverviewCard from './locales/es/overview/property-overview-card.json';
+import esOverviewTodaysArrivalsCard from './locales/es/overview/todays-arrivals-card.json';
 import esRoomsRoomsTerms from './locales/es/rooms/rooms-terms.json';
 import esRoomsRoomsLayout from './locales/es/rooms/rooms-layout.json';
 import esRoomsRoomAvailability from './locales/es/rooms/room-availability.json';
@@ -152,6 +154,7 @@ const i18n = createI18n({
       overview: {
         'overview-panel': enOverviewOverviewPanel,
         'property-overview-card': enOverviewPropertyOverviewCard,
+        'todays-arrivals-card': enOverviewTodaysArrivalsCard,
       },
       rooms: {
         'rooms-terms': enRoomsRoomsTerms,
@@ -216,6 +219,7 @@ const i18n = createI18n({
       overview: {
         'overview-panel': esOverviewOverviewPanel,
         'property-overview-card': esOverviewPropertyOverviewCard,
+        'todays-arrivals-card': esOverviewTodaysArrivalsCard,
       },
       rooms: {
         'rooms-terms': esRoomsRoomsTerms,
