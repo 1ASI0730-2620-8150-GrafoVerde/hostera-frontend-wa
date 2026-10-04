@@ -73,6 +73,7 @@
     "invalid-payment-amount": "Ingresa un monto mayor que cero.",
     "invalid-payment-method": "Elige un método de pago.",
     "invalid-payment-date": "Elige cuándo se recibió el pago.",
-    "payment-exceeds-balance": "Ingresa un monto de hasta {amount}. El pago no se registró."
+    "payment-exceeds-balance": "Ingresa un monto de hasta {amount}. El pago no se registró.",
+    "key-card-required": "Graba al menos una tarjeta para completar el check-in."
   }
 }

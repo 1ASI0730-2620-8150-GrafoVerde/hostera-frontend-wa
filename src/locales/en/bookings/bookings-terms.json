@@ -73,6 +73,7 @@
     "invalid-payment-amount": "Enter an amount greater than zero.",
     "invalid-payment-method": "Choose a payment method.",
     "invalid-payment-date": "Choose when the payment was received.",
-    "payment-exceeds-balance": "Enter an amount up to {amount}. The payment was not recorded."
+    "payment-exceeds-balance": "Enter an amount up to {amount}. The payment was not recorded.",
+    "key-card-required": "Encode at least one key card to complete the check-in."
   }
 }

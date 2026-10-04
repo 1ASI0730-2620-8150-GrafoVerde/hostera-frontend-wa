@@ -13,6 +13,8 @@ import { Booking } from '../domain/model/booking.entity.js';
 import { Payment } from '../domain/model/payment.entity.js';
 import { BookingsError } from '../domain/model/bookings.error.js';
 import useRoomsStore from '../../rooms/application/rooms.store.js';
+import useAccessControlStore from '../../access-control/application/access-control.store.js';
+import { IssueGuestKeyCardsCommand } from '../../access-control/domain/issue-guest-key-cards.command.js';
 
 const bookingsApi = new BookingsApi();
 
@@ -29,6 +31,7 @@ const demoOperator = 'Demo operator';
  */
 const useBookingsStore = defineStore('bookings', () => {
   const roomsStore = useRoomsStore();
+  const accessControlStore = useAccessControlStore();
 
   /**
    * List of booking entities of the current property.
@@ -381,24 +384,41 @@ const useBookingsStore = defineStore('bookings', () => {
   }
 
   /**
-   * Checks in the guest of a confirmed booking after verifying their identity document.
+   * Checks in the guest of a confirmed booking after verifying their identity document,
+   * then registers the encoded key cards with Access Control.
    * @param {import('../domain/check-in-booking.command.js').CheckInBookingCommand} checkInBookingCommand - Check-in command.
    * @returns {Promise<Booking>} Checked-in booking.
-   * @throws {BookingsError} When the booking cannot be checked in.
+   * @throws {BookingsError} When the booking cannot be checked in or no key card was encoded.
    */
-  function checkInBooking(checkInBookingCommand) {
-    const { bookingId, documentType, documentNumber, documentVerified } =
-      checkInBookingCommand;
-    return saveChanges(
-      requireBooking(bookingId).checkIn({
-        today: today(),
-        documentType,
-        documentNumber,
-        documentVerified,
-        at: new Date().toISOString(),
-        by: demoOperator,
+  async function checkInBooking(checkInBookingCommand) {
+    const {
+      bookingId,
+      documentType,
+      documentNumber,
+      documentVerified,
+      keyCardIds,
+    } = checkInBookingCommand;
+    const checkedInBooking = requireBooking(bookingId).checkIn({
+      today: today(),
+      documentType,
+      documentNumber,
+      documentVerified,
+      at: new Date().toISOString(),
+      by: demoOperator,
+    });
+    if (!keyCardIds.length) throw new BookingsError('key-card-required');
+    const savedBooking = await saveChanges(checkedInBooking);
+    await accessControlStore.issueGuestKeyCards(
+      new IssueGuestKeyCardsCommand({
+        bookingId: savedBooking.id,
+        bookingCode: savedBooking.code,
+        roomId: savedBooking.roomId,
+        holderName: savedBooking.guestName,
+        checkOutDate: savedBooking.checkOutDate,
+        cardIds: keyCardIds,
       }),
     );
+    return savedBooking;
   }
 
   /**
