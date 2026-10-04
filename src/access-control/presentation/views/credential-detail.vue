@@ -10,6 +10,7 @@ import AccessControlLayout from '../components/access-control-layout.vue';
 import CredentialStatusTag from '../components/credential-status-tag.vue';
 import RevokeCredentialDialog from '../components/revoke-credential-dialog.vue';
 import ReplaceCredentialDrawer from '../components/replace-credential-drawer.vue';
+import AccessEventDrawer from '../components/access-event-drawer.vue';
 
 const { t, locale } = useI18n();
 const route = useRoute();
@@ -19,10 +20,16 @@ const store = useAccessControlStore();
 const roomsStore = useRoomsStore();
 const { saving } = toRefs(store);
 const { currentProperty } = toRefs(roomsStore);
-const { getCredentialById, getCredentialStatus, getStaffMemberById } = store;
+const {
+  getCredentialById,
+  getCredentialStatus,
+  getEventsOfCredential,
+  getStaffMemberById,
+} = store;
 
 const revokeDialogVisible = ref(false);
 const replaceDrawerVisible = ref(false);
+const selectedEvent = ref(null);
 
 const credential = computed(() => getCredentialById(route.params.id));
 const status = computed(() => getCredentialStatus(credential.value));
@@ -38,7 +45,9 @@ const access = computed(() =>
       })
     : t(`access-control.access-control-terms.scopes.${credential.value.scope}`),
 );
-
+const recentEvents = computed(() =>
+  getEventsOfCredential(credential.value.id).slice(0, 6),
+);
 const breadcrumbItems = computed(() => [
   {
     label: t('access-control.access-control-layout.title'),
@@ -287,6 +296,85 @@ const showReplacement = (replacement) => {
                 </span>
               </div>
             </section>
+
+            <section class="flex flex-column gap-3">
+              <div
+                class="flex align-items-center justify-content-between gap-2"
+              >
+                <h3
+                  class="flex align-items-center gap-2 m-0 text-base font-semibold"
+                >
+                  <i
+                    class="pi pi-history text-color-secondary"
+                    aria-hidden="true"
+                  />
+                  {{ t('access-control.credential-detail.recent-events') }}
+                </h3>
+                <router-link
+                  :to="{
+                    name: 'access-control-events',
+                    query: { search: credential.cardId },
+                  }"
+                  class="text-sm font-medium"
+                  >{{
+                    t('access-control.credential-detail.all-events')
+                  }}</router-link
+                >
+              </div>
+              <ul
+                v-if="recentEvents.length"
+                class="list-none m-0 p-0 flex flex-column"
+              >
+                <li
+                  v-for="(accessEvent, index) in recentEvents"
+                  :key="accessEvent.id"
+                  :class="{ 'border-top-1 surface-border': index > 0 }"
+                >
+                  <button
+                    type="button"
+                    class="flex align-items-center gap-3 w-full py-2 px-0 border-none bg-transparent text-left cursor-pointer text-color"
+                    @click="selectedEvent = accessEvent"
+                  >
+                    <pv-avatar
+                      :icon="
+                        accessEvent.isDenied ? 'pi pi-ban' : 'pi pi-sign-in'
+                      "
+                      shape="square"
+                      :class="[
+                        'flex-shrink-0 border-round-lg',
+                        accessEvent.isDenied
+                          ? 'bg-red-50 text-red-600'
+                          : 'bg-green-50 text-green-700',
+                      ]"
+                      aria-hidden="true"
+                    />
+                    <span class="flex flex-column flex-1 min-w-0">
+                      <span class="font-medium">{{
+                        t(
+                          `access-control.access-control-terms.results.${accessEvent.result}`,
+                        )
+                      }}</span>
+                      <span class="text-sm text-color-secondary">{{
+                        accessEvent.isDenied
+                          ? t(
+                              `access-control.access-control-terms.denial-reasons.${accessEvent.denialReason}`,
+                            )
+                          : t(
+                              `access-control.access-control-terms.access-points.${accessEvent.accessPoint}`,
+                            )
+                      }}</span>
+                    </span>
+                    <span
+                      class="text-sm text-color-secondary white-space-nowrap"
+                      >{{ dateTime(accessEvent.occurredAt) }}</span
+                    >
+                  </button>
+                </li>
+              </ul>
+              <p v-else class="m-0 text-sm text-color-secondary">
+                {{ t('access-control.credential-detail.no-events') }}
+              </p>
+            </section>
           </div>
         </div>
 
@@ -406,6 +494,12 @@ const showReplacement = (replacement) => {
         v-model:visible="replaceDrawerVisible"
         :credential="credential"
         @saved="showReplacement"
+      />
+      <access-event-drawer
+        v-if="selectedEvent"
+        :visible="!!selectedEvent"
+        :access-event="selectedEvent"
+        @update:visible="(value) => !value && (selectedEvent = null)"
       />
     </template>
     <pv-message v-else severity="warn" icon="pi pi-search">
