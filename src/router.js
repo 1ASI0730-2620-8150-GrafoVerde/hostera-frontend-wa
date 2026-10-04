@@ -3,10 +3,12 @@ import Home from './shared/presentation/views/home.vue';
 import inventoryRoutes from './inventory/presentation/inventory-routes.js';
 import roomsRoutes from './rooms/presentation/rooms-routes.js';
 import bookingsRoutes from './bookings/presentation/bookings-routes.js';
+import accessControlRoutes from './access-control/presentation/access-control-routes.js';
 
 const routes = [
   { path: '/home', name: 'home', component: Home, meta: { title: 'Home' } },
   { path: '/bookings', children: bookingsRoutes },
+  { path: '/access-control', children: accessControlRoutes },
   {
     path: '/rooms',
     name: 'rooms',

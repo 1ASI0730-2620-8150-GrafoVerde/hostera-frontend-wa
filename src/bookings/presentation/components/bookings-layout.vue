@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import useBookingsStore from '../../application/bookings.store.js';
 import useRoomsStore from '../../../rooms/application/rooms.store.js';
+import useAccessControlStore from '../../../access-control/application/access-control.store.js';
 import SidebarToggle from '../../../shared/presentation/components/sidebar-toggle.vue';
 
 const props = defineProps({
@@ -14,6 +15,7 @@ const { t } = useI18n();
 const router = useRouter();
 const store = useBookingsStore();
 const roomsStore = useRoomsStore();
+const accessControlStore = useAccessControlStore();
 const { bookingsLoaded, paymentsLoaded, errors, saving } = toRefs(store);
 const {
   properties,
@@ -36,6 +38,7 @@ const bookingsDataLoaded = computed(
   () =>
     bookingsLoaded.value &&
     paymentsLoaded.value &&
+    accessControlStore.credentialsLoaded &&
     roomTypesLoaded.value &&
     roomsLoaded.value &&
     statusPeriodsLoaded.value &&

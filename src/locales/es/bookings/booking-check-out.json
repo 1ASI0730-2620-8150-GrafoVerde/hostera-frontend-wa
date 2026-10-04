@@ -16,5 +16,7 @@
   "room-released": "Liberada",
   "outstanding": "Pendiente",
   "complete": "Completar check-out",
-  "completed": "Se cerró la estadía de {name}"
+  "completed": "Se cerró la estadía de {name}",
+  "key-cards": "Tarjetas de acceso",
+  "key-cards-ended": "No termina ninguna tarjeta | Termina {count} tarjeta | Terminan {count} tarjetas"
 }

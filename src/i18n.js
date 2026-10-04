@@ -24,6 +24,16 @@ import enBookingsBookingPaymentSummary from './locales/en/bookings/booking-payme
 import enBookingsPaymentForm from './locales/en/bookings/payment-form.json';
 import enBookingsBookingCheckIn from './locales/en/bookings/booking-check-in.json';
 import enBookingsBookingCheckOut from './locales/en/bookings/booking-check-out.json';
+import enAccessControlAccessControlTerms from './locales/en/access-control/access-control-terms.json';
+import enAccessControlAccessControlLayout from './locales/en/access-control/access-control-layout.json';
+import enAccessControlCredentialList from './locales/en/access-control/credential-list.json';
+import enAccessControlCredentialDetail from './locales/en/access-control/credential-detail.json';
+import enAccessControlStaffCredentialForm from './locales/en/access-control/staff-credential-form.json';
+import enAccessControlRfidEncoderPanel from './locales/en/access-control/rfid-encoder-panel.json';
+import enAccessControlRevokeCredentialDialog from './locales/en/access-control/revoke-credential-dialog.json';
+import enAccessControlReplaceCredentialDrawer from './locales/en/access-control/replace-credential-drawer.json';
+import enAccessControlAccessEventList from './locales/en/access-control/access-event-list.json';
+import enAccessControlAccessEventDrawer from './locales/en/access-control/access-event-drawer.json';
 import enRoomsRoomsTerms from './locales/en/rooms/rooms-terms.json';
 import enRoomsRoomsLayout from './locales/en/rooms/rooms-layout.json';
 import enRoomsRoomAvailability from './locales/en/rooms/room-availability.json';
@@ -62,6 +72,16 @@ import esBookingsBookingPaymentSummary from './locales/es/bookings/booking-payme
 import esBookingsPaymentForm from './locales/es/bookings/payment-form.json';
 import esBookingsBookingCheckIn from './locales/es/bookings/booking-check-in.json';
 import esBookingsBookingCheckOut from './locales/es/bookings/booking-check-out.json';
+import esAccessControlAccessControlTerms from './locales/es/access-control/access-control-terms.json';
+import esAccessControlAccessControlLayout from './locales/es/access-control/access-control-layout.json';
+import esAccessControlCredentialList from './locales/es/access-control/credential-list.json';
+import esAccessControlCredentialDetail from './locales/es/access-control/credential-detail.json';
+import esAccessControlStaffCredentialForm from './locales/es/access-control/staff-credential-form.json';
+import esAccessControlRfidEncoderPanel from './locales/es/access-control/rfid-encoder-panel.json';
+import esAccessControlRevokeCredentialDialog from './locales/es/access-control/revoke-credential-dialog.json';
+import esAccessControlReplaceCredentialDrawer from './locales/es/access-control/replace-credential-drawer.json';
+import esAccessControlAccessEventList from './locales/es/access-control/access-event-list.json';
+import esAccessControlAccessEventDrawer from './locales/es/access-control/access-event-drawer.json';
 import esRoomsRoomsTerms from './locales/es/rooms/rooms-terms.json';
 import esRoomsRoomsLayout from './locales/es/rooms/rooms-layout.json';
 import esRoomsRoomAvailability from './locales/es/rooms/room-availability.json';
@@ -113,6 +133,18 @@ const i18n = createI18n({
         'booking-check-in': enBookingsBookingCheckIn,
         'booking-check-out': enBookingsBookingCheckOut,
       },
+      'access-control': {
+        'access-control-terms': enAccessControlAccessControlTerms,
+        'access-control-layout': enAccessControlAccessControlLayout,
+        'credential-list': enAccessControlCredentialList,
+        'credential-detail': enAccessControlCredentialDetail,
+        'staff-credential-form': enAccessControlStaffCredentialForm,
+        'rfid-encoder-panel': enAccessControlRfidEncoderPanel,
+        'revoke-credential-dialog': enAccessControlRevokeCredentialDialog,
+        'replace-credential-drawer': enAccessControlReplaceCredentialDrawer,
+        'access-event-list': enAccessControlAccessEventList,
+        'access-event-drawer': enAccessControlAccessEventDrawer,
+      },
       rooms: {
         'rooms-terms': enRoomsRoomsTerms,
         'rooms-layout': enRoomsRoomsLayout,
@@ -160,6 +192,18 @@ const i18n = createI18n({
         'payment-form': esBookingsPaymentForm,
         'booking-check-in': esBookingsBookingCheckIn,
         'booking-check-out': esBookingsBookingCheckOut,
+      },
+      'access-control': {
+        'access-control-terms': esAccessControlAccessControlTerms,
+        'access-control-layout': esAccessControlAccessControlLayout,
+        'credential-list': esAccessControlCredentialList,
+        'credential-detail': esAccessControlCredentialDetail,
+        'staff-credential-form': esAccessControlStaffCredentialForm,
+        'rfid-encoder-panel': esAccessControlRfidEncoderPanel,
+        'revoke-credential-dialog': esAccessControlRevokeCredentialDialog,
+        'replace-credential-drawer': esAccessControlReplaceCredentialDrawer,
+        'access-event-list': esAccessControlAccessEventList,
+        'access-event-drawer': esAccessControlAccessEventDrawer,
       },
       rooms: {
         'rooms-terms': esRoomsRoomsTerms,

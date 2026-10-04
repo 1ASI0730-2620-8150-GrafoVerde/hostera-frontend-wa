@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'primevue';
 import useBookingsStore from '../../application/bookings.store.js';
 import useRoomsStore from '../../../rooms/application/rooms.store.js';
+import useAccessControlStore from '../../../access-control/application/access-control.store.js';
 import { Booking } from '../../domain/model/booking.entity.js';
 import { BookingsError } from '../../domain/model/bookings.error.js';
 import { CheckOutBookingCommand } from '../../domain/check-out-booking.command.js';
@@ -24,6 +25,7 @@ const router = useRouter();
 const toast = useToast();
 const store = useBookingsStore();
 const roomsStore = useRoomsStore();
+const accessControlStore = useAccessControlStore();
 const { saving } = toRefs(store);
 const { getBookingById, getBalanceDue, checkOutBooking } = store;
 
@@ -31,6 +33,13 @@ const today = CalendarDate.today();
 const departure = new Date().toISOString();
 const form = ref({ roomCondition: 'no-issues', note: '' });
 const errorCode = ref('');
+const usableKeyCards = computed(() =>
+  booking.value
+    ? accessControlStore
+        .getKeyCardsOfBooking(booking.value.id)
+        .filter((keyCard) => keyCard.isUsableAt(departure))
+    : [],
+);
 
 const booking = computed(() => getBookingById(route.params.id));
 const room = computed(() => roomsStore.getRoomById(booking.value?.roomId));
@@ -342,6 +351,22 @@ const completeCheckOut = async () => {
                 </dt>
                 <dd class="m-0 text-right font-medium">
                   {{ t('bookings.booking-check-out.room-released') }}
+                </dd>
+              </div>
+              <div
+                v-if="usableKeyCards.length"
+                class="flex align-items-center justify-content-between gap-2"
+              >
+                <dt class="text-color-secondary">
+                  {{ t('bookings.booking-check-out.key-cards') }}
+                </dt>
+                <dd class="m-0 text-right font-medium text-red-600">
+                  {{
+                    t(
+                      'bookings.booking-check-out.key-cards-ended',
+                      usableKeyCards.length,
+                    )
+                  }}
                 </dd>
               </div>
               <div

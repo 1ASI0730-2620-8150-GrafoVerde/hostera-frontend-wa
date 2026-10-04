@@ -59,5 +59,7 @@
   "start-check-in": "Start check-in",
   "check-in-from": "Available from the check-in day.",
   "check-in-ended": "The stay dates have passed. Mark the booking as no-show or cancel it.",
-  "start-check-out": "Start check-out"
+  "start-check-out": "Start check-out",
+  "key-cards": "Key cards",
+  "key-card-until": "Until {date}"
 }

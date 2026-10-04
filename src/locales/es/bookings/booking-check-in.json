@@ -6,7 +6,8 @@
   "back-to-booking": "Volver a la reserva",
   "steps": {
     "verify": "Verificar huésped",
-    "payment": "Pago"
+    "payment": "Pago",
+    "access": "Habitación y acceso"
   },
   "verify-title": "Verificar identidad del huésped",
   "document-type": "Tipo de documento",
@@ -25,5 +26,17 @@
   "summary": "Resumen del check-in",
   "identity": "Identidad",
   "identity-verified": "Verificada",
-  "identity-pending": "Pendiente"
+  "identity-pending": "Pendiente",
+  "continue-access": "Continuar a habitación y acceso",
+  "encode-title": "Grabar tarjeta",
+  "guest-access": "Acceso de huésped",
+  "valid-until": "Válida hasta",
+  "encode-help": "Coloca una tarjeta en blanco en el lector. Graba una tarjeta por cada huésped que la necesite.",
+  "encode-another": "Grabar otra tarjeta",
+  "encoded-cards": "Tarjetas grabadas",
+  "ready-to-activate": "Lista para activarse",
+  "activation": "Las tarjetas grabadas se activan al completar el check-in y dejan de funcionar en el check-out.",
+  "access": "Acceso",
+  "key-cards": "{count} tarjetas | {count} tarjeta | {count} tarjetas",
+  "key-card-required": "Tarjeta obligatoria"
 }
