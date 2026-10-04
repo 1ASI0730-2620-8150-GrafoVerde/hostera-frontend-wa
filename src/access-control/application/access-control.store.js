@@ -25,6 +25,12 @@ const rfidEncoder = new RfidEncoder();
 const demoOperator = 'Demo operator';
 
 /**
+ * Local hour at which guest key cards stop opening doors on the check-out day.
+ * @type {number}
+ */
+const checkOutHour = 11;
+
+/**
  * Reactive store that exposes Access Control commands and queries.
  *
  * @returns {Object} Store state and actions.
@@ -331,6 +337,69 @@ const useAccessControlStore = defineStore('access-control', () => {
   }
 
   /**
+   * Builds the moment guest key cards stop opening doors: the check-out time on the check-out day.
+   * @param {string} checkOutDate - ISO check-out day.
+   * @returns {string} ISO date-time.
+   */
+  function guestAccessEnd(checkOutDate) {
+    const [year, month, day] = checkOutDate.split('-').map(Number);
+    return new Date(year, month - 1, day, checkOutHour).toISOString();
+  }
+
+  /**
+   * Registers the key cards encoded for a guest during check-in, valid from now until the check-out time.
+   * @param {import('../domain/issue-guest-key-cards.command.js').IssueGuestKeyCardsCommand} issueGuestKeyCardsCommand - Issue command.
+   * @returns {Promise<Credential[]>} Issued key cards.
+   * @throws {AccessControlError} When a business rule is violated.
+   */
+  function issueGuestKeyCards(issueGuestKeyCardsCommand) {
+    const {
+      bookingId,
+      bookingCode,
+      roomId,
+      holderName,
+      checkOutDate,
+      cardIds,
+    } = issueGuestKeyCardsCommand;
+    if (!cardIds.length) throw new AccessControlError('key-card-required');
+    const issuedAt = now();
+    return saveNewCredentials(
+      cardIds.map(
+        (cardId) =>
+          new Credential({
+            propertyId: currentPropertyId.value,
+            cardId,
+            type: 'guest-key-card',
+            holderName,
+            bookingId,
+            bookingCode,
+            roomId,
+            validFrom: issuedAt,
+            validUntil: guestAccessEnd(checkOutDate),
+            issuedAt,
+            issuedBy: demoOperator,
+          }),
+      ),
+    );
+  }
+
+  /**
+   * Ends the usable key cards of a booking now, as at the guest's check-out.
+   * @param {number} bookingId - Booking identifier.
+   * @returns {Promise<Credential[]>} Ended key cards.
+   */
+  function endGuestKeyCards(bookingId) {
+    const endedAt = now();
+    const usable = getKeyCardsOfBooking(bookingId).filter((credential) =>
+      credential.isUsableAt(endedAt),
+    );
+    if (!usable.length) return Promise.resolve([]);
+    return saveChangedCredentials(
+      usable.map((credential) => credential.endAt(endedAt)),
+    );
+  }
+
+  /**
    * Revokes an active or scheduled credential immediately.
    * @param {import('../domain/revoke-credential.command.js').RevokeCredentialCommand} revokeCredentialCommand - Revoke command.
    * @returns {Promise<Credential>} Revoked credential.
@@ -394,9 +463,12 @@ const useAccessControlStore = defineStore('access-control', () => {
     getCredentialStatus,
     getKeyCardsOfBooking,
     getEventsOfCredential,
+    guestAccessEnd,
     encodeKeyCard,
     resetEncoder,
     issueStaffCredential,
+    issueGuestKeyCards,
+    endGuestKeyCards,
     revokeCredential,
     replaceCredential,
   };
