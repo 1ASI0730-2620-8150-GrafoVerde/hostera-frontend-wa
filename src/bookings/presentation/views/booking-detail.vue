@@ -16,6 +16,8 @@ import BookingStatusTag from '../components/booking-status-tag.vue';
 import BookingStatusDialog from '../components/booking-status-dialog.vue';
 import BookingCancelDialog from '../components/booking-cancel-dialog.vue';
 import BookingPaymentSummary from '../components/booking-payment-summary.vue';
+import CredentialStatusTag from '../../../access-control/presentation/components/credential-status-tag.vue';
+import useAccessControlStore from '../../../access-control/application/access-control.store.js';
 
 const { t, locale } = useI18n();
 const route = useRoute();
@@ -23,6 +25,8 @@ const router = useRouter();
 const toast = useToast();
 const store = useBookingsStore();
 const roomsStore = useRoomsStore();
+const accessControlStore = useAccessControlStore();
+const { getCredentialStatus } = accessControlStore;
 const { saving } = toRefs(store);
 const { getBookingById, isRoomAvailable, restoreBooking } = store;
 const { getRoomById, getRoomTypeById, getRatePlanById } = roomsStore;
@@ -32,6 +36,11 @@ const room = computed(() => getRoomById(booking.value?.roomId));
 const roomType = computed(() => getRoomTypeById(booking.value?.roomTypeId));
 const ratePlan = computed(() => getRatePlanById(booking.value?.ratePlanId));
 const nightsCount = computed(() => booking.value?.nights.length ?? 0);
+const keyCards = computed(() =>
+  booking.value
+    ? accessControlStore.getKeyCardsOfBooking(booking.value.id)
+    : [],
+);
 const today = CalendarDate.today();
 const actionsMenu = ref(null);
 const statusAction = ref(null);
@@ -670,6 +679,45 @@ const stayDay = (date) =>
                 </pv-message>
               </template>
             </template>
+          </section>
+
+          <section
+            v-if="keyCards.length"
+            class="flex flex-column gap-3 p-4 surface-card border-1 surface-border border-round-xl"
+            aria-labelledby="booking-key-cards-title"
+          >
+            <h3
+              id="booking-key-cards-title"
+              class="flex align-items-center gap-2 m-0 text-base font-semibold"
+            >
+              <i class="pi pi-wifi text-color-secondary" aria-hidden="true" />
+              {{ t('bookings.booking-detail.key-cards') }}
+            </h3>
+            <ul class="list-none m-0 p-0 flex flex-column gap-2">
+              <li v-for="keyCard in keyCards" :key="keyCard.id">
+                <router-link
+                  :to="{
+                    name: 'access-control-credential-detail',
+                    params: { id: keyCard.id },
+                  }"
+                  class="flex align-items-center justify-content-between gap-2 p-2 surface-50 border-round-lg text-color hover:surface-100"
+                >
+                  <span class="flex flex-column">
+                    <span class="font-mono font-semibold"
+                      >RFID {{ keyCard.cardId }}</span
+                    >
+                    <span class="text-sm text-color-secondary">{{
+                      t('bookings.booking-detail.key-card-until', {
+                        date: dateTime(keyCard.validUntil),
+                      })
+                    }}</span>
+                  </span>
+                  <credential-status-tag
+                    :status="getCredentialStatus(keyCard)"
+                  />
+                </router-link>
+              </li>
+            </ul>
           </section>
 
           <div

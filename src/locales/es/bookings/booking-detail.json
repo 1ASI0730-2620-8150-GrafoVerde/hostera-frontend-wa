@@ -59,5 +59,7 @@
   "start-check-in": "Iniciar check-in",
   "check-in-from": "Disponible desde el día de llegada.",
   "check-in-ended": "Las fechas de la estadía ya pasaron. Marca la reserva como no presentada o cancélala.",
-  "start-check-out": "Iniciar check-out"
+  "start-check-out": "Iniciar check-out",
+  "key-cards": "Tarjetas de acceso",
+  "key-card-until": "Hasta {date}"
 }
