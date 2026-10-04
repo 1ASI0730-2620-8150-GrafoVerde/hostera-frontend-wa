@@ -5,16 +5,19 @@ import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'primevue';
 import useBookingsStore from '../../application/bookings.store.js';
 import useRoomsStore from '../../../rooms/application/rooms.store.js';
+import useAccessControlStore from '../../../access-control/application/access-control.store.js';
 import { Booking } from '../../domain/model/booking.entity.js';
 import { BookingsError } from '../../domain/model/bookings.error.js';
 import { CheckInBookingCommand } from '../../domain/check-in-booking.command.js';
 import {
   CalendarDate,
+  formatDateTime,
   formatDayRange,
 } from '../../../shared/presentation/calendar-format.js';
 import BookingsLayout from '../components/bookings-layout.vue';
 import BookingPaymentSummary from '../components/booking-payment-summary.vue';
 import PaymentStatusTag from '../components/payment-status-tag.vue';
+import RfidEncoderPanel from '../../../access-control/presentation/components/rfid-encoder-panel.vue';
 
 const { t, locale } = useI18n();
 const route = useRoute();
@@ -22,6 +25,7 @@ const router = useRouter();
 const toast = useToast();
 const store = useBookingsStore();
 const roomsStore = useRoomsStore();
+const accessControlStore = useAccessControlStore();
 const { saving } = toRefs(store);
 const { getBookingById, getBalanceDue, getPaymentStatus, checkInBooking } =
   store;
@@ -30,11 +34,21 @@ const today = CalendarDate.today();
 const step = ref('1');
 const form = ref({ documentType: 'dni', documentNumber: '', verified: false });
 const errorCode = ref('');
+// Cards are written on the encoder during the check-in and registered when it completes.
+const keyCardIds = ref([]);
 
 const booking = computed(() => getBookingById(route.params.id));
 const room = computed(() => roomsStore.getRoomById(booking.value?.roomId));
 const roomType = computed(() =>
   roomsStore.getRoomTypeById(booking.value?.roomTypeId),
+);
+const accessEnd = computed(() =>
+  booking.value
+    ? formatDateTime(
+        accessControlStore.guestAccessEnd(booking.value.checkOutDate),
+        locale.value,
+      )
+    : '',
 );
 const identityComplete = computed(
   () => !!form.value.documentNumber.trim() && form.value.verified,
@@ -70,6 +84,7 @@ const completeCheckIn = async () => {
         documentType: form.value.documentType,
         documentNumber: form.value.documentNumber,
         documentVerified: form.value.verified,
+        keyCardIds: keyCardIds.value,
       }),
     );
     toast.add({
@@ -171,6 +186,9 @@ const completeCheckIn = async () => {
               }}</pv-step>
               <pv-step value="2">{{
                 t('bookings.booking-check-in.steps.payment')
+              }}</pv-step>
+              <pv-step value="3">{{
+                t('bookings.booking-check-in.steps.access')
               }}</pv-step>
             </pv-step-list>
             <pv-step-panels class="p-0 mt-3 bg-transparent">
@@ -314,6 +332,114 @@ const completeCheckIn = async () => {
                       }}</span>
                     </div>
                   </pv-message>
+                </div>
+                <div class="flex justify-content-between gap-2 mt-3">
+                  <pv-button
+                    :label="t('bookings.booking-check-in.back')"
+                    severity="secondary"
+                    outlined
+                    rounded
+                    @click="step = '1'"
+                  />
+                  <pv-button
+                    :label="t('bookings.booking-check-in.continue-access')"
+                    icon="pi pi-arrow-right"
+                    icon-pos="right"
+                    rounded
+                    @click="step = '3'"
+                  />
+                </div>
+              </pv-step-panel>
+
+              <pv-step-panel value="3">
+                <div
+                  class="flex flex-column gap-3 p-4 surface-card border-1 surface-border border-round-xl"
+                >
+                  <h3
+                    class="flex align-items-center gap-2 m-0 text-base font-semibold"
+                  >
+                    <i
+                      class="pi pi-wifi text-color-secondary"
+                      aria-hidden="true"
+                    />
+                    {{ t('bookings.booking-check-in.encode-title') }}
+                  </h3>
+                  <div class="grid">
+                    <div class="col-12 md:col-5">
+                      <div
+                        class="flex flex-column gap-2 h-full p-3 surface-50 border-1 surface-border border-round-xl border-left-3"
+                        style="border-left-color: var(--p-primary-color)"
+                      >
+                        <span
+                          class="text-xs font-semibold text-color-secondary uppercase"
+                          >{{
+                            t('bookings.booking-check-in.guest-access')
+                          }}</span
+                        >
+                        <span class="text-2xl font-bold">{{
+                          t('bookings.bookings-terms.room-number', {
+                            number: room?.number ?? '—',
+                          })
+                        }}</span>
+                        <span class="text-sm text-color-secondary">{{
+                          roomType?.name
+                        }}</span>
+                        <pv-divider class="my-1" />
+                        <span class="text-sm text-color-secondary">{{
+                          t('bookings.booking-check-in.valid-until')
+                        }}</span>
+                        <span class="font-semibold">{{ accessEnd }}</span>
+                      </div>
+                    </div>
+                    <div class="col-12 md:col-7 flex flex-column gap-3">
+                      <p class="m-0 text-color-secondary line-height-3">
+                        {{ t('bookings.booking-check-in.encode-help') }}
+                      </p>
+                      <rfid-encoder-panel
+                        :action-label="
+                          keyCardIds.length
+                            ? t('bookings.booking-check-in.encode-another')
+                            : ''
+                        "
+                        :disabled="saving"
+                        @encoded="(cardId) => keyCardIds.push(cardId)"
+                      />
+                      <ul
+                        v-if="keyCardIds.length"
+                        class="list-none m-0 p-0 flex flex-column gap-2"
+                        :aria-label="
+                          t('bookings.booking-check-in.encoded-cards')
+                        "
+                      >
+                        <li
+                          v-for="cardId in keyCardIds"
+                          :key="cardId"
+                          class="flex align-items-center justify-content-between gap-2 p-2 surface-50 border-round-lg"
+                        >
+                          <span class="flex align-items-center gap-2">
+                            <i
+                              class="pi pi-check-circle text-green-700"
+                              aria-hidden="true"
+                            />
+                            <span class="font-mono font-semibold"
+                              >RFID {{ cardId }}</span
+                            >
+                          </span>
+                          <span class="text-sm text-color-secondary">{{
+                            t('bookings.booking-check-in.ready-to-activate')
+                          }}</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <pv-message
+                    size="small"
+                    severity="secondary"
+                    variant="simple"
+                    icon="pi pi-info-circle"
+                  >
+                    {{ t('bookings.booking-check-in.activation') }}
+                  </pv-message>
                   <pv-message
                     v-if="errorCode"
                     severity="error"
@@ -329,13 +455,14 @@ const completeCheckIn = async () => {
                     outlined
                     rounded
                     :disabled="saving"
-                    @click="step = '1'"
+                    @click="step = '2'"
                   />
                   <pv-button
                     :label="t('bookings.booking-check-in.complete')"
                     icon="pi pi-check"
                     rounded
                     :loading="saving"
+                    :disabled="!keyCardIds.length"
                     @click="completeCheckIn"
                   />
                 </div>
@@ -419,6 +546,30 @@ const completeCheckIn = async () => {
                     identityComplete
                       ? t('bookings.booking-check-in.identity-verified')
                       : t('bookings.booking-check-in.identity-pending')
+                  }}
+                </dd>
+              </div>
+              <div
+                class="flex align-items-center justify-content-between gap-3"
+              >
+                <dt class="text-sm text-color-secondary">
+                  {{ t('bookings.booking-check-in.access') }}
+                </dt>
+                <dd
+                  :class="[
+                    'm-0 font-medium',
+                    keyCardIds.length
+                      ? 'text-green-700'
+                      : 'text-color-secondary',
+                  ]"
+                >
+                  {{
+                    keyCardIds.length
+                      ? t(
+                          'bookings.booking-check-in.key-cards',
+                          keyCardIds.length,
+                        )
+                      : t('bookings.booking-check-in.key-card-required')
                   }}
                 </dd>
               </div>

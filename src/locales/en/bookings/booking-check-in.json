@@ -6,7 +6,8 @@
   "back-to-booking": "Back to booking",
   "steps": {
     "verify": "Verify guest",
-    "payment": "Payment"
+    "payment": "Payment",
+    "access": "Room and access"
   },
   "verify-title": "Verify guest identity",
   "document-type": "Document type",
@@ -25,5 +26,17 @@
   "summary": "Check-in summary",
   "identity": "Identity",
   "identity-verified": "Verified",
-  "identity-pending": "Pending"
+  "identity-pending": "Pending",
+  "continue-access": "Continue to room and access",
+  "encode-title": "Encode key card",
+  "guest-access": "Guest access",
+  "valid-until": "Valid until",
+  "encode-help": "Place a blank key card on the encoder. Encode one card per guest who needs one.",
+  "encode-another": "Encode another key card",
+  "encoded-cards": "Encoded key cards",
+  "ready-to-activate": "Ready to activate",
+  "activation": "Encoded key cards activate when the check-in is completed and stop working at check-out.",
+  "access": "Access",
+  "key-cards": "{count} key cards | {count} key card | {count} key cards",
+  "key-card-required": "Key card required"
 }
