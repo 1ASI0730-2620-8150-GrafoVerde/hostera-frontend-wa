@@ -15,7 +15,13 @@ const { t } = useI18n();
 const router = useRouter();
 const store = useAccessControlStore();
 const roomsStore = useRoomsStore();
-const { credentialsLoaded, staffMembersLoaded, errors, saving } = toRefs(store);
+const {
+  credentialsLoaded,
+  staffMembersLoaded,
+  accessEventsLoaded,
+  errors,
+  saving,
+} = toRefs(store);
 const { properties, propertiesLoaded, currentPropertyId, roomsLoaded } =
   toRefs(roomsStore);
 const { fetchAccessControl } = store;
@@ -27,7 +33,10 @@ const noProperties = computed(
 // Credentials show room numbers, so the property's rooms must be loaded too.
 const accessDataLoaded = computed(
   () =>
-    credentialsLoaded.value && staffMembersLoaded.value && roomsLoaded.value,
+    credentialsLoaded.value &&
+    staffMembersLoaded.value &&
+    accessEventsLoaded.value &&
+    roomsLoaded.value,
 );
 const loadErrors = computed(
   () => errors.value.length || roomsStore.errors.length,

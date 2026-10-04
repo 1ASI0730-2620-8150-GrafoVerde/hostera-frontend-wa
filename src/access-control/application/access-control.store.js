@@ -9,6 +9,7 @@ import { computed, ref, watch } from 'vue';
 import { AccessControlApi } from '../infrastructure/access-control-api.js';
 import { CredentialAssembler } from '../infrastructure/credential.assembler.js';
 import { StaffMemberAssembler } from '../infrastructure/staff-member.assembler.js';
+import { AccessEventAssembler } from '../infrastructure/access-event.assembler.js';
 import { RfidEncoder } from '../infrastructure/rfid-encoder.js';
 import { Credential } from '../domain/model/credential.entity.js';
 import { AccessControlError } from '../domain/model/access-control.error.js';
@@ -42,6 +43,11 @@ const useAccessControlStore = defineStore('access-control', () => {
    */
   const staffMembers = ref([]);
   /**
+   * List of access event entities of the current property.
+   * @type {import('vue').Ref<AccessEvent[]>}
+   */
+  const accessEvents = ref([]);
+  /**
    * List of errors encountered during API operations.
    * @type {import('vue').Ref<Error[]>}
    */
@@ -56,6 +62,11 @@ const useAccessControlStore = defineStore('access-control', () => {
    * @type {import('vue').Ref<boolean>}
    */
   const staffMembersLoaded = ref(false);
+  /**
+   * Whether access events have been loaded from the API.
+   * @type {import('vue').Ref<boolean>}
+   */
+  const accessEventsLoaded = ref(false);
   /**
    * Whether a create or update operation is in progress.
    * @type {import('vue').Ref<boolean>}
@@ -97,7 +108,7 @@ const useAccessControlStore = defineStore('access-control', () => {
   }
 
   /**
-   * Loads the current property's credentials and staff members.
+   * Loads the current property's credentials, staff members, and access events.
    * @returns {Promise<void>}
    */
   function fetchAccessControl() {
@@ -114,6 +125,12 @@ const useAccessControlStore = defineStore('access-control', () => {
         StaffMemberAssembler,
         staffMembers,
         staffMembersLoaded,
+      ),
+      fetchCollection(
+        (propertyId) => accessControlApi.getAccessEvents(propertyId),
+        AccessEventAssembler,
+        accessEvents,
+        accessEventsLoaded,
       ),
     ]).then(() => {});
   }
@@ -167,6 +184,17 @@ const useAccessControlStore = defineStore('access-control', () => {
     return credentials.value
       .filter((credential) => credential.bookingId === bookingId)
       .toSorted((a, b) => b.issuedAt.localeCompare(a.issuedAt));
+  }
+
+  /**
+   * Lists the access events of a credential, newest first.
+   * @param {number} credentialId - Credential identifier.
+   * @returns {AccessEvent[]} Access events of the credential.
+   */
+  function getEventsOfCredential(credentialId) {
+    return accessEvents.value
+      .filter((accessEvent) => accessEvent.credentialId === credentialId)
+      .toSorted((a, b) => b.occurredAt.localeCompare(a.occurredAt));
   }
 
   /**
@@ -352,9 +380,11 @@ const useAccessControlStore = defineStore('access-control', () => {
   return {
     credentials,
     staffMembers,
+    accessEvents,
     errors,
     credentialsLoaded,
     staffMembersLoaded,
+    accessEventsLoaded,
     saving,
     encoderState,
     currentPropertyId,
@@ -363,6 +393,7 @@ const useAccessControlStore = defineStore('access-control', () => {
     getStaffMemberById,
     getCredentialStatus,
     getKeyCardsOfBooking,
+    getEventsOfCredential,
     encodeKeyCard,
     resetEncoder,
     issueStaffCredential,
