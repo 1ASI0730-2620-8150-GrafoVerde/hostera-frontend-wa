@@ -16,5 +16,7 @@
   "room-released": "Released",
   "outstanding": "Outstanding",
   "complete": "Complete check-out",
-  "completed": "{name}’s stay has been closed"
+  "completed": "{name}’s stay has been closed",
+  "key-cards": "Key cards",
+  "key-cards-ended": "No key cards end | {count} key card ends | {count} key cards end"
 }

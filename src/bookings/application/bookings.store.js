@@ -422,15 +422,15 @@ const useBookingsStore = defineStore('bookings', () => {
   }
 
   /**
-   * Checks out the guest of a checked-in booking once its balance is paid.
+   * Checks out the guest of a checked-in booking once its balance is paid, then ends its key cards.
    * @param {import('../domain/check-out-booking.command.js').CheckOutBookingCommand} checkOutBookingCommand - Check-out command.
    * @returns {Promise<Booking>} Checked-out booking.
    * @throws {BookingsError} When the booking cannot be checked out.
    */
-  function checkOutBooking(checkOutBookingCommand) {
+  async function checkOutBooking(checkOutBookingCommand) {
     const { bookingId, roomCondition, note } = checkOutBookingCommand;
     const booking = requireBooking(bookingId);
-    return saveChanges(
+    const savedBooking = await saveChanges(
       booking.checkOut({
         balanceDue: getBalanceDue(booking),
         roomCondition,
@@ -439,6 +439,8 @@ const useBookingsStore = defineStore('bookings', () => {
         by: demoOperator,
       }),
     );
+    await accessControlStore.endGuestKeyCards(savedBooking.id);
+    return savedBooking;
   }
 
   /**
