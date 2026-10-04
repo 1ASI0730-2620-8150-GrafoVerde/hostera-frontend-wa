@@ -73,3 +73,11 @@ Status periods cover inclusive ISO date ranges (`startDate` to `endDate`); their
 - Check-in and check-out are `PUT /bookings/:id` updates that record the verified identity document, the check-in and check-out moments, the room condition, and a departure note.
 
 Pending, confirmed, and checked-in bookings hold their room: the frontend rejects stays that share a night with them or with a Blocked or Out of service period, while Needs cleaning does not prevent booking. Cancelled, no-show, and checked-out bookings no longer hold their room. Direct API requests can bypass these rules, and booking codes are numbered without concurrency control.
+
+## Access control resources
+
+- `GET /credentials?propertyId=1`, `POST /credentials`, and `PUT /credentials/:id`: RFID credentials with `cardId`, `type` (`guest-key-card` or `staff-credential`), holder, booking and room or staff member and `scope`, `validFrom`, `validUntil` (`null` for permanent staff access), and revocation details. Check-in creates the guest key cards and check-out shortens their `validUntil`; the status is derived from these dates and `revokedAt`.
+- `GET /staff-members?propertyId=1`: read-only staff members who can hold a staff credential.
+- `GET /access-events?propertyId=1`: read-only access events (granted or denied) standing in for door readers; their seed dates fall on October 5–6, 2026.
+
+The frontend generates card IDs with a simulated encoder and keeps at most one usable staff credential per staff member; direct API requests can bypass these rules.
