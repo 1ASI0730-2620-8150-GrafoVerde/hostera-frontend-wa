@@ -74,6 +74,10 @@ Status periods cover inclusive ISO date ranges (`startDate` to `endDate`); their
 
 Pending, confirmed, and checked-in bookings hold their room: the frontend rejects stays that share a night with them or with a Blocked or Out of service period, while Needs cleaning does not prevent booking. Cancelled, no-show, and checked-out bookings no longer hold their room. Direct API requests can bypass these rules, and booking codes are numbered without concurrency control.
 
+## Overview reads
+
+The overview compares properties with `GET /rooms`, `GET /bookings`, and `GET /status-periods` without a `propertyId` filter; it does not write any resource.
+
 ## Access control resources
 
 - `GET /credentials?propertyId=1`, `POST /credentials`, and `PUT /credentials/:id`: RFID credentials with `cardId`, `type` (`guest-key-card` or `staff-credential`), holder, booking and room or staff member and `scope`, `validFrom`, `validUntil` (`null` for permanent staff access), and revocation details. Check-in creates the guest key cards and check-out shortens their `validUntil`; the status is derived from these dates and `revokedAt`.
