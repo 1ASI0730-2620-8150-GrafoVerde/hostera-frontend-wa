@@ -100,7 +100,7 @@ const openActions = (event, arrival) => {
     :failed="!bookingsLoaded && errors.length > 0"
     @retry="bookingsStore.fetchBookings()"
   >
-    <template #actions>
+    <template v-if="todaysArrivals.length" #actions>
       <router-link
         :to="{ name: 'bookings-list' }"
         class="text-sm font-medium white-space-nowrap"
@@ -109,14 +109,14 @@ const openActions = (event, arrival) => {
     </template>
     <div
       v-if="!todaysArrivals.length"
-      class="flex flex-column sm:flex-row align-items-center gap-3 flex-1 py-4"
+      class="flex flex-column sm:flex-row align-items-center justify-content-center gap-3 flex-1 py-4"
     >
       <span
-        class="flex align-items-center justify-content-center w-3rem h-3rem border-round-lg surface-100"
+        class="flex align-items-center justify-content-center flex-shrink-0 w-3rem h-3rem border-round-lg surface-100 text-primary"
         aria-hidden="true"
         ><i class="pi pi-calendar text-xl"
       /></span>
-      <span class="flex flex-column gap-1 flex-1 text-center sm:text-left">
+      <span class="flex flex-column gap-1 text-center sm:text-left">
         <span class="font-semibold">{{
           t('overview.todays-arrivals-card.empty-title')
         }}</span>
@@ -130,6 +130,7 @@ const openActions = (event, arrival) => {
           severity="secondary"
           outlined
           rounded
+          class="sm:ml-4"
           @click="navigate"
         />
       </router-link>
