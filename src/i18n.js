@@ -34,6 +34,7 @@ import enAccessControlRevokeCredentialDialog from './locales/en/access-control/r
 import enAccessControlReplaceCredentialDrawer from './locales/en/access-control/replace-credential-drawer.json';
 import enAccessControlAccessEventList from './locales/en/access-control/access-event-list.json';
 import enAccessControlAccessEventDrawer from './locales/en/access-control/access-event-drawer.json';
+import enOverviewOverviewView from './locales/en/overview/overview-view.json';
 import enOverviewOverviewPanel from './locales/en/overview/overview-panel.json';
 import enOverviewRevenueOccupancyCard from './locales/en/overview/revenue-occupancy-card.json';
 import enOverviewPropertyOverviewCard from './locales/en/overview/property-overview-card.json';
@@ -88,6 +89,7 @@ import esAccessControlRevokeCredentialDialog from './locales/es/access-control/r
 import esAccessControlReplaceCredentialDrawer from './locales/es/access-control/replace-credential-drawer.json';
 import esAccessControlAccessEventList from './locales/es/access-control/access-event-list.json';
 import esAccessControlAccessEventDrawer from './locales/es/access-control/access-event-drawer.json';
+import esOverviewOverviewView from './locales/es/overview/overview-view.json';
 import esOverviewOverviewPanel from './locales/es/overview/overview-panel.json';
 import esOverviewRevenueOccupancyCard from './locales/es/overview/revenue-occupancy-card.json';
 import esOverviewPropertyOverviewCard from './locales/es/overview/property-overview-card.json';
@@ -158,6 +160,7 @@ const i18n = createI18n({
         'access-event-drawer': enAccessControlAccessEventDrawer,
       },
       overview: {
+        'overview-view': enOverviewOverviewView,
         'overview-panel': enOverviewOverviewPanel,
         'revenue-occupancy-card': enOverviewRevenueOccupancyCard,
         'property-overview-card': enOverviewPropertyOverviewCard,
@@ -226,6 +229,7 @@ const i18n = createI18n({
         'access-event-drawer': esAccessControlAccessEventDrawer,
       },
       overview: {
+        'overview-view': esOverviewOverviewView,
         'overview-panel': esOverviewOverviewPanel,
         'revenue-occupancy-card': esOverviewRevenueOccupancyCard,
         'property-overview-card': esOverviewPropertyOverviewCard,

@@ -4,6 +4,7 @@ import inventoryRoutes from './inventory/presentation/inventory-routes.js';
 import roomsRoutes from './rooms/presentation/rooms-routes.js';
 import bookingsRoutes from './bookings/presentation/bookings-routes.js';
 import accessControlRoutes from './access-control/presentation/access-control-routes.js';
+import overviewRoutes from './overview/presentation/overview-routes.js';
 
 const routes = [
   { path: '/home', name: 'home', component: Home, meta: { title: 'Home' } },
@@ -21,8 +22,8 @@ const routes = [
     redirect: { name: 'inventory-items' },
     children: inventoryRoutes,
   },
-  { path: '/', redirect: '/inventory/items' },
-  { path: '/:pathMatch(.*)*', redirect: '/inventory/items' },
+  { path: '/', children: overviewRoutes },
+  { path: '/:pathMatch(.*)*', redirect: '/' },
 ];
 
 const router = createRouter({
