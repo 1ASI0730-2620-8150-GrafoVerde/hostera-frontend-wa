@@ -66,6 +66,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', focusSearch));
       :aria-label="t('overview.booking-search.label')"
       :empty-search-message="t('overview.booking-search.empty')"
       :delay="150"
+      size="small"
       input-class="w-full pl-5"
       fluid
       @complete="complete"
