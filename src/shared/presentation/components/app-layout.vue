@@ -20,6 +20,13 @@ const currentOperator = { name: 'Lucía Martín', initials: 'LM' };
 
 const navigationItems = [
   {
+    label: 'shared.app-layout.overview',
+    icon: 'pi pi-objects-column',
+    to: { name: 'overview' },
+    section: '/',
+    exact: true,
+  },
+  {
     label: 'shared.app-layout.bookings',
     icon: 'pi pi-calendar',
     to: { name: 'bookings-list' },
@@ -49,6 +56,16 @@ const navigationItems = [
  * Switches the sidebar between its persistent and overlay modes.
  * @param {MediaQueryListEvent} event - Media query change event.
  */
+/**
+ * Whether the current route belongs to a navigation item's section; the overview matches only its own path.
+ * @param {Object} item - Navigation item.
+ * @returns {boolean}
+ */
+const isCurrentSection = (item) =>
+  item.exact
+    ? route.path === item.section
+    : route.path.startsWith(item.section);
+
 const updateCompact = (event) => {
   compact.value = event.matches;
   sidebarOpen.value = false;
@@ -84,7 +101,7 @@ watch(
           :class="{ 'border-round-xl shadow-3': !compact && sidebarOpen }"
         >
           <pv-sidebar-header class="h-4rem justify-content-center px-2">
-            <router-link :to="{ name: 'inventory-items' }" class="flex">
+            <router-link :to="{ name: 'overview' }" class="flex">
               <brand-logo />
             </router-link>
           </pv-sidebar-header>
@@ -99,16 +116,14 @@ watch(
                     <pv-sidebar-menu-button
                       v-slot="slotProps"
                       as-child
-                      :is-active="route.path.startsWith(item.section)"
+                      :is-active="isCurrentSection(item)"
                     >
                       <router-link
                         :to="item.to"
                         :class="slotProps.class"
                         v-bind="slotProps.a11yAttrs"
                         :aria-current="
-                          route.path.startsWith(item.section)
-                            ? 'page'
-                            : undefined
+                          isCurrentSection(item) ? 'page' : undefined
                         "
                       >
                         <i :class="item.icon" aria-hidden="true" />
