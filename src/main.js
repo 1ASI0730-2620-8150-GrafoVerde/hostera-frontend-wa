@@ -8,6 +8,7 @@ import { definePreset } from '@primeuix/themes';
 import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import Tooltip from 'primevue/tooltip';
+import Chart from 'primevue/chart';
 import {
   Avatar,
   Breadcrumb,
@@ -190,6 +191,7 @@ createApp(App)
   .component('pv-breadcrumb', Breadcrumb)
   .component('pv-button', Button)
   .component('pv-card', Card)
+  .component('pv-chart', Chart)
   .component('pv-checkbox', Checkbox)
   .component('pv-column', Column)
   .component('pv-confirm-dialog', ConfirmDialog)
