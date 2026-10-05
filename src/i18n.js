@@ -35,6 +35,7 @@ import enAccessControlReplaceCredentialDrawer from './locales/en/access-control/
 import enAccessControlAccessEventList from './locales/en/access-control/access-event-list.json';
 import enAccessControlAccessEventDrawer from './locales/en/access-control/access-event-drawer.json';
 import enOverviewOverviewPanel from './locales/en/overview/overview-panel.json';
+import enOverviewRevenueOccupancyCard from './locales/en/overview/revenue-occupancy-card.json';
 import enOverviewPropertyOverviewCard from './locales/en/overview/property-overview-card.json';
 import enOverviewTodaysArrivalsCard from './locales/en/overview/todays-arrivals-card.json';
 import enOverviewRoomStatusCard from './locales/en/overview/room-status-card.json';
@@ -87,6 +88,7 @@ import esAccessControlReplaceCredentialDrawer from './locales/es/access-control/
 import esAccessControlAccessEventList from './locales/es/access-control/access-event-list.json';
 import esAccessControlAccessEventDrawer from './locales/es/access-control/access-event-drawer.json';
 import esOverviewOverviewPanel from './locales/es/overview/overview-panel.json';
+import esOverviewRevenueOccupancyCard from './locales/es/overview/revenue-occupancy-card.json';
 import esOverviewPropertyOverviewCard from './locales/es/overview/property-overview-card.json';
 import esOverviewTodaysArrivalsCard from './locales/es/overview/todays-arrivals-card.json';
 import esOverviewRoomStatusCard from './locales/es/overview/room-status-card.json';
@@ -155,6 +157,7 @@ const i18n = createI18n({
       },
       overview: {
         'overview-panel': enOverviewOverviewPanel,
+        'revenue-occupancy-card': enOverviewRevenueOccupancyCard,
         'property-overview-card': enOverviewPropertyOverviewCard,
         'todays-arrivals-card': enOverviewTodaysArrivalsCard,
         'room-status-card': enOverviewRoomStatusCard,
@@ -221,6 +224,7 @@ const i18n = createI18n({
       },
       overview: {
         'overview-panel': esOverviewOverviewPanel,
+        'revenue-occupancy-card': esOverviewRevenueOccupancyCard,
         'property-overview-card': esOverviewPropertyOverviewCard,
         'todays-arrivals-card': esOverviewTodaysArrivalsCard,
         'room-status-card': esOverviewRoomStatusCard,
