@@ -10,6 +10,7 @@ import 'primeicons/primeicons.css';
 import Tooltip from 'primevue/tooltip';
 import Chart from 'primevue/chart';
 import {
+  AutoComplete,
   Avatar,
   Breadcrumb,
   Button,
@@ -187,6 +188,7 @@ createApp(App)
   .use(ConfirmationService)
   .use(DialogService)
   .use(ToastService)
+  .component('pv-auto-complete', AutoComplete)
   .component('pv-avatar', Avatar)
   .component('pv-breadcrumb', Breadcrumb)
   .component('pv-button', Button)

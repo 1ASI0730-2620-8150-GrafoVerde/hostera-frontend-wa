@@ -164,6 +164,22 @@ const useOverviewStore = defineStore('overview', () => {
     return counts;
   });
 
+  /**
+   * Finds bookings of the current property by guest name or booking code.
+   * @param {string} query - Text to search.
+   * @returns {Booking[]} Up to eight matching bookings, latest stays first.
+   */
+  function searchBookings(query) {
+    const text = query.trim().toLowerCase();
+    if (!text) return [];
+    return bookingsStore.bookings
+      .filter((booking) =>
+        `${booking.guestName} ${booking.code}`.toLowerCase().includes(text),
+      )
+      .toSorted((a, b) => b.checkInDate.localeCompare(a.checkInDate))
+      .slice(0, 8);
+  }
+
   return {
     propertyOverviews,
     propertyOverviewsLoaded,
@@ -172,6 +188,7 @@ const useOverviewStore = defineStore('overview', () => {
     getPerformance,
     todaysArrivals,
     roomStatusCounts,
+    searchBookings,
   };
 });
 

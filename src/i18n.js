@@ -39,6 +39,7 @@ import enOverviewRevenueOccupancyCard from './locales/en/overview/revenue-occupa
 import enOverviewPropertyOverviewCard from './locales/en/overview/property-overview-card.json';
 import enOverviewTodaysArrivalsCard from './locales/en/overview/todays-arrivals-card.json';
 import enOverviewRoomStatusCard from './locales/en/overview/room-status-card.json';
+import enOverviewBookingSearch from './locales/en/overview/booking-search.json';
 import enRoomsRoomsTerms from './locales/en/rooms/rooms-terms.json';
 import enRoomsRoomsLayout from './locales/en/rooms/rooms-layout.json';
 import enRoomsRoomAvailability from './locales/en/rooms/room-availability.json';
@@ -92,6 +93,7 @@ import esOverviewRevenueOccupancyCard from './locales/es/overview/revenue-occupa
 import esOverviewPropertyOverviewCard from './locales/es/overview/property-overview-card.json';
 import esOverviewTodaysArrivalsCard from './locales/es/overview/todays-arrivals-card.json';
 import esOverviewRoomStatusCard from './locales/es/overview/room-status-card.json';
+import esOverviewBookingSearch from './locales/es/overview/booking-search.json';
 import esRoomsRoomsTerms from './locales/es/rooms/rooms-terms.json';
 import esRoomsRoomsLayout from './locales/es/rooms/rooms-layout.json';
 import esRoomsRoomAvailability from './locales/es/rooms/room-availability.json';
@@ -161,6 +163,7 @@ const i18n = createI18n({
         'property-overview-card': enOverviewPropertyOverviewCard,
         'todays-arrivals-card': enOverviewTodaysArrivalsCard,
         'room-status-card': enOverviewRoomStatusCard,
+        'booking-search': enOverviewBookingSearch,
       },
       rooms: {
         'rooms-terms': enRoomsRoomsTerms,
@@ -228,6 +231,7 @@ const i18n = createI18n({
         'property-overview-card': esOverviewPropertyOverviewCard,
         'todays-arrivals-card': esOverviewTodaysArrivalsCard,
         'room-status-card': esOverviewRoomStatusCard,
+        'booking-search': esOverviewBookingSearch,
       },
       rooms: {
         'rooms-terms': esRoomsRoomsTerms,
