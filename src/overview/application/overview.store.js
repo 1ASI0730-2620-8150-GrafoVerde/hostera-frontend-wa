@@ -101,12 +101,27 @@ const useOverviewStore = defineStore('overview', () => {
       .toSorted((a, b) => Number(a.arrived) - Number(b.arrived));
   });
 
+  /**
+   * Number of rooms of the current property in each day status today.
+   * @type {import('vue').ComputedRef<Object<string, number>>}
+   */
+  const roomStatusCounts = computed(() => {
+    const day = today();
+    const counts = {};
+    for (const room of roomsStore.rooms) {
+      const status = roomsStore.getDayStatus(room.id, day);
+      counts[status] = (counts[status] ?? 0) + 1;
+    }
+    return counts;
+  });
+
   return {
     propertyOverviews,
     propertyOverviewsLoaded,
     propertyOverviewErrors,
     fetchPropertyOverviews,
     todaysArrivals,
+    roomStatusCounts,
   };
 });
 
