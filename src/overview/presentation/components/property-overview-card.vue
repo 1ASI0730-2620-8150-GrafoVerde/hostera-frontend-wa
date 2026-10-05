@@ -40,12 +40,8 @@ const current = computed(() =>
     :failed="!propertyOverviewsLoaded && propertyOverviewErrors.length > 0"
     @retry="store.fetchPropertyOverviews()"
   >
-    <ul class="list-none m-0 p-0 flex flex-column">
-      <li
-        v-for="(overview, index) in propertyOverviews"
-        :key="overview.propertyId"
-        :class="{ 'border-top-1 surface-border': index > 0 }"
-      >
+    <ul class="list-none m-0 p-0 flex flex-column gap-2">
+      <li v-for="overview in propertyOverviews" :key="overview.propertyId">
         <button
           type="button"
           :class="[
@@ -60,7 +56,12 @@ const current = computed(() =>
           <pv-avatar
             icon="pi pi-building"
             shape="square"
-            class="flex-shrink-0 surface-100 text-color-secondary border-round-lg"
+            :class="[
+              'flex-shrink-0 border-round-lg',
+              overview.propertyId === currentPropertyId
+                ? 'bg-primary-50 text-primary'
+                : 'surface-100 text-color-secondary',
+            ]"
             aria-hidden="true"
           />
           <span class="flex flex-column flex-1 min-w-0">
