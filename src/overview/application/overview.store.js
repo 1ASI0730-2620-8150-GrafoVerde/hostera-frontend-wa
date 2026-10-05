@@ -8,6 +8,7 @@ import { defineStore } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import { OverviewApi } from '../infrastructure/overview-api.js';
 import { PropertyOverviewAssembler } from '../infrastructure/property-overview.assembler.js';
+import { DailyPerformance } from '../domain/model/daily-performance.entity.js';
 import useRoomsStore from '../../rooms/application/rooms.store.js';
 import useBookingsStore from '../../bookings/application/bookings.store.js';
 
@@ -50,6 +51,18 @@ const useOverviewStore = defineStore('overview', () => {
   }
 
   /**
+   * Moves an ISO calendar day by a number of days.
+   * @param {string} value - ISO calendar day.
+   * @param {number} days - Days to add; negative values move backwards.
+   * @returns {string} ISO calendar day.
+   */
+  function addDays(value, days) {
+    const date = new Date(`${value}T00:00:00Z`);
+    date.setUTCDate(date.getUTCDate() + days);
+    return date.toISOString().slice(0, 10);
+  }
+
+  /**
    * Loads the overview of every property for today.
    * @returns {Promise<void>}
    */
@@ -80,6 +93,42 @@ const useOverviewStore = defineStore('overview', () => {
     },
     { immediate: true },
   );
+
+  /**
+   * Room revenue and occupancy of the current property over a period, with the change against the previous period.
+   * @param {'last-7'|'last-30'|'next-30'} period - Period to summarize.
+   * @returns {{days: DailyPerformance[], revenue: number, previousRevenue: number, change: ?number, occupancyRate: number}}
+   */
+  function getPerformance(period) {
+    const length = period === 'last-7' ? 7 : 30;
+    const start =
+      period === 'next-30' ? today() : addDays(today(), -(length - 1));
+    const dates = Array.from({ length }, (_, index) => addDays(start, index));
+    const previousDates = dates.map((date) => addDays(date, -length));
+    const inputs = {
+      bookings: bookingsStore.bookings,
+      roomsCount: roomsStore.rooms.length,
+    };
+    const days = DailyPerformance.series({ ...inputs, dates });
+    const previous = DailyPerformance.series({
+      ...inputs,
+      dates: previousDates,
+    });
+    const sum = (entries) =>
+      entries.reduce((total, entry) => total + entry.revenue, 0);
+    const revenue = sum(days);
+    const previousRevenue = sum(previous);
+    return {
+      days,
+      revenue,
+      previousRevenue,
+      change: previousRevenue
+        ? (revenue - previousRevenue) / previousRevenue
+        : null,
+      occupancyRate:
+        days.reduce((total, day) => total + day.occupancyRate, 0) / length,
+    };
+  }
 
   /**
    * Today's arrivals of the current property: bookings due today and those already checked in today.
@@ -120,6 +169,7 @@ const useOverviewStore = defineStore('overview', () => {
     propertyOverviewsLoaded,
     propertyOverviewErrors,
     fetchPropertyOverviews,
+    getPerformance,
     todaysArrivals,
     roomStatusCounts,
   };
