@@ -136,6 +136,20 @@ const hosteraTheme = definePreset(Material, {
   components: {
     sidebar: {
       main: { borderRadius: '{border.radius.xl}' },
+      menu: { gap: '0.375rem' },
+      menuButton: {
+        padding: '0 0.75rem',
+        gap: '0.75rem',
+        height: '2.75rem',
+        fontWeight: '500',
+        iconOnlyWidth: '2.75rem',
+      },
+      // The current section carries a primary accent on its leading edge.
+      css: `
+        .p-sidebar-menu-button[data-active="true"] {
+          box-shadow: inset 3px 0 0 dt('primary.color');
+        }
+      `,
     },
     // Soft status chips: tinted background with a darker same-hue label (AA contrast).
     tag: {

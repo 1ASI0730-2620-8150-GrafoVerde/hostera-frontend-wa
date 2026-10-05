@@ -53,10 +53,6 @@ const navigationItems = [
 ];
 
 /**
- * Switches the sidebar between its persistent and overlay modes.
- * @param {MediaQueryListEvent} event - Media query change event.
- */
-/**
  * Whether the current route belongs to a navigation item's section; the overview matches only its own path.
  * @param {Object} item - Navigation item.
  * @returns {boolean}
@@ -66,6 +62,10 @@ const isCurrentSection = (item) =>
     ? route.path === item.section
     : route.path.startsWith(item.section);
 
+/**
+ * Switches the sidebar between its persistent and overlay modes.
+ * @param {MediaQueryListEvent} event - Media query change event.
+ */
 const updateCompact = (event) => {
   compact.value = event.matches;
   sidebarOpen.value = false;
@@ -94,6 +94,7 @@ watch(
       :open-on-hover="!compact"
       overlay
       width="15rem"
+      icon-width="3.75rem"
     >
       <pv-sidebar-spacer />
       <pv-sidebar-aside :class="{ 'border-right-1 surface-border': compact }">
@@ -105,7 +106,7 @@ watch(
               <brand-logo />
             </router-link>
           </pv-sidebar-header>
-          <pv-sidebar-content>
+          <pv-sidebar-content class="pt-2">
             <pv-sidebar-group>
               <nav :aria-label="t('shared.app-layout.navigation')">
                 <pv-sidebar-menu>
@@ -126,7 +127,7 @@ watch(
                           isCurrentSection(item) ? 'page' : undefined
                         "
                       >
-                        <i :class="item.icon" aria-hidden="true" />
+                        <i :class="[item.icon, 'text-lg']" aria-hidden="true" />
                         <span class="white-space-nowrap">{{
                           t(item.label)
                         }}</span>
