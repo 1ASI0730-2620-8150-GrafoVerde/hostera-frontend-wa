@@ -138,6 +138,11 @@ Run `npm run lint` and `npm run format:check` before committing. Prettier uses s
 
 The mock API is for local development and runs separately from the SPA. It is not deployed with the frontend. See [server/README.md](server/README.md) for fixture structure, database generation, and reset commands.
 
+## Documentation
+
+- [Architecture decision records](docs/adrs.md): the main architectural decisions, with their context and consequences.
+- [Class diagram](docs/class-diagram.puml): the classes of each bounded context and layer, in PlantUML.
+
 ## License
 
 Hostera is released under the [MIT License](LICENSE.md).
