@@ -29,3 +29,7 @@ dist-ssr
 
 # Local mock API runtime data
 server/db.json
+
+# Firebase Hosting cache and logs
+.firebase/
+firebase-debug.log*
