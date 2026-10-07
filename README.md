@@ -59,6 +59,7 @@ Open the URL that Vite prints, normally `http://localhost:5173`.
 | `npm run dev`          | Start the Vite development server.                              |
 | `npm run build`        | Build the SPA for production into `dist/`.                      |
 | `npm run preview`      | Serve the production build locally.                             |
+| `npm run deploy`       | Build the SPA and deploy it to Firebase Hosting.                |
 | `npm run lint`         | Validate JavaScript and Vue files; fails on errors or warnings. |
 | `npm run lint:fix`     | Apply automatic lint fixes.                                     |
 | `npm run format`       | Format `src/`, `server/`, and `index.html` with Prettier.       |
@@ -129,6 +130,28 @@ The SPA connects directly to the API configured by `VITE_HOSTERA_API_URL`. `.env
 Vite loads `.env.development` for `npm run dev` and `.env.production` for `npm run build`. These files are ignored by Git; create them from `.env.example`. Use the ignored `.env.development.local` or `.env.production.local` files to override API settings for a specific mode. Restart Vite after changing environment files. Before deployment, set `VITE_HOSTERA_API_URL` to the deployed backend URL; the mock API is not deployed with the SPA. See [Vite environment variables and modes](https://vite.dev/guide/env-and-mode).
 
 PrimeVue 5 requires a valid PrimeUI license. Replace the `VITE_PRIMEVUE_LICENSE_KEY` placeholder in `.env.development` and `.env.production`, or set it in their `.local` overrides, and restart Vite. A key in `.env.local` does not take effect while a mode file still defines the placeholder, because mode files take priority. For deployed builds, configure the variable in the build environment.
+
+## Deployment
+
+The SPA is deployed to Firebase Hosting in the `hostera-f4116` project, configured in `.firebaserc`. `firebase.json` publishes `dist/`, rewrites every route to `index.html` so that Vue Router handles client-side routes, caches the hashed files in `dist/assets/` for a year, and revalidates every other file on each request.
+
+1. Install the [Firebase CLI](https://firebase.google.com/docs/cli) and sign in with an account that has access to the project:
+
+   ```bash
+   firebase login
+   ```
+
+2. In `.env.production`, set `VITE_HOSTERA_API_URL` to the deployed API and `VITE_PRIMEVUE_LICENSE_KEY` to a valid PrimeUI license key. The mock API is not deployed with the SPA.
+
+3. Build and deploy:
+
+   ```bash
+   npm run deploy
+   ```
+
+   The script runs `npm run build` and then `firebase deploy --only hosting`, which prints the Hosting URL when it finishes. The build is not a Firebase `predeploy` hook because the standalone Firebase CLI cannot run npm scripts.
+
+Earlier releases remain available in the Hosting release history of the Firebase console, where they can be rolled back.
 
 ## Code quality
 
