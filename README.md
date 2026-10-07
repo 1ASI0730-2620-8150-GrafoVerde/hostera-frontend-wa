@@ -141,7 +141,7 @@ The SPA is deployed to Firebase Hosting in the `hostera-f4116` project, configur
    firebase login
    ```
 
-2. In `.env.production`, set `VITE_HOSTERA_API_URL` to the deployed API and `VITE_PRIMEVUE_LICENSE_KEY` to a valid PrimeUI license key. The mock API is not deployed with the SPA.
+2. In `.env.production`, set `VITE_HOSTERA_API_URL` to the deployed API and `VITE_PRIMEVUE_LICENSE_KEY` to a valid PrimeUI license key. The mock API is not deployed with the SPA; a demonstration copy can run on Render, as described in [server/README.md](server/README.md#demonstration-deployment-on-render).
 
 3. Build and deploy:
 
