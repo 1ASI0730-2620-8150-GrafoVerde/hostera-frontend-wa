@@ -142,6 +142,7 @@ The mock API is for local development and runs separately from the SPA. It is no
 
 - [Architecture decision records](docs/adrs.md): the main architectural decisions, with their context and consequences.
 - [Class diagram](docs/class-diagram.puml): the classes of each bounded context and layer, in PlantUML.
+- [User stories](docs/user-stories.md): the user stories implemented by the application, with their acceptance criteria and traceability to the code.
 
 ## License
 
