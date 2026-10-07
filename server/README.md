@@ -1,6 +1,6 @@
 # Local Mock API
 
-This is a development-only mock API. It runs separately from the SPA and is not included in SPA deployments.
+This is a mock API for development and demonstrations. It runs separately from the SPA and is not included in SPA deployments; a demonstration copy can be published on Render (see [Demonstration deployment on Render](#demonstration-deployment-on-render)).
 
 JSON Server `^0.17.4` serves the generated database at `http://localhost:3000`.
 
@@ -85,3 +85,19 @@ The overview compares properties with `GET /rooms`, `GET /bookings`, and `GET /s
 - `GET /access-events?propertyId=1`: read-only access events (granted or denied) standing in for door readers; their seed dates fall on October 5–6, 2026.
 
 The frontend generates card IDs with a simulated encoder and keeps at most one usable staff credential per staff member; direct API requests can bypass these rules.
+
+## Demonstration deployment on Render
+
+The mock API can be published as a Render Web Service from this repository, so that the SPA deployed on Firebase Hosting has data to read. Create a **Web Service** connected to the repository and its `main` branch, with these settings:
+
+| Setting           | Value                                                 |
+| ----------------- | ----------------------------------------------------- |
+| Language          | Node                                                  |
+| Root Directory    | Empty (the repository root)                           |
+| Build Command     | `npm ci`                                              |
+| Start Command     | `npm run server:start -- --host 0.0.0.0 --port $PORT` |
+| Health Check Path | `/properties`                                         |
+
+Render provides `PORT`, and `--host 0.0.0.0` makes JSON Server accept external connections. JSON Server allows cross-origin requests, so the SPA can call it from its Firebase Hosting domain. Set the service URL, such as `https://hostera-api.onrender.com`, as `VITE_HOSTERA_API_URL` in `.env.production` and deploy the SPA again.
+
+Every deploy and restart rebuilds `db.json` from `data/`, so writes made through the demonstration API are temporary. On Render's free plan the service also stops after a period without requests, and the next request waits while it starts again.
