@@ -15,6 +15,10 @@ const compact = ref(compactQuery.matches);
 const sidebarOpen = ref(false);
 const collapsed = computed(() => !compact.value && !sidebarOpen.value);
 
+// Terms and conditions published with the landing page, shared by every Hostera product.
+const termsUrl =
+  'https://1asi0730-2620-8150-grafoverde.github.io/landing-page/terms.html';
+
 // Signed-in operator placeholder until the IAM context is implemented.
 const currentOperator = { name: 'Lucía Martín', initials: 'LM' };
 
@@ -169,6 +173,19 @@ watch(
 
     <pv-sidebar-main class="overflow-y-auto">
       <router-view />
+      <footer
+        class="flex flex-wrap justify-content-between align-items-center gap-2 px-4 py-3 border-top-1 surface-border text-sm text-color-secondary"
+      >
+        <span>{{ t('shared.app-layout.copyright') }}</span>
+        <a
+          :href="termsUrl"
+          target="_blank"
+          rel="noopener"
+          class="text-color-secondary"
+          :aria-label="t('shared.app-layout.terms-new-tab')"
+          >{{ t('shared.app-layout.terms') }}</a
+        >
+      </footer>
     </pv-sidebar-main>
     <pv-toast position="bottom-right" />
     <pv-confirm-dialog />

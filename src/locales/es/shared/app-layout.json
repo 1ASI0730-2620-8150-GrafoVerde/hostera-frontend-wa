@@ -5,5 +5,8 @@
   "inventory": "Inventario",
   "access-control": "Control de acceso",
   "navigation": "Navegación principal",
-  "operator-role": "Gerente de operaciones"
+  "operator-role": "Gerente de operaciones",
+  "terms": "Términos y condiciones",
+  "terms-new-tab": "Términos y condiciones (se abre en una pestaña nueva)",
+  "copyright": "© 2026 Grafo Verde"
 }
