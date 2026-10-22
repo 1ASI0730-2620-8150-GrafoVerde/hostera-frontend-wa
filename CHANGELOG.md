@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Description, keywords, author, and `noindex, nofollow` robots meta tags in the application page, as defined in the project report.
-- Application footer with the Grafo Verde copyright and a link to the Hostera terms and conditions, in English and Spanish.
+- Account menu that opens from the operator block of the sidebar, with the English and Spanish language selector, the link to the Hostera terms and conditions, and the Grafo Verde copyright.
 
 ## [0.1.0] - 2026-10-06
 
