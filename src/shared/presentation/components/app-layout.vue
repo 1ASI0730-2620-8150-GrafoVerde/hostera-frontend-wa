@@ -15,8 +15,22 @@ const compact = ref(compactQuery.matches);
 const sidebarOpen = ref(false);
 const collapsed = computed(() => !compact.value && !sidebarOpen.value);
 
+// Terms and conditions published with the landing page, shared by every Hostera product.
+const termsUrl =
+  'https://1asi0730-2620-8150-grafoverde.github.io/hostera-landing-page/terms.html';
+
 // Signed-in operator placeholder until the IAM context is implemented.
 const currentOperator = { name: 'Lucía Martín', initials: 'LM' };
+
+// The operator block opens a menu with the language choice and the terms and conditions.
+const accountMenu = ref(null);
+const accountMenuOpen = ref(false);
+
+/**
+ * Opens or closes the account menu next to the operator block.
+ * @param {Event} event - Click event of the operator block.
+ */
+const toggleAccountMenu = (event) => accountMenu.value.toggle(event);
 
 const navigationItems = [
   {
@@ -138,13 +152,20 @@ watch(
               </nav>
             </pv-sidebar-group>
           </pv-sidebar-content>
-          <pv-sidebar-footer :class="collapsed ? 'p-2' : 'p-3 gap-3'">
-            <language-switcher v-if="!collapsed" />
-            <div
+          <pv-sidebar-footer :class="collapsed ? 'p-2' : 'p-3'">
+            <button
+              type="button"
               :class="[
-                'flex align-items-center gap-2 border-round-lg',
-                collapsed ? 'justify-content-center' : 'p-2 surface-100',
+                'account-trigger flex align-items-center gap-2 w-full border-none border-round-lg cursor-pointer text-left text-color',
+                collapsed
+                  ? 'justify-content-center p-0 bg-transparent'
+                  : 'p-2 surface-100',
               ]"
+              :aria-label="t('shared.app-layout.account-menu')"
+              aria-haspopup="true"
+              aria-controls="account-menu"
+              :aria-expanded="accountMenuOpen"
+              @click="toggleAccountMenu"
             >
               <pv-avatar
                 :label="currentOperator.initials"
@@ -160,7 +181,45 @@ watch(
                   t('shared.app-layout.operator-role')
                 }}</span>
               </div>
-            </div>
+              <i
+                v-if="!collapsed"
+                class="pi pi-chevron-up ml-auto text-sm text-color-secondary"
+                aria-hidden="true"
+              />
+            </button>
+            <pv-popover
+              id="account-menu"
+              ref="accountMenu"
+              @show="accountMenuOpen = true"
+              @hide="accountMenuOpen = false"
+            >
+              <div class="flex flex-column gap-3 w-16rem">
+                <div class="flex flex-column gap-2">
+                  <span class="text-sm font-medium">{{
+                    t('shared.language-switcher.label')
+                  }}</span>
+                  <language-switcher />
+                </div>
+                <pv-divider class="m-0" />
+                <a
+                  :href="termsUrl"
+                  target="_blank"
+                  rel="noopener"
+                  class="flex align-items-center gap-2 p-2 border-round-md text-color no-underline hover:surface-100"
+                  :aria-label="t('shared.app-layout.terms-new-tab')"
+                >
+                  <i class="pi pi-file" aria-hidden="true" />
+                  <span>{{ t('shared.app-layout.terms') }}</span>
+                  <i
+                    class="pi pi-external-link ml-auto text-sm text-color-secondary"
+                    aria-hidden="true"
+                  />
+                </a>
+                <span class="text-sm text-color-secondary">{{
+                  t('shared.app-layout.copyright')
+                }}</span>
+              </div>
+            </pv-popover>
           </pv-sidebar-footer>
         </pv-sidebar-panel>
       </pv-sidebar-aside>

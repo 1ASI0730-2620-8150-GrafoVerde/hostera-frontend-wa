@@ -98,6 +98,6 @@ The mock API can be published as a Render Web Service from this repository, so t
 | Start Command     | `npm run server:start -- --host 0.0.0.0 --port $PORT` |
 | Health Check Path | `/properties`                                         |
 
-Render provides `PORT`, and `--host 0.0.0.0` makes JSON Server accept external connections. JSON Server allows cross-origin requests, so the SPA can call it from its Firebase Hosting domain. Set the service URL, such as `https://hostera-api.onrender.com`, as `VITE_HOSTERA_API_URL` in `.env.production` and deploy the SPA again.
+Render provides `PORT`, and `--host 0.0.0.0` makes JSON Server accept external connections. JSON Server allows cross-origin requests, so the SPA can call it from its Firebase Hosting domain. Set the service URL as `VITE_HOSTERA_API_URL` in `.env.production` and deploy the SPA again. The demonstration service of this project runs at `https://hostera-frontend.onrender.com`.
 
 Every deploy and restart rebuilds `db.json` from `data/`, so writes made through the demonstration API are temporary. On Render's free plan the service also stops after a period without requests, and the next request waits while it starts again.

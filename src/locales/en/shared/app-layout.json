@@ -5,5 +5,9 @@
   "inventory": "Inventory",
   "access-control": "Access control",
   "navigation": "Main navigation",
-  "operator-role": "Operations manager"
+  "operator-role": "Operations manager",
+  "terms": "Terms and Conditions",
+  "terms-new-tab": "Terms and Conditions (opens in a new tab)",
+  "copyright": "© 2026 Grafo Verde",
+  "account-menu": "Account menu"
 }
