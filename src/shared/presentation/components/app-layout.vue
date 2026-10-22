@@ -17,7 +17,7 @@ const collapsed = computed(() => !compact.value && !sidebarOpen.value);
 
 // Terms and conditions published with the landing page, shared by every Hostera product.
 const termsUrl =
-  'https://1asi0730-2620-8150-grafoverde.github.io/landing-page/terms.html';
+  'https://1asi0730-2620-8150-grafoverde.github.io/hostera-landing-page/terms.html';
 
 // Signed-in operator placeholder until the IAM context is implemented.
 const currentOperator = { name: 'Lucía Martín', initials: 'LM' };
