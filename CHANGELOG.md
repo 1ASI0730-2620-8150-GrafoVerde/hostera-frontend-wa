@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- The Inventory workspace reads and saves storage locations, inventory items and stock adjustments through the Hostera Platform RESTful API, set in `VITE_HOSTERA_PLATFORM_API_URL`, while the other workspaces keep the demonstration API.
+
 ## [0.2.0] - 2026-10-22
 
 ### Added
