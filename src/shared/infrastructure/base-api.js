@@ -17,10 +17,11 @@ export class BaseApi {
 
   /**
    * Initializes the Axios HTTP client with the base URL from environment variables
+   * @param {string} [baseUrl] - Base URL of the API; defaults to the demonstration API.
    */
-  constructor() {
+  constructor(baseUrl = hosteraApiUrl) {
     this.#http = axios.create({
-      baseURL: hosteraApiUrl,
+      baseURL: baseUrl,
       headers: {
         'Content-Type': 'application/json',
       },
