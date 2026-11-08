@@ -14,6 +14,7 @@ import { StatusPeriodAssembler } from '../infrastructure/status-period.assembler
 import { RoomAssignmentAssembler } from '../infrastructure/room-assignment.assembler.js';
 import { RatePlanAssembler } from '../infrastructure/rate-plan.assembler.js';
 import { DailyRateAssembler } from '../infrastructure/daily-rate.assembler.js';
+import { RoomsErrorAssembler } from '../infrastructure/rooms-error.assembler.js';
 import { RoomsError } from '../domain/model/rooms.error.js';
 import { StatusPeriod } from '../domain/model/status-period.entity.js';
 import { DailyRate } from '../domain/model/daily-rate.entity.js';
@@ -460,6 +461,7 @@ const useRoomsStore = defineStore('rooms', () => {
 
   /**
    * Tracks a create, update, or delete request and records its errors.
+   * The rules the platform rejects are reported as Rooms errors.
    * @template T
    * @param {Promise<T>} request - Pending infrastructure request.
    * @returns {Promise<T>} The same request result.
@@ -468,8 +470,9 @@ const useRoomsStore = defineStore('rooms', () => {
     saving.value = true;
     return request
       .catch((error) => {
-        errors.value.push(error);
-        throw error;
+        const roomsError = RoomsErrorAssembler.toErrorFromResponse(error);
+        errors.value.push(roomsError);
+        throw roomsError;
       })
       .finally(() => {
         saving.value = false;
@@ -500,13 +503,18 @@ const useRoomsStore = defineStore('rooms', () => {
     roomType.validate();
     ensureUniqueRoomTypeName(roomType);
     return trackSaving(
-      roomsApi.createRoomType(roomType).then((response) => {
-        const newRoomType = RoomTypeAssembler.toEntityFromResource(
-          response.data,
-        );
-        roomTypes.value.push(newRoomType);
-        return newRoomType;
-      }),
+      roomsApi
+        .createRoomType(
+          currentPropertyId.value,
+          RoomTypeAssembler.toCreateResourceFromEntity(roomType),
+        )
+        .then((response) => {
+          const newRoomType = RoomTypeAssembler.toEntityFromResource(
+            response.data,
+          );
+          roomTypes.value.push(newRoomType);
+          return newRoomType;
+        }),
     );
   }
 
@@ -522,7 +530,10 @@ const useRoomsStore = defineStore('rooms', () => {
     ensureUniqueRoomTypeName(roomType);
     return trackSaving(
       roomsApi
-        .updateRoomType(roomType)
+        .updateRoomType(
+          roomType.id,
+          RoomTypeAssembler.toUpdateResourceFromEntity(roomType),
+        )
         .then((response) =>
           replaceEntity(
             roomTypes,
@@ -576,11 +587,16 @@ const useRoomsStore = defineStore('rooms', () => {
     ensureAssignableRoomType(room);
     ensureUniqueRoomNumber(room);
     return trackSaving(
-      roomsApi.createRoom(room).then((response) => {
-        const newRoom = RoomAssembler.toEntityFromResource(response.data);
-        rooms.value.push(newRoom);
-        return newRoom;
-      }),
+      roomsApi
+        .createRoom(
+          currentPropertyId.value,
+          RoomAssembler.toResourceFromEntity(room),
+        )
+        .then((response) => {
+          const newRoom = RoomAssembler.toEntityFromResource(response.data);
+          rooms.value.push(newRoom);
+          return newRoom;
+        }),
     );
   }
 
@@ -598,7 +614,7 @@ const useRoomsStore = defineStore('rooms', () => {
     ensureUniqueRoomNumber(room);
     return trackSaving(
       roomsApi
-        .updateRoom(room)
+        .updateRoom(room.id, RoomAssembler.toResourceFromEntity(room))
         .then((response) =>
           replaceEntity(
             rooms,
@@ -619,13 +635,18 @@ const useRoomsStore = defineStore('rooms', () => {
     ensureKnownRoomTypes(ratePlan);
     ensureUniqueRatePlanName(ratePlan);
     return trackSaving(
-      roomsApi.createRatePlan(ratePlan).then((response) => {
-        const newRatePlan = RatePlanAssembler.toEntityFromResource(
-          response.data,
-        );
-        ratePlans.value.push(newRatePlan);
-        return newRatePlan;
-      }),
+      roomsApi
+        .createRatePlan(
+          currentPropertyId.value,
+          RatePlanAssembler.toCreateResourceFromEntity(ratePlan),
+        )
+        .then((response) => {
+          const newRatePlan = RatePlanAssembler.toEntityFromResource(
+            response.data,
+          );
+          ratePlans.value.push(newRatePlan);
+          return newRatePlan;
+        }),
     );
   }
 
@@ -642,7 +663,10 @@ const useRoomsStore = defineStore('rooms', () => {
     ensureUniqueRatePlanName(ratePlan);
     return trackSaving(
       roomsApi
-        .updateRatePlan(ratePlan)
+        .updateRatePlan(
+          ratePlan.id,
+          RatePlanAssembler.toUpdateResourceFromEntity(ratePlan),
+        )
         .then((response) =>
           replaceEntity(
             ratePlans,
@@ -654,7 +678,7 @@ const useRoomsStore = defineStore('rooms', () => {
 
   /**
    * Sets the nightly rate of a room type under a rate plan over a date range, or returns those nights to the base nightly rate.
-   * Each night keeps at most one daily rate per room type and rate plan.
+   * The platform keeps at most one daily rate per night, room type, and rate plan and saves the range at once.
    * @param {import('../domain/set-daily-rates.command.js').SetDailyRatesCommand} setDailyRatesCommand - Set-daily-rates command.
    * @returns {Promise<void>}
    * @throws {RoomsError} When a business rule is violated.
@@ -668,60 +692,39 @@ const useRoomsStore = defineStore('rooms', () => {
     if (!ratePlan.appliesTo(roomTypeId))
       throw new RoomsError('room-type-not-in-plan');
     const nights = DailyRate.nightsBetween(startDate, endDate);
-
-    const created = [];
-    const updated = [];
-    const deleted = [];
-    for (const date of nights) {
-      const dailyRate = getDailyRate(roomTypeId, ratePlanId, date);
-      if (useBaseRate) {
-        if (dailyRate) deleted.push(dailyRate);
-        continue;
-      }
-      const newDailyRate = new DailyRate({
-        id: dailyRate?.id ?? null,
+    if (!useBaseRate)
+      new DailyRate({
         propertyId: currentPropertyId.value,
         ratePlanId,
         roomTypeId,
-        date,
+        date: startDate,
         amount,
-      });
-      newDailyRate.validate();
-      if (dailyRate) updated.push(newDailyRate);
-      else created.push(newDailyRate);
-    }
-    const request = Promise.all([
-      ...deleted.map((dailyRate) => roomsApi.deleteDailyRate(dailyRate.id)),
-      ...updated.map((dailyRate) => roomsApi.updateDailyRate(dailyRate)),
-      ...created.map((dailyRate) => roomsApi.createDailyRate(dailyRate)),
-    ])
-      .then((responses) => {
-        const deletedIds = deleted.map((dailyRate) => dailyRate.id);
+      }).validate();
+
+    const request = roomsApi
+      .setDailyRates(
+        ratePlanId,
+        DailyRateAssembler.toResourceFromCommand(setDailyRatesCommand),
+      )
+      .then((response) => {
+        const savedDailyRates =
+          DailyRateAssembler.toEntitiesFromResponse(response);
         dailyRates.value = [
-          ...dailyRates.value
-            .filter((dailyRate) => !deletedIds.includes(dailyRate.id))
-            .map(
-              (dailyRate) =>
-                updated.find((entry) => entry.id === dailyRate.id) ?? dailyRate,
-            ),
-          ...responses
-            .slice(deleted.length + updated.length)
-            .map((response) =>
-              DailyRateAssembler.toEntityFromResource(response.data),
-            ),
+          ...dailyRates.value.filter(
+            (dailyRate) =>
+              dailyRate.ratePlanId !== ratePlanId ||
+              dailyRate.roomTypeId !== roomTypeId ||
+              !nights.includes(dailyRate.date),
+          ),
+          ...savedDailyRates,
         ];
-      })
-      .catch((error) => {
-        // Partial writes may have succeeded; reload the persisted daily rates.
-        fetchDailyRates();
-        throw error;
       });
     return trackSaving(request);
   }
 
   /**
    * Sets or releases a room's operational status over a date range.
-   * Existing periods inside the range are removed, trimmed, or split so that periods never overlap.
+   * The platform removes, trims, or splits the existing periods inside the range at once so that periods never overlap.
    * @param {SetRoomStatusCommand} setRoomStatusCommand - Set-room-status command.
    * @returns {Promise<void>}
    * @throws {RoomsError} When a business rule is violated.
@@ -754,56 +757,18 @@ const useRoomsStore = defineStore('rooms', () => {
     )
       throw new RoomsError('booking-controlled');
 
-    const created = [];
-    const updated = [];
-    const deleted = [];
-    for (const statusPeriod of statusPeriods.value) {
-      if (
-        statusPeriod.roomId !== roomId ||
-        !statusPeriod.overlaps(startDate, endDate)
+    const request = roomsApi
+      .setRoomStatus(
+        roomId,
+        StatusPeriodAssembler.toResourceFromCommand(setRoomStatusCommand),
       )
-        continue;
-      const remaining = statusPeriod.withoutDays(startDate, endDate);
-      const kept = remaining.find((entry) => entry.id === statusPeriod.id);
-      if (kept) updated.push(kept);
-      else deleted.push(statusPeriod);
-      created.push(...remaining.filter((entry) => entry.id === null));
-    }
-    if (newStatusPeriod) created.push(newStatusPeriod);
-    const request = Promise.all([
-      ...deleted.map((statusPeriod) =>
-        roomsApi.deleteStatusPeriod(statusPeriod.id),
-      ),
-      ...updated.map((statusPeriod) =>
-        roomsApi.updateStatusPeriod(statusPeriod),
-      ),
-    ])
-      .then(() =>
-        Promise.all(
-          created.map((statusPeriod) =>
-            roomsApi.createStatusPeriod(statusPeriod),
-          ),
-        ),
-      )
-      .then((responses) => {
-        const deletedIds = deleted.map((statusPeriod) => statusPeriod.id);
+      .then((response) => {
         statusPeriods.value = [
-          ...statusPeriods.value
-            .filter((statusPeriod) => !deletedIds.includes(statusPeriod.id))
-            .map(
-              (statusPeriod) =>
-                updated.find((entry) => entry.id === statusPeriod.id) ??
-                statusPeriod,
-            ),
-          ...responses.map((response) =>
-            StatusPeriodAssembler.toEntityFromResource(response.data),
+          ...statusPeriods.value.filter(
+            (statusPeriod) => statusPeriod.roomId !== roomId,
           ),
+          ...StatusPeriodAssembler.toEntitiesFromResponse(response),
         ];
-      })
-      .catch((error) => {
-        // Partial writes may have succeeded; reload the persisted periods.
-        fetchStatusPeriods();
-        throw error;
       });
     return trackSaving(request);
   }
