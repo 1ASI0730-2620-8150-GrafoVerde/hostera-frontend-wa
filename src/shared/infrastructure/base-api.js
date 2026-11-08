@@ -1,4 +1,5 @@
 import axios from 'axios';
+import i18n from '../../i18n.js';
 
 const hosteraApiUrl = import.meta.env.VITE_HOSTERA_API_URL;
 
@@ -16,7 +17,8 @@ export class BaseApi {
   #http;
 
   /**
-   * Initializes the Axios HTTP client with the base URL from environment variables
+   * Initializes the Axios HTTP client with the base URL from environment variables.
+   * Each request asks for messages in the language selected in the application.
    * @param {string} [baseUrl] - Base URL of the API; defaults to the demonstration API.
    */
   constructor(baseUrl = hosteraApiUrl) {
@@ -25,6 +27,10 @@ export class BaseApi {
       headers: {
         'Content-Type': 'application/json',
       },
+    });
+    this.#http.interceptors.request.use((config) => {
+      config.headers['Accept-Language'] = i18n.global.locale.value;
+      return config;
     });
   }
 
