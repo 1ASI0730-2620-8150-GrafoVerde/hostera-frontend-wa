@@ -11,7 +11,7 @@ export class PaymentAssembler {
    * @returns {Payment} Payment entity.
    */
   static toEntityFromResource(resource) {
-    return new Payment({ ...resource });
+    return new Payment({ ...resource, reference: resource.reference ?? '' });
   }
 
   /**
@@ -31,5 +31,21 @@ export class PaymentAssembler {
         : response.data['payments'];
 
     return resources.map((resource) => this.toEntityFromResource(resource));
+  }
+
+  /**
+   * Converts a payment entity into the resource that records it.
+   * @param {Payment} entity - Payment entity.
+   * @param {number} recordedBy - Staff member who records the payment.
+   * @returns {Object} Record payment resource.
+   */
+  static toResourceFromEntity(entity, recordedBy) {
+    return {
+      amount: entity.amount,
+      method: entity.method,
+      paidAt: entity.paidAt,
+      reference: entity.reference || null,
+      recordedBy,
+    };
   }
 }
