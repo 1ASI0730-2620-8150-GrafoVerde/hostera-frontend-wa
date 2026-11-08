@@ -15,6 +15,7 @@
     "en": "Inglés"
   },
   "demo-operator": "Operador de demostración",
+  "staff-member": "Miembro del personal n.º {id}",
   "cancellation-reasons": {
     "guest-request": "Solicitud del huésped",
     "change-of-plans": "Cambio de planes",

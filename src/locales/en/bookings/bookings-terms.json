@@ -15,6 +15,7 @@
     "en": "English"
   },
   "demo-operator": "Demo operator",
+  "staff-member": "Staff member #{id}",
   "cancellation-reasons": {
     "guest-request": "Guest request",
     "change-of-plans": "Change of plans",
