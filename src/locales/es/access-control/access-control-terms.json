@@ -55,7 +55,8 @@
     "storage-room": "Almacén"
   },
   "errors": {
-    "connection": "La API simulada no está disponible. Inicia el servidor e inténtalo de nuevo.",
+    "connection": "La API de Hostera Platform no está disponible. Inicia la API e inténtalo de nuevo.",
+    "request-rejected": "Hostera Platform rechazó el cambio. Revisa los valores e inténtalo de nuevo.",
     "no-properties": "No hay establecimientos configurados.",
     "required-fields": "Completa todos los campos obligatorios.",
     "invalid-card-id": "El lector devolvió un ID de tarjeta no válido. Graba la tarjeta otra vez.",
@@ -68,6 +69,7 @@
     "staff-member-required": "Elige a una persona del personal del establecimiento activo.",
     "staff-credential-exists": "Esta persona ya tiene una credencial. Revócala antes de emitir otra.",
     "key-card-required": "Graba al menos una tarjeta.",
-    "not-found": "La credencial ya no existe en el establecimiento activo."
+    "not-found": "La credencial ya no existe en el establecimiento activo.",
+    "duplicate-card-id": "Otra credencial utilizable del establecimiento ya usa esta tarjeta. Graba una tarjeta nueva e inténtalo de nuevo."
   }
 }
