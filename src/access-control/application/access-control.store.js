@@ -10,6 +10,7 @@ import { AccessControlApi } from '../infrastructure/access-control-api.js';
 import { CredentialAssembler } from '../infrastructure/credential.assembler.js';
 import { StaffMemberAssembler } from '../infrastructure/staff-member.assembler.js';
 import { AccessEventAssembler } from '../infrastructure/access-event.assembler.js';
+import { AccessControlErrorAssembler } from '../infrastructure/access-control-error.assembler.js';
 import { RfidEncoder } from '../infrastructure/rfid-encoder.js';
 import { Credential } from '../domain/model/credential.entity.js';
 import { AccessControlError } from '../domain/model/access-control.error.js';
@@ -19,10 +20,10 @@ const accessControlApi = new AccessControlApi();
 const rfidEncoder = new RfidEncoder();
 
 /**
- * Operator recorded in credential changes until IAM is implemented.
- * @type {string}
+ * Staff member recorded as the operator of credential changes until IAM is implemented.
+ * @type {number}
  */
-const demoOperator = 'Demo operator';
+const demoOperatorId = Number(import.meta.env.VITE_DEMO_OPERATOR_ID);
 
 /**
  * Local hour at which guest key cards stop opening doors on the check-out day.
@@ -141,6 +142,26 @@ const useAccessControlStore = defineStore('access-control', () => {
     ]).then(() => {});
   }
 
+  /**
+   * Reloads the current property's credentials without clearing them, such as after a stay issued or ended key cards.
+   * @returns {Promise<void>}
+   */
+  function refreshCredentials() {
+    const propertyId = currentPropertyId.value;
+    if (!propertyId) return Promise.resolve();
+    return accessControlApi
+      .getCredentials(propertyId)
+      .then((response) => {
+        if (propertyId !== currentPropertyId.value) return;
+        credentials.value =
+          CredentialAssembler.toEntitiesFromResponse(response);
+        credentialsLoaded.value = true;
+      })
+      .catch((error) => {
+        errors.value.push(error);
+      });
+  }
+
   // Access follows the property selected in any context.
   watch(currentPropertyId, fetchAccessControl, { immediate: true });
 
@@ -205,6 +226,7 @@ const useAccessControlStore = defineStore('access-control', () => {
 
   /**
    * Tracks a create or update request and records its errors.
+   * The rules the platform rejects are reported as Access Control errors.
    * @template T
    * @param {Promise<T>} request - Pending infrastructure request.
    * @returns {Promise<T>} The same request result.
@@ -213,12 +235,29 @@ const useAccessControlStore = defineStore('access-control', () => {
     saving.value = true;
     return request
       .catch((error) => {
-        errors.value.push(error);
-        throw error;
+        const accessControlError =
+          AccessControlErrorAssembler.toErrorFromResponse(error);
+        errors.value.push(accessControlError);
+        throw accessControlError;
       })
       .finally(() => {
         saving.value = false;
       });
+  }
+
+  /**
+   * Replaces a credential in local state with the version the platform returned, or appends it.
+   * @param {Object} resource - Credential resource.
+   * @returns {Credential} Persisted credential.
+   */
+  function replaceCredentialState(resource) {
+    const savedCredential = CredentialAssembler.toEntityFromResource(resource);
+    const index = credentials.value.findIndex(
+      (entry) => entry['id'] === savedCredential.id,
+    );
+    if (index === -1) credentials.value.push(savedCredential);
+    else credentials.value[index] = savedCredential;
+    return savedCredential;
   }
 
   /**
@@ -250,54 +289,6 @@ const useAccessControlStore = defineStore('access-control', () => {
   }
 
   /**
-   * Persists new credentials and appends them to local state.
-   * @param {Credential[]} newCredentials - Credentials to persist.
-   * @returns {Promise<Credential[]>} Persisted credentials.
-   */
-  function saveNewCredentials(newCredentials) {
-    newCredentials.forEach((credential) => credential.validate());
-    return trackSaving(
-      Promise.all(
-        newCredentials.map((credential) =>
-          accessControlApi.createCredential(credential),
-        ),
-      ).then((responses) => {
-        const saved = responses.map((response) =>
-          CredentialAssembler.toEntityFromResource(response.data),
-        );
-        credentials.value.push(...saved);
-        return saved;
-      }),
-    );
-  }
-
-  /**
-   * Persists changed credentials and replaces them in local state.
-   * @param {Credential[]} changedCredentials - Credentials to persist.
-   * @returns {Promise<Credential[]>} Persisted credentials.
-   */
-  function saveChangedCredentials(changedCredentials) {
-    return trackSaving(
-      Promise.all(
-        changedCredentials.map((credential) =>
-          accessControlApi.updateCredential(credential),
-        ),
-      ).then((responses) => {
-        const saved = responses.map((response) =>
-          CredentialAssembler.toEntityFromResource(response.data),
-        );
-        for (const credential of saved) {
-          const index = credentials.value.findIndex(
-            (entry) => entry['id'] === credential.id,
-          );
-          if (index !== -1) credentials.value[index] = credential;
-        }
-        return saved;
-      }),
-    );
-  }
-
-  /**
    * Issues a staff credential on a new key card; a staff member holds at most one usable credential.
    * @param {import('../domain/issue-staff-credential.command.js').IssueStaffCredentialCommand} issueStaffCredentialCommand - Issue command.
    * @returns {Promise<Credential>} Issued credential.
@@ -326,14 +317,23 @@ const useAccessControlStore = defineStore('access-control', () => {
       validFrom: issuedAt,
       validUntil,
       issuedAt,
-      issuedBy: demoOperator,
+      issuedBy: demoOperatorId,
     });
     draft.validate();
     const cardId = await encodeKeyCard();
-    const [credential] = await saveNewCredentials([
-      new Credential({ ...draft, cardId }),
-    ]);
-    return credential;
+    const credential = new Credential({ ...draft, cardId });
+    credential.validate();
+    return trackSaving(
+      accessControlApi
+        .issueStaffCredential(
+          currentPropertyId.value,
+          CredentialAssembler.toIssueStaffCredentialResourceFromEntity(
+            credential,
+            demoOperatorId,
+          ),
+        )
+        .then((response) => replaceCredentialState(response.data)),
+    );
   }
 
   /**
@@ -347,59 +347,6 @@ const useAccessControlStore = defineStore('access-control', () => {
   }
 
   /**
-   * Registers the key cards encoded for a guest during check-in, valid from now until the check-out time.
-   * @param {import('../domain/issue-guest-key-cards.command.js').IssueGuestKeyCardsCommand} issueGuestKeyCardsCommand - Issue command.
-   * @returns {Promise<Credential[]>} Issued key cards.
-   * @throws {AccessControlError} When a business rule is violated.
-   */
-  function issueGuestKeyCards(issueGuestKeyCardsCommand) {
-    const {
-      bookingId,
-      bookingCode,
-      roomId,
-      holderName,
-      checkOutDate,
-      cardIds,
-    } = issueGuestKeyCardsCommand;
-    if (!cardIds.length) throw new AccessControlError('key-card-required');
-    const issuedAt = now();
-    return saveNewCredentials(
-      cardIds.map(
-        (cardId) =>
-          new Credential({
-            propertyId: currentPropertyId.value,
-            cardId,
-            type: 'guest-key-card',
-            holderName,
-            bookingId,
-            bookingCode,
-            roomId,
-            validFrom: issuedAt,
-            validUntil: guestAccessEnd(checkOutDate),
-            issuedAt,
-            issuedBy: demoOperator,
-          }),
-      ),
-    );
-  }
-
-  /**
-   * Ends the usable key cards of a booking now, as at the guest's check-out.
-   * @param {number} bookingId - Booking identifier.
-   * @returns {Promise<Credential[]>} Ended key cards.
-   */
-  function endGuestKeyCards(bookingId) {
-    const endedAt = now();
-    const usable = getKeyCardsOfBooking(bookingId).filter((credential) =>
-      credential.isUsableAt(endedAt),
-    );
-    if (!usable.length) return Promise.resolve([]);
-    return saveChangedCredentials(
-      usable.map((credential) => credential.endAt(endedAt)),
-    );
-  }
-
-  /**
    * Revokes an active or scheduled credential immediately.
    * @param {import('../domain/revoke-credential.command.js').RevokeCredentialCommand} revokeCredentialCommand - Revoke command.
    * @returns {Promise<Credential>} Revoked credential.
@@ -409,14 +356,28 @@ const useAccessControlStore = defineStore('access-control', () => {
     const { credentialId, reason, note } = revokeCredentialCommand;
     const credential = getCredentialById(credentialId);
     if (!credential) throw new AccessControlError('not-found');
-    const [revoked] = await saveChangedCredentials([
-      credential.revoke({ reason, note, at: now(), by: demoOperator }),
-    ]);
-    return revoked;
+    const revoked = credential.revoke({
+      reason,
+      note,
+      at: now(),
+      by: demoOperatorId,
+    });
+    return trackSaving(
+      accessControlApi
+        .revokeCredential(
+          credential.id,
+          CredentialAssembler.toRevokeResourceFromEntity(
+            revoked,
+            demoOperatorId,
+          ),
+        )
+        .then((response) => replaceCredentialState(response.data)),
+    );
   }
 
   /**
    * Revokes a credential and encodes a new card with the same holder, scope, and access period.
+   * The platform revokes the credential and issues its replacement in one operation.
    * @param {number} credentialId - Identifier of the credential to replace.
    * @returns {Promise<Credential>} Replacement credential.
    * @throws {AccessControlError} When the credential cannot be replaced.
@@ -424,26 +385,18 @@ const useAccessControlStore = defineStore('access-control', () => {
   async function replaceCredential(credentialId) {
     const credential = getCredentialById(credentialId);
     if (!credential) throw new AccessControlError('not-found');
-    const replacedAt = now();
-    const revoked = credential.revoke({
-      reason: 'replaced',
-      at: replacedAt,
-      by: demoOperator,
-    });
+    credential.revoke({ reason: 'replaced', at: now(), by: demoOperatorId });
     const cardId = await encodeKeyCard();
-    await saveChangedCredentials([revoked]);
-    const [replacement] = await saveNewCredentials([
-      new Credential({
-        ...credential,
-        id: null,
-        cardId,
-        validFrom:
-          credential.validFrom > replacedAt ? credential.validFrom : replacedAt,
-        issuedAt: replacedAt,
-        issuedBy: demoOperator,
-      }),
-    ]);
-    return replacement;
+    const replacement = await trackSaving(
+      accessControlApi
+        .replaceCredential(
+          credential.id,
+          CredentialAssembler.toReplaceResource(cardId, demoOperatorId),
+        )
+        .then((response) => replaceCredentialState(response.data)),
+    );
+    await refreshCredentials();
+    return getCredentialById(replacement.id) ?? replacement;
   }
 
   return {
@@ -458,6 +411,8 @@ const useAccessControlStore = defineStore('access-control', () => {
     encoderState,
     currentPropertyId,
     fetchAccessControl,
+    refreshCredentials,
+    demoOperatorId,
     getCredentialById,
     getStaffMemberById,
     getCredentialStatus,
@@ -467,8 +422,6 @@ const useAccessControlStore = defineStore('access-control', () => {
     encodeKeyCard,
     resetEncoder,
     issueStaffCredential,
-    issueGuestKeyCards,
-    endGuestKeyCards,
     revokeCredential,
     replaceCredential,
   };
