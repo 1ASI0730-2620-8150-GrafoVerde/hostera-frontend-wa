@@ -296,32 +296,19 @@ const useInventoryStore = defineStore('inventory', () => {
    */
   function addInventoryItem(inventoryItem, openingQuantity = 0) {
     inventoryItem.validate();
-    const primaryLocation = requireStorageLocation(
-      inventoryItem.primaryLocationId,
-    );
+    requireStorageLocation(inventoryItem.primaryLocationId);
     ensureUniqueItemCode(inventoryItem);
     InventoryItem.validateQuantity(openingQuantity, inventoryItem.unit, true);
     return trackSaving(
       inventoryApi
         .createInventoryItem(
           currentPropertyId.value,
-          InventoryItemAssembler.toCreateResourceFromEntity(inventoryItem),
+          InventoryItemAssembler.toCreateResourceFromEntity(
+            inventoryItem,
+            openingQuantity,
+            demoOperator,
+          ),
         )
-        .then((response) => {
-          if (openingQuantity <= 0) return response;
-          return inventoryApi.adjustStock(
-            response.data.id,
-            StockAdjustmentAssembler.toResourceFromCommand(
-              {
-                operation: 'in',
-                quantity: openingQuantity,
-                locationId: primaryLocation.id,
-                reason: 'opening-stock',
-              },
-              demoOperator,
-            ),
-          );
-        })
         .then((response) => {
           const createdInventoryItem =
             InventoryItemAssembler.toEntityFromResource(response.data);
