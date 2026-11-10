@@ -1,6 +1,7 @@
 {
   "room-number": "Habitación {number}",
   "demo-operator": "Operador de demostración",
+  "staff-member": "Miembro del personal n.º {id}",
   "statuses": {
     "active": "Activa",
     "scheduled": "Programada",

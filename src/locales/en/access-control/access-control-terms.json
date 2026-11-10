@@ -1,6 +1,7 @@
 {
   "room-number": "Room {number}",
   "demo-operator": "Demo operator",
+  "staff-member": "Staff member #{id}",
   "statuses": {
     "active": "Active",
     "scheduled": "Scheduled",
