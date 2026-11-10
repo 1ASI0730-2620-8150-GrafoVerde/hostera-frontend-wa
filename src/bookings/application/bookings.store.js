@@ -459,7 +459,7 @@ const useBookingsStore = defineStore('bookings', () => {
       ),
       (data) => data.booking,
     );
-    accessControlStore.fetchAccessControl();
+    accessControlStore.refreshCredentials();
     return savedBooking;
   }
 
@@ -492,7 +492,7 @@ const useBookingsStore = defineStore('bookings', () => {
       ),
       (data) => data.booking,
     );
-    accessControlStore.fetchAccessControl();
+    accessControlStore.refreshCredentials();
     roomsStore.fetchStatusPeriods();
     return savedBooking;
   }
