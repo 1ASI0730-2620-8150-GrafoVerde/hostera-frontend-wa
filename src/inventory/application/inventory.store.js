@@ -11,6 +11,7 @@ import { PropertyAssembler } from '../infrastructure/property.assembler.js';
 import { InventoryItemAssembler } from '../infrastructure/inventory-item.assembler.js';
 import { StockAdjustmentAssembler } from '../infrastructure/stock-adjustment.assembler.js';
 import { StorageLocationAssembler } from '../infrastructure/storage-location.assembler.js';
+import { InventoryErrorAssembler } from '../infrastructure/inventory-error.assembler.js';
 import { InventoryItem } from '../domain/model/inventory-item.entity.js';
 import { InventoryError } from '../domain/model/inventory.error.js';
 
@@ -264,8 +265,10 @@ const useInventoryStore = defineStore('inventory', () => {
     saving.value = true;
     return request
       .catch((error) => {
-        errors.value.push(error);
-        throw error;
+        const inventoryError =
+          InventoryErrorAssembler.toErrorFromResponse(error);
+        errors.value.push(inventoryError);
+        throw inventoryError;
       })
       .finally(() => {
         saving.value = false;
