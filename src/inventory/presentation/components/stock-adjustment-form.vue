@@ -244,7 +244,7 @@ const performStockAdjustment = async () => {
           id="adjustment-note"
           v-model="form.note"
           rows="3"
-          maxlength="500"
+          maxlength="240"
           :required="form.reason === 'other'"
           auto-resize
           fluid
