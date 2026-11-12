@@ -24,7 +24,8 @@
     "full-board": "Full board"
   },
   "errors": {
-    "connection": "The mock API is unavailable. Start the server and try again.",
+    "connection": "The Hostera Platform API is unavailable. Start the API and try again.",
+    "request-rejected": "The Hostera Platform rejected the change. Review the values and try again.",
     "no-properties": "No properties are configured.",
     "required-fields": "Complete all required fields.",
     "invalid-capacity": "Enter a capacity between 1 and 12 guests.",

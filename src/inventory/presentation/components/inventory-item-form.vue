@@ -116,7 +116,7 @@ const saveInventoryItem = async () => {
             v-model="form.name"
             :placeholder="t('inventory.inventory-item-form.name-placeholder')"
             required
-            maxlength="100"
+            maxlength="80"
             autofocus
             fluid
           />
@@ -132,7 +132,8 @@ const saveInventoryItem = async () => {
               placeholder="LIN-BT-001"
               class="font-mono"
               required
-              maxlength="40"
+              maxlength="20"
+              :disabled="isEdit"
               fluid
             />
           </div>

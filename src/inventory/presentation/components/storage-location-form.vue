@@ -92,7 +92,7 @@ const saveStorageLocation = async () => {
           id="location-name"
           v-model="form.name"
           required
-          maxlength="100"
+          maxlength="80"
           autofocus
           fluid
         />
@@ -107,7 +107,7 @@ const saveStorageLocation = async () => {
             v-model="form.code"
             class="font-mono"
             required
-            maxlength="40"
+            maxlength="20"
             :disabled="isEdit"
             fluid
           />
@@ -144,7 +144,7 @@ const saveStorageLocation = async () => {
             id="location-area"
             v-model="form.area"
             required
-            maxlength="100"
+            maxlength="80"
             fluid
           />
         </div>
@@ -156,7 +156,7 @@ const saveStorageLocation = async () => {
             id="location-team"
             v-model="form.responsibleTeam"
             required
-            maxlength="100"
+            maxlength="80"
             fluid
           />
         </div>
@@ -169,7 +169,7 @@ const saveStorageLocation = async () => {
           id="location-description"
           v-model="form.description"
           rows="4"
-          maxlength="500"
+          maxlength="240"
           auto-resize
           fluid
         />

@@ -11,7 +11,10 @@ export class CredentialAssembler {
    * @returns {Credential} Credential entity.
    */
   static toEntityFromResource(resource) {
-    return new Credential({ ...resource });
+    return new Credential({
+      ...resource,
+      revocationNote: resource.revocationNote ?? '',
+    });
   }
 
   /**
@@ -31,5 +34,46 @@ export class CredentialAssembler {
         : response.data['credentials'];
 
     return resources.map((resource) => this.toEntityFromResource(resource));
+  }
+
+  /**
+   * Converts a staff credential draft into the resource that issues it on the encoded card.
+   * @param {Credential} entity - Staff credential to issue.
+   * @param {number} issuedBy - Staff member who issues the credential.
+   * @returns {Object} Issue staff credential resource.
+   */
+  static toIssueStaffCredentialResourceFromEntity(entity, issuedBy) {
+    return {
+      staffMemberId: entity.staffMemberId,
+      scope: entity.scope,
+      validFrom: entity.validFrom,
+      validUntil: entity.validUntil || null,
+      cardId: entity.cardId,
+      issuedBy,
+    };
+  }
+
+  /**
+   * Converts a revoked credential into the resource that revokes it.
+   * @param {Credential} entity - Revoked copy of the credential.
+   * @param {number} operatorId - Staff member who revokes the credential.
+   * @returns {Object} Revoke credential resource.
+   */
+  static toRevokeResourceFromEntity(entity, operatorId) {
+    return {
+      reason: entity.revocationReason,
+      note: entity.revocationNote || null,
+      operatorId,
+    };
+  }
+
+  /**
+   * Builds the resource that replaces a credential with a newly encoded card.
+   * @param {string} cardId - Card ID of the new card.
+   * @param {number} operatorId - Staff member who replaces the credential.
+   * @returns {Object} Replace credential resource.
+   */
+  static toReplaceResource(cardId, operatorId) {
+    return { cardId, operatorId };
   }
 }

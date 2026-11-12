@@ -231,14 +231,16 @@ const bookingFacts = computed(() => [
 const dateTime = (value) => (value ? formatDateTime(value, locale.value) : '—');
 
 /**
- * Returns the display name of the operator who changed the booking's status.
- * @param {?string} operator - Recorded operator.
+ * Returns the display name of the staff member who changed the booking's status.
+ * @param {?number} operator - Identifier of the recorded staff member.
  * @returns {string} Localized operator name.
  */
-const operatorName = (operator) =>
-  operator === 'Demo operator'
+const operatorName = (operator) => {
+  if (operator === null || operator === undefined) return '—';
+  return operator === store.demoOperatorId
     ? t('bookings.bookings-terms.demo-operator')
-    : (operator ?? '—');
+    : t('bookings.bookings-terms.staff-member', { id: operator });
+};
 
 /**
  * Confirms that the booking's status changed.

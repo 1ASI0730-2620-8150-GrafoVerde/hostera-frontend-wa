@@ -39,7 +39,8 @@
     "internal-transfer": "Traslado interno"
   },
   "errors": {
-    "connection": "La API de demostración no está disponible. Inicia el servidor y reintenta.",
+    "connection": "La API de Hostera Platform no está disponible. Inicia la API e inténtalo de nuevo.",
+    "request-rejected": "Hostera Platform rechazó el cambio. Revisa los valores e inténtalo de nuevo.",
     "no-properties": "No hay establecimientos configurados.",
     "required-fields": "Completa todos los campos obligatorios.",
     "invalid-unit": "Selecciona una unidad válida.",

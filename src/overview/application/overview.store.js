@@ -70,14 +70,10 @@ const useOverviewStore = defineStore('overview', () => {
     propertyOverviewErrors.value = [];
     propertyOverviewsLoaded.value = false;
     return overviewApi
-      .getPortfolio()
-      .then((responses) => {
+      .getPropertyOverviews(today())
+      .then((response) => {
         propertyOverviews.value =
-          PropertyOverviewAssembler.toEntitiesFromResponses(
-            roomsStore.properties,
-            responses,
-            today(),
-          );
+          PropertyOverviewAssembler.toEntitiesFromResponse(response);
         propertyOverviewsLoaded.value = true;
       })
       .catch((error) => {

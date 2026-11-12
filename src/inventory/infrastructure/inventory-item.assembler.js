@@ -53,13 +53,22 @@ export class InventoryItemAssembler {
 
   /**
    * Maps a new inventory item into the create resource expected by the API.
+   * The platform records the opening quantity in the primary location in the same operation.
    * @param {InventoryItem} entity - Inventory item to create.
+   * @param {number} [openingQuantity=0] - Stock received in the primary location when the item is created.
+   * @param {?string} [operator=null] - Operator who records the opening stock.
    * @returns {Object} Create inventory item resource.
    */
-  static toCreateResourceFromEntity(entity) {
+  static toCreateResourceFromEntity(
+    entity,
+    openingQuantity = 0,
+    operator = null,
+  ) {
     return {
       code: entity.code,
       ...this.toUpdateResourceFromEntity(entity),
+      openingQuantity,
+      operator,
     };
   }
 

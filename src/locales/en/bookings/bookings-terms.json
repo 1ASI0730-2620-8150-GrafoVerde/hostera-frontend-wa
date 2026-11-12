@@ -15,6 +15,7 @@
     "en": "English"
   },
   "demo-operator": "Demo operator",
+  "staff-member": "Staff member #{id}",
   "cancellation-reasons": {
     "guest-request": "Guest request",
     "change-of-plans": "Change of plans",
@@ -43,7 +44,8 @@
     "needs-attention": "Needs attention"
   },
   "errors": {
-    "connection": "The mock API is unavailable. Start the server and try again.",
+    "connection": "The Hostera Platform API is unavailable. Start the API and try again.",
+    "request-rejected": "The Hostera Platform rejected the change. Review the values and try again.",
     "no-properties": "No properties are configured.",
     "required-fields": "Complete all required fields.",
     "invalid-email": "Enter a valid email address.",
@@ -74,6 +76,8 @@
     "invalid-payment-method": "Choose a payment method.",
     "invalid-payment-date": "Choose when the payment was received.",
     "payment-exceeds-balance": "Enter an amount up to {amount}. The payment was not recorded.",
-    "key-card-required": "Encode at least one key card to complete the check-in."
+    "key-card-required": "Encode at least one key card to complete the check-in.",
+    "concurrency-conflict": "The booking changed after you opened it. It was reloaded; review it and repeat the change.",
+    "key-cards-not-issued": "The key cards were not issued: a card is not valid or another credential already uses it."
   }
 }

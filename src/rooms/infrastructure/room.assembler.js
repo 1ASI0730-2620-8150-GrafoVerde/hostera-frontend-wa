@@ -30,4 +30,17 @@ export class RoomAssembler {
 
     return resources.map((resource) => this.toEntityFromResource(resource));
   }
+
+  /**
+   * Converts a room entity into the resource that creates or updates it.
+   * @param {Room} entity - Room entity.
+   * @returns {Object} Room resource.
+   */
+  static toResourceFromEntity(entity) {
+    return {
+      number: entity.number,
+      roomTypeId: entity.roomTypeId,
+      floor: entity.floor ?? null,
+    };
+  }
 }

@@ -26,9 +26,8 @@ const inventoryItemFormVisible = ref(false);
 const stockAdjustmentFormVisible = ref(false);
 
 const inventoryItem = computed(() => getInventoryItemById(route.params.id));
-const stockHistory = computed(() =>
-  [...(inventoryItem.value?.adjustments ?? [])].reverse(),
-);
+// The platform returns the adjustments newest first.
+const stockHistory = computed(() => inventoryItem.value?.adjustments ?? []);
 const itemFacts = computed(() => [
   {
     label: t('inventory.inventory-item-detail.category'),

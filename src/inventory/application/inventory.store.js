@@ -11,6 +11,7 @@ import { PropertyAssembler } from '../infrastructure/property.assembler.js';
 import { InventoryItemAssembler } from '../infrastructure/inventory-item.assembler.js';
 import { StockAdjustmentAssembler } from '../infrastructure/stock-adjustment.assembler.js';
 import { StorageLocationAssembler } from '../infrastructure/storage-location.assembler.js';
+import { InventoryErrorAssembler } from '../infrastructure/inventory-error.assembler.js';
 import { InventoryItem } from '../domain/model/inventory-item.entity.js';
 import { InventoryError } from '../domain/model/inventory.error.js';
 
@@ -264,8 +265,10 @@ const useInventoryStore = defineStore('inventory', () => {
     saving.value = true;
     return request
       .catch((error) => {
-        errors.value.push(error);
-        throw error;
+        const inventoryError =
+          InventoryErrorAssembler.toErrorFromResponse(error);
+        errors.value.push(inventoryError);
+        throw inventoryError;
       })
       .finally(() => {
         saving.value = false;
@@ -296,32 +299,19 @@ const useInventoryStore = defineStore('inventory', () => {
    */
   function addInventoryItem(inventoryItem, openingQuantity = 0) {
     inventoryItem.validate();
-    const primaryLocation = requireStorageLocation(
-      inventoryItem.primaryLocationId,
-    );
+    requireStorageLocation(inventoryItem.primaryLocationId);
     ensureUniqueItemCode(inventoryItem);
     InventoryItem.validateQuantity(openingQuantity, inventoryItem.unit, true);
     return trackSaving(
       inventoryApi
         .createInventoryItem(
           currentPropertyId.value,
-          InventoryItemAssembler.toCreateResourceFromEntity(inventoryItem),
+          InventoryItemAssembler.toCreateResourceFromEntity(
+            inventoryItem,
+            openingQuantity,
+            demoOperator,
+          ),
         )
-        .then((response) => {
-          if (openingQuantity <= 0) return response;
-          return inventoryApi.adjustStock(
-            response.data.id,
-            StockAdjustmentAssembler.toResourceFromCommand(
-              {
-                operation: 'in',
-                quantity: openingQuantity,
-                locationId: primaryLocation.id,
-                reason: 'opening-stock',
-              },
-              demoOperator,
-            ),
-          );
-        })
         .then((response) => {
           const createdInventoryItem =
             InventoryItemAssembler.toEntityFromResource(response.data);
