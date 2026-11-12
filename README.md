@@ -22,7 +22,7 @@ This repository holds the Vue single-page application (SPA) and a development-on
 
 - Node.js `^20.19.0` or `>=22.12.0`, as required by Vite, and npm.
 - A PrimeUI license key for PrimeVue 5.
-- The [Hostera Platform](https://github.com/1ASI0730-2620-8150-GrafoVerde/hostera-platform-2) RESTful API running locally, which serves every workspace.
+- The [Hostera Platform](https://github.com/1ASI0730-2620-8150-GrafoVerde/hostera-platform) RESTful API running locally, which serves every workspace.
 
 ### Install and run
 
