@@ -32,4 +32,30 @@ export class RoomTypeAssembler {
 
     return resources.map((resource) => this.toEntityFromResource(resource));
   }
+
+  /**
+   * Converts a room type entity into the resource that creates it.
+   * @param {RoomType} entity - Room type entity.
+   * @returns {Object} Create room type resource.
+   */
+  static toCreateResourceFromEntity(entity) {
+    return {
+      name: entity.name,
+      capacity: entity.capacity,
+      bedConfiguration: entity.bedConfiguration,
+      baseNightlyRate: entity.baseNightlyRate,
+    };
+  }
+
+  /**
+   * Converts a room type entity into the resource that updates it, including its activation.
+   * @param {RoomType} entity - Room type entity.
+   * @returns {Object} Update room type resource.
+   */
+  static toUpdateResourceFromEntity(entity) {
+    return {
+      ...this.toCreateResourceFromEntity(entity),
+      status: entity.status,
+    };
+  }
 }

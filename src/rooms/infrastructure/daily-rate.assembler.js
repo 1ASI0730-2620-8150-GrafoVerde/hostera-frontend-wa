@@ -32,4 +32,19 @@ export class DailyRateAssembler {
 
     return resources.map((resource) => this.toEntityFromResource(resource));
   }
+
+  /**
+   * Converts a set-daily-rates command into the resource that sets the nightly rate of a date range.
+   * A null amount returns the nights to the base nightly rate of the room type.
+   * @param {import('../domain/set-daily-rates.command.js').SetDailyRatesCommand} command - Set-daily-rates command.
+   * @returns {Object} Set daily rates resource.
+   */
+  static toResourceFromCommand(command) {
+    return {
+      roomTypeId: command.roomTypeId,
+      startDate: command.startDate,
+      endDate: command.endDate,
+      amount: command.useBaseRate ? null : command.amount,
+    };
+  }
 }

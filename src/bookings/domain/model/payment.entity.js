@@ -22,7 +22,7 @@ export class Payment {
    * @param {string} [params.method='card-terminal'] - Channel of the payment.
    * @param {string} [params.paidAt=''] - ISO date-time the payment was received.
    * @param {string} [params.reference=''] - Receipt or transaction reference.
-   * @param {?string} [params.recordedBy=null] - Operator who recorded the payment.
+   * @param {?number} [params.recordedBy=null] - Staff member who recorded the payment.
    */
   constructor({
     id = null,

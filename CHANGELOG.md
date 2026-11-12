@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-11-11
+
+### Changed
+
+- Every workspace reads and saves its data through the Hostera Platform RESTful API, set in `VITE_HOSTERA_PLATFORM_API_URL`. The SPA no longer uses the demonstration API, and `VITE_HOSTERA_API_URL` was removed.
+- Room statuses and daily rates are saved in one request for the whole date range, instead of one request per period or night.
+- Booking codes and totals are assigned by the platform. Status changes, check-ins, and check-outs are single requests; a check-in issues the guest key cards and a check-out ends them and marks the room for cleaning in the same operation.
+- Changes to a booking are rejected when someone else changed it first; the booking is then reloaded so the change can be repeated. Payments are recorded only once, even when a request is repeated.
+- A staff credential is replaced in one request that revokes the old card and issues the new one.
+- New inventory items are created with their opening stock in one request.
+- Operators of bookings, payments, and credentials are staff members, identified by `VITE_DEMO_OPERATOR_ID` until sign-in exists.
+- Requests carry the selected language in the `Accept-Language` header, and the rules the platform rejects are shown with the same English and Spanish messages as the checks made in the browser.
+
+### Fixed
+
+- The code of an inventory item can no longer be edited after it is created.
+- Inventory text fields accept the same maximum lengths as the platform.
+
 ## [0.2.0] - 2026-10-22
 
 ### Added

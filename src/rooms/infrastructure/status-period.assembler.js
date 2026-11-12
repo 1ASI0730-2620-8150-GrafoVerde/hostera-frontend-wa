@@ -32,4 +32,18 @@ export class StatusPeriodAssembler {
 
     return resources.map((resource) => this.toEntityFromResource(resource));
   }
+
+  /**
+   * Converts a set-room-status command into the resource that sets or releases the status of a room.
+   * @param {import('../domain/set-room-status.command.js').SetRoomStatusCommand} command - Set-room-status command.
+   * @returns {Object} Set room status resource.
+   */
+  static toResourceFromCommand(command) {
+    return {
+      status: command.status,
+      startDate: command.startDate,
+      endDate: command.endDate,
+      reason: command.status === 'available' ? null : command.reason.trim(),
+    };
+  }
 }

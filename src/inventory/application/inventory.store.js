@@ -9,7 +9,9 @@ import { computed, ref } from 'vue';
 import { InventoryApi } from '../infrastructure/inventory-api.js';
 import { PropertyAssembler } from '../infrastructure/property.assembler.js';
 import { InventoryItemAssembler } from '../infrastructure/inventory-item.assembler.js';
+import { StockAdjustmentAssembler } from '../infrastructure/stock-adjustment.assembler.js';
 import { StorageLocationAssembler } from '../infrastructure/storage-location.assembler.js';
+import { InventoryErrorAssembler } from '../infrastructure/inventory-error.assembler.js';
 import { InventoryItem } from '../domain/model/inventory-item.entity.js';
 import { InventoryError } from '../domain/model/inventory.error.js';
 
@@ -241,7 +243,8 @@ const useInventoryStore = defineStore('inventory', () => {
   }
 
   /**
-   * Creates the audit information of a new stock adjustment.
+   * Creates the audit information used to check a stock adjustment before it is sent to the API.
+   * The API assigns the final identifier and recording time.
    * @returns {{id: string, recordedAt: string, operator: string}} Adjustment metadata.
    */
   function createAdjustmentMetadata() {
@@ -262,8 +265,10 @@ const useInventoryStore = defineStore('inventory', () => {
     saving.value = true;
     return request
       .catch((error) => {
-        errors.value.push(error);
-        throw error;
+        const inventoryError =
+          InventoryErrorAssembler.toErrorFromResponse(error);
+        errors.value.push(inventoryError);
+        throw inventoryError;
       })
       .finally(() => {
         saving.value = false;
@@ -294,31 +299,25 @@ const useInventoryStore = defineStore('inventory', () => {
    */
   function addInventoryItem(inventoryItem, openingQuantity = 0) {
     inventoryItem.validate();
-    const primaryLocation = requireStorageLocation(
-      inventoryItem.primaryLocationId,
-    );
+    requireStorageLocation(inventoryItem.primaryLocationId);
     ensureUniqueItemCode(inventoryItem);
     InventoryItem.validateQuantity(openingQuantity, inventoryItem.unit, true);
-    let newInventoryItem = inventoryItem.assignStorageLocation(
-      primaryLocation.id,
-    );
-    if (openingQuantity > 0)
-      newInventoryItem = newInventoryItem.applyStockAdjustment({
-        ...createAdjustmentMetadata(),
-        operation: 'in',
-        quantity: openingQuantity,
-        locationId: primaryLocation.id,
-        locationName: primaryLocation.name,
-        reason: 'opening-stock',
-      });
     return trackSaving(
-      inventoryApi.createInventoryItem(newInventoryItem).then((response) => {
-        const resource = response.data;
-        const createdInventoryItem =
-          InventoryItemAssembler.toEntityFromResource(resource);
-        inventoryItems.value.push(createdInventoryItem);
-        return createdInventoryItem;
-      }),
+      inventoryApi
+        .createInventoryItem(
+          currentPropertyId.value,
+          InventoryItemAssembler.toCreateResourceFromEntity(
+            inventoryItem,
+            openingQuantity,
+            demoOperator,
+          ),
+        )
+        .then((response) => {
+          const createdInventoryItem =
+            InventoryItemAssembler.toEntityFromResource(response.data);
+          inventoryItems.value.push(createdInventoryItem);
+          return createdInventoryItem;
+        }),
     );
   }
 
@@ -346,7 +345,12 @@ const useInventoryStore = defineStore('inventory', () => {
     );
     return trackSaving(
       inventoryApi
-        .updateInventoryItem(updatedInventoryItem)
+        .updateInventoryItem(
+          updatedInventoryItem.id,
+          InventoryItemAssembler.toUpdateResourceFromEntity(
+            updatedInventoryItem,
+          ),
+        )
         .then((response) => replaceInventoryItem(response.data)),
     );
   }
@@ -369,7 +373,8 @@ const useInventoryStore = defineStore('inventory', () => {
       adjustStockCommand.operation === 'transfer'
         ? requireStorageLocation(adjustStockCommand.destinationLocationId)
         : null;
-    const adjustedInventoryItem = inventoryItem.applyStockAdjustment({
+    // Checks the business rules locally so the form shows its message before the request is sent.
+    inventoryItem.applyStockAdjustment({
       ...adjustStockCommand,
       ...createAdjustmentMetadata(),
       locationName: originLocation.name,
@@ -377,7 +382,13 @@ const useInventoryStore = defineStore('inventory', () => {
     });
     return trackSaving(
       inventoryApi
-        .updateInventoryItem(adjustedInventoryItem)
+        .adjustStock(
+          inventoryItem.id,
+          StockAdjustmentAssembler.toResourceFromCommand(
+            adjustStockCommand,
+            demoOperator,
+          ),
+        )
         .then((response) => replaceInventoryItem(response.data)),
     );
   }
@@ -392,11 +403,11 @@ const useInventoryStore = defineStore('inventory', () => {
   function unassignStorageLocation(inventoryItem, storageLocationId) {
     const currentInventoryItem = getInventoryItemById(inventoryItem.id);
     if (!currentInventoryItem) throw new InventoryError('not-found');
-    const updatedInventoryItem =
-      currentInventoryItem.unassignStorageLocation(storageLocationId);
+    // Checks the business rules locally so the view shows its message before the request is sent.
+    currentInventoryItem.unassignStorageLocation(storageLocationId);
     return trackSaving(
       inventoryApi
-        .updateInventoryItem(updatedInventoryItem)
+        .unassignStorageLocation(currentInventoryItem.id, storageLocationId)
         .then((response) => replaceInventoryItem(response.data)),
     );
   }
@@ -411,13 +422,18 @@ const useInventoryStore = defineStore('inventory', () => {
     storageLocation.validate();
     ensureUniqueStorageLocation(storageLocation);
     return trackSaving(
-      inventoryApi.createStorageLocation(storageLocation).then((response) => {
-        const resource = response.data;
-        const newStorageLocation =
-          StorageLocationAssembler.toEntityFromResource(resource);
-        storageLocations.value.push(newStorageLocation);
-        return newStorageLocation;
-      }),
+      inventoryApi
+        .createStorageLocation(
+          currentPropertyId.value,
+          StorageLocationAssembler.toCreateResourceFromEntity(storageLocation),
+        )
+        .then((response) => {
+          const resource = response.data;
+          const newStorageLocation =
+            StorageLocationAssembler.toEntityFromResource(resource);
+          storageLocations.value.push(newStorageLocation);
+          return newStorageLocation;
+        }),
     );
   }
 
@@ -435,17 +451,22 @@ const useInventoryStore = defineStore('inventory', () => {
       throw new InventoryError('location-code-locked');
     ensureUniqueStorageLocation(storageLocation);
     return trackSaving(
-      inventoryApi.updateStorageLocation(storageLocation).then((response) => {
-        const resource = response.data;
-        const updatedStorageLocation =
-          StorageLocationAssembler.toEntityFromResource(resource);
-        const index = storageLocations.value.findIndex(
-          (s) => s['id'] === updatedStorageLocation.id,
-        );
-        if (index !== -1)
-          storageLocations.value[index] = updatedStorageLocation;
-        return updatedStorageLocation;
-      }),
+      inventoryApi
+        .updateStorageLocation(
+          storageLocation.id,
+          StorageLocationAssembler.toUpdateResourceFromEntity(storageLocation),
+        )
+        .then((response) => {
+          const resource = response.data;
+          const updatedStorageLocation =
+            StorageLocationAssembler.toEntityFromResource(resource);
+          const index = storageLocations.value.findIndex(
+            (s) => s['id'] === updatedStorageLocation.id,
+          );
+          if (index !== -1)
+            storageLocations.value[index] = updatedStorageLocation;
+          return updatedStorageLocation;
+        }),
     );
   }
 

@@ -1,6 +1,7 @@
 {
   "room-number": "Room {number}",
   "demo-operator": "Demo operator",
+  "staff-member": "Staff member #{id}",
   "statuses": {
     "active": "Active",
     "scheduled": "Scheduled",
@@ -55,7 +56,8 @@
     "storage-room": "Storage room"
   },
   "errors": {
-    "connection": "The mock API is unavailable. Start the server and try again.",
+    "connection": "The Hostera Platform API is unavailable. Start the API and try again.",
+    "request-rejected": "The Hostera Platform rejected the change. Review the values and try again.",
     "no-properties": "No properties are configured.",
     "required-fields": "Complete all required fields.",
     "invalid-card-id": "The encoder returned an invalid card ID. Encode the card again.",
@@ -68,6 +70,7 @@
     "staff-member-required": "Choose a staff member of the active property.",
     "staff-credential-exists": "This staff member already holds a credential. Revoke it before issuing another.",
     "key-card-required": "Encode at least one key card.",
-    "not-found": "The credential no longer exists in the active property."
+    "not-found": "The credential no longer exists in the active property.",
+    "duplicate-card-id": "Another usable credential of the property already uses this card. Encode a new card and try again."
   }
 }

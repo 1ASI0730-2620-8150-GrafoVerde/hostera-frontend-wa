@@ -22,6 +22,7 @@ This repository holds the Vue single-page application (SPA) and a development-on
 
 - Node.js `^20.19.0` or `>=22.12.0`, as required by Vite, and npm.
 - A PrimeUI license key for PrimeVue 5.
+- The [Hostera Platform](https://github.com/1ASI0730-2620-8150-GrafoVerde/hostera-platform-2) RESTful API running locally, which serves every workspace.
 
 ### Install and run
 
@@ -38,11 +39,7 @@ This repository holds the Vue single-page application (SPA) and a development-on
    cp .env.example .env.production
    ```
 
-3. Start the mock API at `http://localhost:3000`:
-
-   ```bash
-   npm run server:start
-   ```
+3. Start the Hostera Platform API at `http://localhost:5264`, as its README describes. In development it loads a demonstration hotel into an empty database.
 
 4. In another terminal, start the SPA:
 
@@ -125,9 +122,11 @@ Open `/access-control` to review a property's RFID credentials (guest key cards 
 
 ## Environment
 
-The SPA connects directly to the API configured by `VITE_HOSTERA_API_URL`. `.env.example` points it to the local mock at `http://localhost:3000` and defines the resource paths in `VITE_PROPERTIES_ENDPOINT_PATH`, `VITE_INVENTORY_ITEMS_ENDPOINT_PATH`, `VITE_STORAGE_LOCATIONS_ENDPOINT_PATH`, `VITE_ROOM_TYPES_ENDPOINT_PATH`, `VITE_ROOMS_ENDPOINT_PATH`, `VITE_STATUS_PERIODS_ENDPOINT_PATH`, `VITE_RATE_PLANS_ENDPOINT_PATH`, `VITE_DAILY_RATES_ENDPOINT_PATH`, `VITE_BOOKINGS_ENDPOINT_PATH`, `VITE_PAYMENTS_ENDPOINT_PATH`, `VITE_CREDENTIALS_ENDPOINT_PATH`, `VITE_STAFF_MEMBERS_ENDPOINT_PATH`, and `VITE_ACCESS_EVENTS_ENDPOINT_PATH`. `vite-env.d.ts` declares these variables for editor type information and autocompletion; it does not assign or validate their runtime values.
+The SPA connects directly to the Hostera Platform API configured by `VITE_HOSTERA_PLATFORM_API_URL`, which `.env.example` points to `http://localhost:5264/api/v1`. The other `VITE_*_ENDPOINT_PATH` variables hold the resource and operation paths of the API, such as `/properties`, `/rfid-credentials`, or `/check-in`. `VITE_DEMO_OPERATOR_ID` is the staff member recorded as the operator of bookings, payments, and credentials until sign-in exists. `vite-env.d.ts` declares these variables for editor type information and autocompletion; it does not assign or validate their runtime values.
 
-Vite loads `.env.development` for `npm run dev` and `.env.production` for `npm run build`. These files are ignored by Git; create them from `.env.example`. Use the ignored `.env.development.local` or `.env.production.local` files to override API settings for a specific mode. Restart Vite after changing environment files. Before deployment, set `VITE_HOSTERA_API_URL` to the deployed backend URL; the mock API is not deployed with the SPA. See [Vite environment variables and modes](https://vite.dev/guide/env-and-mode).
+Every request sends the language selected in the application in its `Accept-Language` header. When the API rejects a request, the SPA reads the error code from the `title` of the problem details and shows its own English or Spanish message. Changes to a booking send the version the booking was read with in the `If-Match` header, and payments send an `Idempotency-Key`, so a change made meanwhile by someone else is reported instead of being overwritten.
+
+Vite loads `.env.development` for `npm run dev` and `.env.production` for `npm run build`. These files are ignored by Git; create them from `.env.example`. Use the ignored `.env.development.local` or `.env.production.local` files to override API settings for a specific mode. Restart Vite after changing environment files. Before deployment, set `VITE_HOSTERA_PLATFORM_API_URL` to the deployed API URL. See [Vite environment variables and modes](https://vite.dev/guide/env-and-mode).
 
 PrimeVue 5 requires a valid PrimeUI license. Replace the `VITE_PRIMEVUE_LICENSE_KEY` placeholder in `.env.development` and `.env.production`, or set it in their `.local` overrides, and restart Vite. A key in `.env.local` does not take effect while a mode file still defines the placeholder, because mode files take priority. For deployed builds, configure the variable in the build environment.
 
@@ -141,7 +140,7 @@ The SPA is deployed to Firebase Hosting in the `hostera-f4116` project, configur
    firebase login
    ```
 
-2. In `.env.production`, set `VITE_HOSTERA_API_URL` to the deployed API and `VITE_PRIMEVUE_LICENSE_KEY` to a valid PrimeUI license key. The mock API is not deployed with the SPA; a demonstration copy can run on Render, as described in [server/README.md](server/README.md#demonstration-deployment-on-render).
+2. In `.env.production`, set `VITE_HOSTERA_PLATFORM_API_URL` to the deployed Hostera Platform API and `VITE_PRIMEVUE_LICENSE_KEY` to a valid PrimeUI license key.
 
 3. Build and deploy:
 
@@ -159,7 +158,7 @@ Run `npm run lint` and `npm run format:check` before committing. Prettier uses s
 
 ## Local mock API
 
-The mock API is for local development and runs separately from the SPA. It is not deployed with the frontend. See [server/README.md](server/README.md) for fixture structure, database generation, and reset commands.
+The SPA no longer calls the mock API; every workspace reads and saves its data through the Hostera Platform API. The mock remains as a reference of the resource shapes and sample data. It runs separately from the SPA and is not deployed with the frontend. See [server/README.md](server/README.md) for fixture structure, database generation, and reset commands.
 
 ## Documentation
 

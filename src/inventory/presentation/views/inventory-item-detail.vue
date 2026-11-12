@@ -26,9 +26,8 @@ const inventoryItemFormVisible = ref(false);
 const stockAdjustmentFormVisible = ref(false);
 
 const inventoryItem = computed(() => getInventoryItemById(route.params.id));
-const stockHistory = computed(() =>
-  [...(inventoryItem.value?.adjustments ?? [])].reverse(),
-);
+// The platform returns the adjustments newest first.
+const stockHistory = computed(() => inventoryItem.value?.adjustments ?? []);
 const itemFacts = computed(() => [
   {
     label: t('inventory.inventory-item-detail.category'),
@@ -271,10 +270,11 @@ const removeAssignment = async (storageLocationId) => {
                 >
               </template>
             </pv-column>
-            <pv-column
-              field="locationName"
-              :header="t('inventory.inventory-item-detail.storage')"
-            />
+            <pv-column :header="t('inventory.inventory-item-detail.storage')">
+              <template #body="{ data }">
+                {{ storageLocationName(data.locationId) }}
+              </template>
+            </pv-column>
             <pv-column :header="t('inventory.inventory-item-detail.reason')">
               <template #body="{ data }">
                 <span class="flex flex-column">

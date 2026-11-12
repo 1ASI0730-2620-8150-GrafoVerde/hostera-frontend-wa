@@ -96,14 +96,18 @@ const revocationFacts = computed(() => [
 const dateTime = (value) => (value ? formatDateTime(value, locale.value) : '—');
 
 /**
- * Returns the display name of the operator who changed the credential.
- * @param {?string} operator - Recorded operator.
- * @returns {string} Localized operator name.
+ * Returns the display name of the staff member who changed the credential.
+ * @param {?number} operator - Identifier of the recorded staff member.
+ * @returns {string} Name of the staff member, or a localized label.
  */
-const operatorName = (operator) =>
-  operator === 'Demo operator'
+const operatorName = (operator) => {
+  if (operator === null || operator === undefined) return '—';
+  const staffMember = getStaffMemberById(operator);
+  if (staffMember) return staffMember.name;
+  return operator === store.demoOperatorId
     ? t('access-control.access-control-terms.demo-operator')
-    : (operator ?? '—');
+    : t('access-control.access-control-terms.staff-member', { id: operator });
+};
 
 /**
  * Confirms that the credential was revoked.

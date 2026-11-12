@@ -97,29 +97,10 @@ export class Booking {
   }
 
   /**
-   * Builds the code that follows a property's latest booking code.
-   * Each property numbers its bookings in its own thousand, such as BKG-1001 for the first property.
-   * @param {number} propertyId - Identifier of the property.
-   * @param {?string} latestCode - Highest booking code of the property, if any.
-   * @returns {string} Next booking code.
-   */
-  static nextCode(propertyId, latestCode) {
-    return `BKG-${Math.max(Booking.numberOf(latestCode), propertyId * 1000) + 1}`;
-  }
-
-  /**
-   * Reads the sequential number of a booking code.
-   * @param {string} code - Booking code.
-   * @returns {number} Booking number, or 0 when the code has none.
-   */
-  static numberOf(code) {
-    return Number(/^BKG-(\d+)$/.exec(code ?? '')?.[1] ?? 0);
-  }
-
-  /**
    * @param {Object} params - Entity attributes.
    * @param {?number} [params.id=null] - Booking identifier.
    * @param {?number} [params.propertyId=null] - Identifier of the property.
+   * @param {?number} [params.version=null] - Version the platform gives the booking each time it changes.
    * @param {string} [params.code=''] - Booking code shown to guests and staff.
    * @param {string} [params.status='pending'] - Booking status.
    * @param {string} [params.guestName=''] - Guest's full name.
@@ -136,25 +117,26 @@ export class Booking {
    * @param {string} [params.guestRequest=''] - Guest's request for the stay.
    * @param {string} [params.createdAt=''] - ISO day the booking was created.
    * @param {?string} [params.confirmedAt=null] - ISO date-time the booking was confirmed.
-   * @param {?string} [params.confirmedBy=null] - Operator who confirmed the booking.
+   * @param {?number} [params.confirmedBy=null] - Staff member who confirmed the booking.
    * @param {?string} [params.cancelledAt=null] - ISO date-time the booking was cancelled.
-   * @param {?string} [params.cancelledBy=null] - Operator who cancelled the booking.
+   * @param {?number} [params.cancelledBy=null] - Staff member who cancelled the booking.
    * @param {?string} [params.cancellationReason=null] - Why the booking was cancelled.
    * @param {string} [params.cancellationNote=''] - Internal note about the cancellation.
    * @param {?string} [params.noShowAt=null] - ISO date-time the no-show was recorded.
-   * @param {?string} [params.noShowBy=null] - Operator who recorded the no-show.
+   * @param {?number} [params.noShowBy=null] - Staff member who recorded the no-show.
    * @param {?string} [params.checkedInAt=null] - ISO date-time the guest checked in.
-   * @param {?string} [params.checkedInBy=null] - Operator who completed the check-in.
+   * @param {?number} [params.checkedInBy=null] - Staff member who completed the check-in.
    * @param {?string} [params.guestDocumentType=null] - Identity document verified at check-in.
    * @param {string} [params.guestDocumentNumber=''] - Number of the verified identity document.
    * @param {?string} [params.checkedOutAt=null] - ISO date-time the guest checked out.
-   * @param {?string} [params.checkedOutBy=null] - Operator who completed the check-out.
+   * @param {?number} [params.checkedOutBy=null] - Staff member who completed the check-out.
    * @param {?string} [params.roomCondition=null] - Room condition reported at check-out.
    * @param {string} [params.departureNote=''] - Internal note about the departure.
    */
   constructor({
     id = null,
     propertyId = null,
+    version = null,
     code = '',
     status = 'pending',
     guestName = '',
@@ -189,6 +171,7 @@ export class Booking {
   }) {
     this.id = id;
     this.propertyId = propertyId;
+    this.version = version;
     this.code = code;
     this.status = status;
     this.guestName = guestName.trim();
@@ -330,7 +313,7 @@ export class Booking {
    * @param {string} checkIn.documentNumber - Number of the verified identity document.
    * @param {boolean} checkIn.documentVerified - Whether staff verified the original document.
    * @param {string} checkIn.at - ISO date-time of the check-in.
-   * @param {string} checkIn.by - Operator who completes it.
+   * @param {number} checkIn.by - Staff member who completes it.
    * @returns {Booking} Checked-in copy of the booking.
    * @throws {BookingsError} When the booking cannot be checked in or the identity is not verified.
    */
@@ -359,7 +342,7 @@ export class Booking {
    * @param {string} checkOut.roomCondition - Room condition reported at departure.
    * @param {string} [checkOut.note=''] - Internal note about the departure.
    * @param {string} checkOut.at - ISO date-time of the check-out.
-   * @param {string} checkOut.by - Operator who completes it.
+   * @param {number} checkOut.by - Staff member who completes it.
    * @returns {Booking} Checked-out copy of the booking.
    * @throws {BookingsError} When the booking cannot be checked out or a balance remains.
    */
@@ -381,7 +364,7 @@ export class Booking {
   /**
    * Confirms a pending booking.
    * @param {string} at - ISO date-time of the confirmation.
-   * @param {string} by - Operator who confirms.
+   * @param {number} by - Staff member who confirms.
    * @returns {Booking} Confirmed copy of the booking.
    * @throws {BookingsError} When the booking is not pending.
    */
@@ -401,7 +384,7 @@ export class Booking {
    * @param {string} cancellation.reason - Cancellation reason.
    * @param {string} [cancellation.note=''] - Internal note, required for the Other reason.
    * @param {string} cancellation.at - ISO date-time of the cancellation.
-   * @param {string} cancellation.by - Operator who cancels.
+   * @param {number} cancellation.by - Staff member who cancels.
    * @returns {Booking} Cancelled copy of the booking.
    * @throws {BookingsError} When the booking cannot be cancelled or the reason is incomplete.
    */
@@ -425,7 +408,7 @@ export class Booking {
    * Records that the guest of a confirmed booking did not arrive, which frees its room.
    * @param {string} today - Current ISO calendar day.
    * @param {string} at - ISO date-time the no-show is recorded.
-   * @param {string} by - Operator who records it.
+   * @param {number} by - Staff member who records it.
    * @returns {Booking} No-show copy of the booking.
    * @throws {BookingsError} When the booking is not confirmed or its check-in day has not arrived.
    */
