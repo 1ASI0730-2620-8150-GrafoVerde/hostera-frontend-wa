@@ -1,0 +1,11 @@
+{
+  "page-title": "Create account",
+  "title": "Create your Hostera account",
+  "subtitle": "Your account starts a new organization, which has no properties yet.",
+  "password-hint": "Use {min} to {max} characters.",
+  "confirm-password": "Confirm password",
+  "passwords-mismatch": "The passwords do not match.",
+  "submit": "Create account",
+  "has-account": "Already have an account?",
+  "sign-in": "Sign in"
+}
