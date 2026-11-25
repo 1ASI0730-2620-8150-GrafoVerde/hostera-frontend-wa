@@ -2,6 +2,10 @@
   "full-name": "Full name",
   "username": "Username",
   "password": "Password",
+  "roles": {
+    "operations-manager": "Operations manager",
+    "operator": "Operator"
+  },
   "errors": {
     "invalid-credentials": "The username or password is incorrect.",
     "username-taken": "That username is already taken. Choose another one.",
