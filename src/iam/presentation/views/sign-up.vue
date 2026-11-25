@@ -21,10 +21,31 @@ const passwordLimits = {
   max: SignUpCommand.passwordMaxLength,
 };
 
-const form = reactive({ username: '', password: '', confirmPassword: '' });
+const fullNameLimits = {
+  min: SignUpCommand.fullNameMinLength,
+  max: SignUpCommand.fullNameMaxLength,
+};
+
+const form = reactive({
+  fullName: '',
+  username: '',
+  password: '',
+  confirmPassword: '',
+});
 const submitted = ref(false);
 const errorCode = ref('');
 
+const fullNameError = computed(() => {
+  if (!submitted.value) return '';
+  const fullName = form.fullName.trim();
+  if (!fullName) return t('iam.iam-terms.errors.full-name-required');
+  if (
+    fullName.length < fullNameLimits.min ||
+    fullName.length > fullNameLimits.max
+  )
+    return t('iam.iam-terms.errors.invalid-full-name-length', fullNameLimits);
+  return '';
+});
 const usernameError = computed(() => {
   if (!submitted.value) return '';
   const username = form.username.trim();
@@ -54,11 +75,20 @@ const confirmPasswordError = computed(() =>
 const signUpUser = async () => {
   submitted.value = true;
   errorCode.value = '';
-  if (usernameError.value || passwordError.value || confirmPasswordError.value)
+  if (
+    fullNameError.value ||
+    usernameError.value ||
+    passwordError.value ||
+    confirmPasswordError.value
+  )
     return;
   try {
     await signUp(
-      new SignUpCommand({ username: form.username, password: form.password }),
+      new SignUpCommand({
+        fullName: form.fullName,
+        username: form.username,
+        password: form.password,
+      }),
     );
     await router.replace(redirectPathAfterSignIn(route));
   } catch (error) {
@@ -87,6 +117,28 @@ const signUpUser = async () => {
       @submit.prevent="signUpUser"
     >
       <div class="flex flex-column gap-2">
+        <label for="sign-up-full-name" class="font-medium">{{
+          t('iam.iam-terms.full-name')
+        }}</label>
+        <pv-input-text
+          id="sign-up-full-name"
+          v-model="form.fullName"
+          autocomplete="name"
+          autofocus
+          :invalid="Boolean(fullNameError)"
+          :aria-describedby="
+            fullNameError ? 'sign-up-full-name-error' : undefined
+          "
+          fluid
+        />
+        <small
+          v-if="fullNameError"
+          id="sign-up-full-name-error"
+          class="text-red-700"
+          >{{ fullNameError }}</small
+        >
+      </div>
+      <div class="flex flex-column gap-2">
         <label for="sign-up-username" class="font-medium">{{
           t('iam.iam-terms.username')
         }}</label>
@@ -94,7 +146,6 @@ const signUpUser = async () => {
           id="sign-up-username"
           v-model="form.username"
           autocomplete="username"
-          autofocus
           :invalid="Boolean(usernameError)"
           :aria-describedby="
             usernameError ? 'sign-up-username-error' : undefined
