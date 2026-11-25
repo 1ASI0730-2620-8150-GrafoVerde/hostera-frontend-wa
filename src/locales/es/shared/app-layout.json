@@ -5,7 +5,7 @@
   "inventory": "Inventario",
   "access-control": "Control de acceso",
   "navigation": "Navegación principal",
-  "signed-in": "Sesión iniciada como",
+  "signed-in": "Sesión iniciada como {username}",
   "terms": "Términos y condiciones",
   "terms-new-tab": "Términos y condiciones (se abre en una pestaña nueva)",
   "copyright": "© 2026 Grafo Verde",

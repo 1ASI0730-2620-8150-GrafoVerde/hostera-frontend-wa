@@ -24,6 +24,11 @@ const termsUrl =
 
 // The signed-in user's block opens a menu with the language choice, the terms and conditions, and sign-out.
 const currentUser = computed(() => iamStore.currentUser);
+const currentUserRole = computed(() =>
+  currentUser.value?.role
+    ? t(`iam.iam-terms.roles.${currentUser.value.role}`)
+    : '',
+);
 const accountMenu = ref(null);
 const accountMenuOpen = ref(false);
 
@@ -184,12 +189,14 @@ watch(
                 aria-hidden="true"
               />
               <div v-if="!collapsed" class="flex flex-column min-w-0">
-                <span class="text-sm text-color-secondary white-space-nowrap">{{
-                  t('shared.app-layout.signed-in')
-                }}</span>
                 <span
                   class="text-sm font-medium white-space-nowrap overflow-hidden text-overflow-ellipsis"
-                  >{{ currentUser?.username }}</span
+                  >{{ currentUser?.displayName }}</span
+                >
+                <span
+                  v-if="currentUserRole"
+                  class="text-sm text-color-secondary white-space-nowrap overflow-hidden text-overflow-ellipsis"
+                  >{{ currentUserRole }}</span
                 >
               </div>
               <i
@@ -205,13 +212,24 @@ watch(
               @hide="accountMenuOpen = false"
             >
               <div class="flex flex-column gap-3 w-16rem">
-                <div class="flex flex-column">
-                  <span class="text-sm text-color-secondary">{{
-                    t('shared.app-layout.signed-in')
-                  }}</span>
+                <div class="flex flex-column gap-1">
                   <span
                     class="font-medium white-space-nowrap overflow-hidden text-overflow-ellipsis"
-                    >{{ currentUser?.username }}</span
+                    >{{ currentUser?.displayName }}</span
+                  >
+                  <span
+                    v-if="currentUserRole"
+                    class="text-sm text-color-secondary"
+                    >{{ currentUserRole }}</span
+                  >
+                  <span
+                    v-if="currentUser?.fullName"
+                    class="text-sm text-color-secondary white-space-nowrap overflow-hidden text-overflow-ellipsis"
+                    >{{
+                      t('shared.app-layout.signed-in', {
+                        username: currentUser?.username,
+                      })
+                    }}</span
                   >
                 </div>
                 <pv-divider class="m-0" />

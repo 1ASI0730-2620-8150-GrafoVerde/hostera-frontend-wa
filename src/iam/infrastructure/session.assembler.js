@@ -8,7 +8,7 @@ import { UserAssembler } from './user.assembler.js';
  */
 export class SessionAssembler {
   /**
-   * @param {{id: number, username: string, organizationId: number, token: string}} resource - Authenticated user resource.
+   * @param {{id: number, username: string, fullName: string, role: string, organizationId: number, token: string}} resource - Authenticated user resource.
    * @returns {Session} Session entity.
    */
   static toEntityFromResource(resource) {
@@ -28,12 +28,14 @@ export class SessionAssembler {
 
   /**
    * @param {Session} session - Session entity.
-   * @returns {{id: number, username: string, organizationId: number, token: string}} Resource kept in the browser.
+   * @returns {{id: number, username: string, fullName: string, role: string, organizationId: number, token: string}} Resource kept in the browser.
    */
   static toResourceFromEntity(session) {
     return {
       id: session.user.id,
       username: session.user.username,
+      fullName: session.user.fullName,
+      role: UserAssembler.toResourceRoleFromRole(session.user.role),
       organizationId: session.user.organizationId,
       token: session.token,
     };

@@ -99,9 +99,9 @@ src/<context>/
 
 ## Sign-in
 
-Every workspace requires a signed-in user. Opening any page without a session leads to the sign-in page (`/iam/sign-in`), which returns to the requested page after signing in. Create an account from the sign-up page (`/iam/sign-up`) with a username of up to 50 characters and a password of 8 to 64 characters; the new user is signed in and starts a new organization, which has no properties yet, so the workspaces show that no properties are configured.
+Every workspace requires a signed-in user. Opening any page without a session leads to the sign-in page (`/iam/sign-in`), which returns to the requested page after signing in. Create an account from the sign-up page (`/iam/sign-up`) with a full name of 2 to 100 characters, a username of up to 50 characters, and a password of 8 to 64 characters; the new user is signed in and starts a new organization, which has no properties yet, so the workspaces show that no properties are configured.
 
-A user works only with the properties of its organization. The account menu at the bottom of the sidebar shows the signed-in username and signs out. Signing out, or signing in with another account, drops every list and property selection that the previous account loaded.
+A user works only with the properties of its organization. The account menu at the bottom of the sidebar shows the full name, role (Operations manager or Operator), and username of the signed-in user, and signs out. Signing out, or signing in with another account, drops every list and property selection that the previous account loaded.
 
 The session is kept in the browser, so reloading the page keeps the user signed in. When the API no longer accepts the session, such as when its token expires after seven days, the SPA signs out and asks to sign in again.
 
@@ -109,10 +109,10 @@ The session is kept in the browser, so reloading the page keeps the user signed 
 
 When the Hostera Platform API loads its demonstration data, these accounts are available:
 
-| Username        | Password          | Properties               |
-| --------------- | ----------------- | ------------------------ |
-| `demo.hostera`  | `HosteraDemo2026` | Cartagena 04 and Lima 01 |
-| `demo.arequipa` | `HosteraDemo2026` | Arequipa 01              |
+| Username        | Password          | User         | Role               | Properties               |
+| --------------- | ----------------- | ------------ | ------------------ | ------------------------ |
+| `demo.hostera`  | `HosteraDemo2026` | Lucía Martín | Operations manager | Cartagena 04 and Lima 01 |
+| `demo.arequipa` | `HosteraDemo2026` | Diego Quispe | Operator           | Arequipa 01              |
 
 They are public demonstration credentials; do not reuse them for real data.
 

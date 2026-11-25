@@ -5,7 +5,7 @@
   "inventory": "Inventory",
   "access-control": "Access control",
   "navigation": "Main navigation",
-  "signed-in": "Signed in as",
+  "signed-in": "Signed in as {username}",
   "terms": "Terms and Conditions",
   "terms-new-tab": "Terms and Conditions (opens in a new tab)",
   "copyright": "© 2026 Grafo Verde",

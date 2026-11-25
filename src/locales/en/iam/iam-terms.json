@@ -1,10 +1,17 @@
 {
+  "full-name": "Full name",
   "username": "Username",
   "password": "Password",
+  "roles": {
+    "operations-manager": "Operations manager",
+    "operator": "Operator"
+  },
   "errors": {
     "invalid-credentials": "The username or password is incorrect.",
     "username-taken": "That username is already taken. Choose another one.",
     "invalid-input": "Check the username and password and try again.",
+    "full-name-required": "Enter your full name.",
+    "invalid-full-name-length": "Use {min} to {max} characters for the full name.",
     "username-required": "Enter a username.",
     "username-too-long": "Use up to {max} characters for the username.",
     "password-required": "Enter your password.",
