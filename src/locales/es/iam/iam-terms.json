@@ -3,7 +3,7 @@
   "username": "Usuario",
   "password": "Contraseña",
   "roles": {
-    "operations-manager": "Responsable de operaciones",
+    "operations-manager": "Jefa de operaciones",
     "operator": "Operador"
   },
   "errors": {
