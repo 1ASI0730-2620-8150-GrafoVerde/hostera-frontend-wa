@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-11-24
+
+### Added
+
+- Sign-in and sign-up pages in English and Spanish. Every workspace requires a signed-in user of the Hostera Platform, and opening a page without a session leads to sign-in and back to that page afterwards.
+- The session is kept across reloads. When the platform rejects it, the user is signed out and told the session ended.
+- The account menu shows the signed-in user and signs out.
+- `VITE_SIGN_IN_ENDPOINT_PATH` and `VITE_SIGN_UP_ENDPOINT_PATH` environment variables.
+
+### Changed
+
+- Every request to the platform carries the bearer token of the session, which the Hostera Platform 2.0.0 requires.
+- Each account only sees the properties of its organization, and signing in with another account clears the data loaded by the previous one.
+- An account without properties shows an empty state in every workspace.
+
 ## [2.0.0] - 2026-11-11
 
 ### Changed
