@@ -1,0 +1,17 @@
+{
+  "username": "Username",
+  "password": "Password",
+  "errors": {
+    "invalid-credentials": "The username or password is incorrect.",
+    "username-taken": "That username is already taken. Choose another one.",
+    "invalid-input": "Check the username and password and try again.",
+    "username-required": "Enter a username.",
+    "username-too-long": "Use up to {max} characters for the username.",
+    "password-required": "Enter your password.",
+    "invalid-password-length": "Use {min} to {max} characters for the password.",
+    "authentication-required": "Your session has ended. Sign in again.",
+    "request-rejected": "The request could not be completed. Try again.",
+    "not-found": "The request could not be completed. Try again.",
+    "connection": "Hostera could not be reached. Check your connection and try again."
+  }
+}

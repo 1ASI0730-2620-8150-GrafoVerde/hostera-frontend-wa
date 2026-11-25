@@ -22,7 +22,7 @@ This repository holds the Vue single-page application (SPA) and a development-on
 
 - Node.js `^20.19.0` or `>=22.12.0`, as required by Vite, and npm.
 - A PrimeUI license key for PrimeVue 5.
-- The [Hostera Platform](https://github.com/1ASI0730-2620-8150-GrafoVerde/hostera-platform-2) RESTful API running locally, which serves every workspace.
+- The [Hostera Platform](https://github.com/1ASI0730-2620-8150-GrafoVerde/hostera-platform) RESTful API running locally, which serves every workspace.
 
 ### Install and run
 
@@ -47,7 +47,7 @@ This repository holds the Vue single-page application (SPA) and a development-on
    npm run dev
    ```
 
-Open the URL that Vite prints, normally `http://localhost:5173`.
+Open the URL that Vite prints, normally `http://localhost:5173`, and sign in with one of the [demonstration accounts](#demonstration-accounts).
 
 ## Scripts
 
@@ -73,6 +73,7 @@ src/
   rooms/             Rooms bounded context, including rates
   inventory/         Inventory bounded context
   access-control/    Access Control bounded context
+  iam/               IAM bounded context: sign-in, sign-up, and the session
   shared/            Cross-context infrastructure and presentation
   locales/           Translations by language and context
   router.js          Application routes composed from each context
@@ -95,6 +96,25 @@ src/<context>/
 - **Application:** Pinia stores coordinate domain objects and infrastructure, and expose state to the views.
 - **Infrastructure:** Axios clients built on the shared `BaseApi` and `BaseEndpoint`, and assemblers that map API payloads to domain entities.
 - **Presentation:** Vue views and components that call store actions and render reactive state.
+
+## Sign-in
+
+Every workspace requires a signed-in user. Opening any page without a session leads to the sign-in page (`/iam/sign-in`), which returns to the requested page after signing in. Create an account from the sign-up page (`/iam/sign-up`) with a username of up to 50 characters and a password of 8 to 64 characters; the new user is signed in and starts a new organization, which has no properties yet, so the workspaces show that no properties are configured.
+
+A user works only with the properties of its organization. The account menu at the bottom of the sidebar shows the signed-in username and signs out. Signing out, or signing in with another account, drops every list and property selection that the previous account loaded.
+
+The session is kept in the browser, so reloading the page keeps the user signed in. When the API no longer accepts the session, such as when its token expires after seven days, the SPA signs out and asks to sign in again.
+
+### Demonstration accounts
+
+When the Hostera Platform API loads its demonstration data, these accounts are available:
+
+| Username        | Password          | Properties               |
+| --------------- | ----------------- | ------------------------ |
+| `demo.hostera`  | `HosteraDemo2026` | Cartagena 04 and Lima 01 |
+| `demo.arequipa` | `HosteraDemo2026` | Arequipa 01              |
+
+They are public demonstration credentials; do not reuse them for real data.
 
 ## Workspaces
 
@@ -122,9 +142,9 @@ Open `/access-control` to review a property's RFID credentials (guest key cards 
 
 ## Environment
 
-The SPA connects directly to the Hostera Platform API configured by `VITE_HOSTERA_PLATFORM_API_URL`, which `.env.example` points to `http://localhost:5264/api/v1`. The other `VITE_*_ENDPOINT_PATH` variables hold the resource and operation paths of the API, such as `/properties`, `/rfid-credentials`, or `/check-in`. `VITE_DEMO_OPERATOR_ID` is the staff member recorded as the operator of bookings, payments, and credentials until sign-in exists. `vite-env.d.ts` declares these variables for editor type information and autocompletion; it does not assign or validate their runtime values.
+The SPA connects directly to the Hostera Platform API configured by `VITE_HOSTERA_PLATFORM_API_URL`, which `.env.example` points to `http://localhost:5264/api/v1`. The other `VITE_*_ENDPOINT_PATH` variables hold the resource and operation paths of the API, such as `/authentication/sign-in`, `/properties`, `/rfid-credentials`, or `/check-in`. `VITE_DEMO_OPERATOR_ID` is the staff member recorded as the operator of bookings, payments, and credentials until users are linked to staff members. `vite-env.d.ts` declares these variables for editor type information and autocompletion; it does not assign or validate their runtime values.
 
-Every request sends the language selected in the application in its `Accept-Language` header. When the API rejects a request, the SPA reads the error code from the `title` of the problem details and shows its own English or Spanish message. Changes to a booking send the version the booking was read with in the `If-Match` header, and payments send an `Idempotency-Key`, so a change made meanwhile by someone else is reported instead of being overwritten.
+Every request sends the language selected in the application in its `Accept-Language` header and, once signed in, the bearer token of the session in its `Authorization` header. When the API rejects a request, the SPA reads the error code from the `title` of the problem details and shows its own English or Spanish message. Changes to a booking send the version the booking was read with in the `If-Match` header, and payments send an `Idempotency-Key`, so a change made meanwhile by someone else is reported instead of being overwritten.
 
 Vite loads `.env.development` for `npm run dev` and `.env.production` for `npm run build`. These files are ignored by Git; create them from `.env.example`. Use the ignored `.env.development.local` or `.env.production.local` files to override API settings for a specific mode. Restart Vite after changing environment files. Before deployment, set `VITE_HOSTERA_PLATFORM_API_URL` to the deployed API URL. See [Vite environment variables and modes](https://vite.dev/guide/env-and-mode).
 

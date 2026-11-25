@@ -54,6 +54,9 @@ import enRoomsRoomDetail from './locales/en/rooms/room-detail.json';
 import enRoomsRoomRates from './locales/en/rooms/room-rates.json';
 import enRoomsRatePlanForm from './locales/en/rooms/rate-plan-form.json';
 import enRoomsDailyRateForm from './locales/en/rooms/daily-rate-form.json';
+import enIamIamTerms from './locales/en/iam/iam-terms.json';
+import enIamSignIn from './locales/en/iam/sign-in.json';
+import enIamSignUp from './locales/en/iam/sign-up.json';
 import esSharedHome from './locales/es/shared/home.json';
 import esSharedAppLayout from './locales/es/shared/app-layout.json';
 import esSharedLanguageSwitcher from './locales/es/shared/language-switcher.json';
@@ -109,6 +112,9 @@ import esRoomsRoomDetail from './locales/es/rooms/room-detail.json';
 import esRoomsRoomRates from './locales/es/rooms/room-rates.json';
 import esRoomsRatePlanForm from './locales/es/rooms/rate-plan-form.json';
 import esRoomsDailyRateForm from './locales/es/rooms/daily-rate-form.json';
+import esIamIamTerms from './locales/es/iam/iam-terms.json';
+import esIamSignIn from './locales/es/iam/sign-in.json';
+import esIamSignUp from './locales/es/iam/sign-up.json';
 
 const i18n = createI18n({
   legacy: false,
@@ -122,6 +128,11 @@ const i18n = createI18n({
         'language-switcher': enSharedLanguageSwitcher,
         'sidebar-toggle': enSharedSidebarToggle,
         'primevue-locale': enSharedPrimevueLocale,
+      },
+      iam: {
+        'iam-terms': enIamIamTerms,
+        'sign-in': enIamSignIn,
+        'sign-up': enIamSignUp,
       },
       inventory: {
         'inventory-terms': enInventoryInventoryTerms,
@@ -191,6 +202,11 @@ const i18n = createI18n({
         'language-switcher': esSharedLanguageSwitcher,
         'sidebar-toggle': esSharedSidebarToggle,
         'primevue-locale': esSharedPrimevueLocale,
+      },
+      iam: {
+        'iam-terms': esIamIamTerms,
+        'sign-in': esIamSignIn,
+        'sign-up': esIamSignUp,
       },
       inventory: {
         'inventory-terms': esInventoryInventoryTerms,

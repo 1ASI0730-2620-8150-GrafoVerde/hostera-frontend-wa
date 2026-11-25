@@ -5,9 +5,13 @@ import roomsRoutes from './rooms/presentation/rooms-routes.js';
 import bookingsRoutes from './bookings/presentation/bookings-routes.js';
 import accessControlRoutes from './access-control/presentation/access-control-routes.js';
 import overviewRoutes from './overview/presentation/overview-routes.js';
+import iamRoutes from './iam/presentation/iam-routes.js';
+import { authenticationGuard } from './iam/infrastructure/authentication.guard.js';
+import { registerIamInterceptor } from './iam/infrastructure/iam.interceptor.js';
 
 const routes = [
   { path: '/home', name: 'home', component: Home, meta: { title: 'Home' } },
+  { path: '/iam', children: iamRoutes },
   { path: '/bookings', children: bookingsRoutes },
   { path: '/access-control', children: accessControlRoutes },
   {
@@ -31,13 +35,17 @@ const router = createRouter({
   routes: routes,
 });
 
+registerIamInterceptor(router);
+
 /**
- * Global navigation guard that updates the document title.
+ * Global navigation guard that sends anonymous users to sign in and updates the document title.
  *
  * @param {import('vue-router').RouteLocationNormalized} to - Target route.
- * @returns {boolean} - Returns true to allow navigation.
+ * @returns {import('vue-router').RouteLocationRaw|boolean} - True to allow navigation, or the route to redirect to.
  */
 router.beforeEach((to) => {
+  const authentication = authenticationGuard(to);
+  if (authentication !== true) return authentication;
   // Set the page title
   let baseTitle = 'Hostera';
   document.title = to.meta['title']

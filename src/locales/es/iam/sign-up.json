@@ -1,0 +1,11 @@
+{
+  "page-title": "Crear cuenta",
+  "title": "Crea tu cuenta de Hostera",
+  "subtitle": "Tu cuenta inicia una nueva organización, que aún no tiene establecimientos.",
+  "password-hint": "Usa de {min} a {max} caracteres.",
+  "confirm-password": "Confirmar contraseña",
+  "passwords-mismatch": "Las contraseñas no coinciden.",
+  "submit": "Crear cuenta",
+  "has-account": "¿Ya tienes una cuenta?",
+  "sign-in": "Inicia sesión"
+}

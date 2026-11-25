@@ -61,6 +61,10 @@
   "emptySelectionMessage": "No selected item",
   "searchMessage": "{0} results are available",
   "selectionMessage": "{0} items selected",
+  "passwordPrompt": "Enter a password",
+  "weak": "Weak",
+  "medium": "Medium",
+  "strong": "Strong",
   "aria": {
     "close": "Close",
     "previous": "Previous",

@@ -1,12 +1,15 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import useIamStore from '../../../iam/application/iam.store.js';
 import LanguageSwitcher from './language-switcher.vue';
 import BrandLogo from './brand-logo.vue';
 
 const { t } = useI18n();
 const route = useRoute();
+const router = useRouter();
+const iamStore = useIamStore();
 
 // On desktop the inset sidebar rests as icons and expands over the content on hover;
 // below PrimeFlex's lg breakpoint it becomes an off-canvas overlay.
@@ -19,18 +22,25 @@ const collapsed = computed(() => !compact.value && !sidebarOpen.value);
 const termsUrl =
   'https://1asi0730-2620-8150-grafoverde.github.io/hostera-landing-page/terms.html';
 
-// Signed-in operator placeholder until the IAM context is implemented.
-const currentOperator = { name: 'Lucía Martín', initials: 'LM' };
-
-// The operator block opens a menu with the language choice and the terms and conditions.
+// The signed-in user's block opens a menu with the language choice, the terms and conditions, and sign-out.
+const currentUser = computed(() => iamStore.currentUser);
 const accountMenu = ref(null);
 const accountMenuOpen = ref(false);
 
 /**
- * Opens or closes the account menu next to the operator block.
- * @param {Event} event - Click event of the operator block.
+ * Opens or closes the account menu next to the signed-in user's block.
+ * @param {Event} event - Click event of the signed-in user's block.
  */
 const toggleAccountMenu = (event) => accountMenu.value.toggle(event);
+
+/**
+ * Ends the session, which drops the data of the account, and opens the sign-in page.
+ */
+const signOut = async () => {
+  accountMenu.value.hide();
+  iamStore.signOut();
+  await router.push({ name: 'iam-sign-in' });
+};
 
 const navigationItems = [
   {
@@ -168,18 +178,19 @@ watch(
               @click="toggleAccountMenu"
             >
               <pv-avatar
-                :label="currentOperator.initials"
+                :label="currentUser?.initials"
                 shape="circle"
                 class="bg-primary flex-shrink-0 font-medium"
                 aria-hidden="true"
               />
               <div v-if="!collapsed" class="flex flex-column min-w-0">
-                <span class="text-sm font-medium white-space-nowrap">{{
-                  currentOperator.name
-                }}</span>
                 <span class="text-sm text-color-secondary white-space-nowrap">{{
-                  t('shared.app-layout.operator-role')
+                  t('shared.app-layout.signed-in')
                 }}</span>
+                <span
+                  class="text-sm font-medium white-space-nowrap overflow-hidden text-overflow-ellipsis"
+                  >{{ currentUser?.username }}</span
+                >
               </div>
               <i
                 v-if="!collapsed"
@@ -194,6 +205,16 @@ watch(
               @hide="accountMenuOpen = false"
             >
               <div class="flex flex-column gap-3 w-16rem">
+                <div class="flex flex-column">
+                  <span class="text-sm text-color-secondary">{{
+                    t('shared.app-layout.signed-in')
+                  }}</span>
+                  <span
+                    class="font-medium white-space-nowrap overflow-hidden text-overflow-ellipsis"
+                    >{{ currentUser?.username }}</span
+                  >
+                </div>
+                <pv-divider class="m-0" />
                 <div class="flex flex-column gap-2">
                   <span class="text-sm font-medium">{{
                     t('shared.language-switcher.label')
@@ -215,6 +236,15 @@ watch(
                     aria-hidden="true"
                   />
                 </a>
+                <pv-divider class="m-0" />
+                <pv-button
+                  :label="t('shared.app-layout.sign-out')"
+                  icon="pi pi-sign-out"
+                  severity="secondary"
+                  text
+                  class="justify-content-start"
+                  @click="signOut"
+                />
                 <span class="text-sm text-color-secondary">{{
                   t('shared.app-layout.copyright')
                 }}</span>

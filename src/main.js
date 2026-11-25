@@ -36,6 +36,7 @@ import {
   Menu,
   Message,
   MultiSelect,
+  Password,
   Popover,
   ProgressSpinner,
   Rating,
@@ -227,6 +228,7 @@ createApp(App)
   .component('pv-menu', Menu)
   .component('pv-message', Message)
   .component('pv-multi-select', MultiSelect)
+  .component('pv-password', Password)
   .component('pv-popover', Popover)
   .component('pv-progress-spinner', ProgressSpinner)
   .component('pv-rating', Rating)
