@@ -61,6 +61,10 @@
   "emptySelectionMessage": "Ningún elemento seleccionado",
   "searchMessage": "{0} resultados disponibles",
   "selectionMessage": "{0} elementos seleccionados",
+  "passwordPrompt": "Ingresa una contraseña",
+  "weak": "Débil",
+  "medium": "Media",
+  "strong": "Fuerte",
   "aria": {
     "close": "Cerrar",
     "previous": "Anterior",

@@ -12,6 +12,14 @@ interface ImportMetaEnv {
    */
   readonly VITE_HOSTERA_PLATFORM_API_URL: string;
   /**
+   * # VITE_SIGN_IN_ENDPOINT_PATH is the path that checks the username and password of a user and issues its bearer token.
+   */
+  readonly VITE_SIGN_IN_ENDPOINT_PATH: string;
+  /**
+   * # VITE_SIGN_UP_ENDPOINT_PATH is the path that registers a new user in a new organization.
+   */
+  readonly VITE_SIGN_UP_ENDPOINT_PATH: string;
+  /**
    * # VITE_PROPERTIES_ENDPOINT_PATH is the path to the properties' endpoint.
    */
   readonly VITE_PROPERTIES_ENDPOINT_PATH: string;
